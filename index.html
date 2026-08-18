@@ -609,11 +609,10 @@ function render(){
     </header>
     <div class="who">
       <span>Conectado como <strong style="color:var(--text)">${escapeHtml(myName)}</strong> <span class="song-key" style="margin-left:4px;">${roleLabel(myRole)}</span></span>
-      <span style="display:flex;gap:14px;">
-        <button onclick="openApiKeyModal()">Clave de YouTube</button>
+           <span style="display:flex;gap:14px;">
+        ${(myRole==='coordinator' || myRole==='developer') ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
         <button onclick="changeName()">Cambiar nombre</button>
       </span>
-    </div>
 
     <div class="tabs">
       ${tabsAvailable.map(t=>`<div class="tab ${activeTab===t.id?'active':''}" onclick="setTab('${t.id}')">${t.label}</div>`).join('')}
@@ -781,10 +780,14 @@ function renderAll(list){
 }
 
 function renderAddForm(){
+  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
   const rolesHtml = draftRoles.map(r=>`
     <div class="role-form-row">
       <input id="role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateDraftRole('${r.id}','role',this.value)" />
-      <input id="role-person-${r.id}" placeholder="Nombre" value="${escapeHtml(r.person)}" onchange="updateDraftRole('${r.id}','person',this.value)" />
+      <select id="role-person-${r.id}" onchange="updateDraftRole('${r.id}','person',this.value)">
+        <option value="">Selecciona un miembro</option>
+        ${memberOptions.map(name=>`<option value="${escapeHtml(name)}" ${r.person===name?'selected':''}>${escapeHtml(name)}</option>`).join('')}
+      </select>
       <button class="remove-role" onclick="removeDraftRole('${r.id}')">✕</button>
     </div>`).join('');
   const songsHtml = draftSongs.map(s=>`
