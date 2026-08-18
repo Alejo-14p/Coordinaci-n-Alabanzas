@@ -226,6 +226,8 @@ let myName = null;
 let services = [];
 let activeTab = 'mias';
 let showAddForm = false;
+let draftDate = '';
+let draftLabel = '';
 let draftRoles = [];
 let draftSongs = [];
 let songFormOpenFor = null;
@@ -369,6 +371,8 @@ async function deleteService(id){
 
 function startAddForm(){
   showAddForm = true;
+  draftDate = '';
+  draftLabel = '';
   draftRoles = [{id:uid(), role:'', person:''}];
   draftSongs = [];
   render();
@@ -609,7 +613,7 @@ function render(){
     </header>
     <div class="who">
       <span>Conectado como <strong style="color:var(--text)">${escapeHtml(myName)}</strong> <span class="song-key" style="margin-left:4px;">${roleLabel(myRole)}</span></span>
-           <span style="display:flex;gap:14px;">
+      <span style="display:flex;gap:14px;">
         ${(myRole==='coordinator' || myRole==='developer') ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
         <button onclick="changeName()">Cambiar nombre</button>
       </span>
@@ -804,9 +808,9 @@ function renderAddForm(){
   return `
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
-      <input type="date" id="new-date" />
+      <input type="date" id="new-date" value="${escapeHtml(draftDate)}" onchange="draftDate=this.value" />
       <label class="field-label">Nombre del servicio</label>
-      <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." />
+      <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." value="${escapeHtml(draftLabel)}" onchange="draftLabel=this.value" />
       <label class="field-label">Roles y responsables</label>
       <div id="roles-container">${rolesHtml}</div>
       <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
