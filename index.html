@@ -9,6 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E0F0C">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Alabanza">
 <style>
   :root{
     --bg: #0E0F0C;
@@ -226,6 +233,8 @@ let myName = null;
 let services = [];
 let activeTab = 'mias';
 let showAddForm = false;
+let draftDate = '';
+let draftLabel = '';
 let draftRoles = [];
 let draftSongs = [];
 let songFormOpenFor = null;
@@ -369,6 +378,8 @@ async function deleteService(id){
 
 function startAddForm(){
   showAddForm = true;
+  draftDate = '';
+  draftLabel = '';
   draftRoles = [{id:uid(), role:'', person:''}];
   draftSongs = [];
   render();
@@ -610,7 +621,7 @@ function render(){
     <div class="who">
       <span>Conectado como <strong style="color:var(--text)">${escapeHtml(myName)}</strong> <span class="song-key" style="margin-left:4px;">${roleLabel(myRole)}</span></span>
       <span style="display:flex;gap:14px;">
-        <button onclick="openApiKeyModal()">Clave de YouTube</button>
+        ${(myRole==='coordinator' || myRole==='developer') ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
         <button onclick="changeName()">Cambiar nombre</button>
       </span>
     </div>
@@ -781,10 +792,14 @@ function renderAll(list){
 }
 
 function renderAddForm(){
+  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
   const rolesHtml = draftRoles.map(r=>`
     <div class="role-form-row">
       <input id="role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateDraftRole('${r.id}','role',this.value)" />
-      <input id="role-person-${r.id}" placeholder="Nombre" value="${escapeHtml(r.person)}" onchange="updateDraftRole('${r.id}','person',this.value)" />
+      <select id="role-person-${r.id}" onchange="updateDraftRole('${r.id}','person',this.value)">
+        <option value="">Selecciona un miembro</option>
+        ${memberOptions.map(name=>`<option value="${escapeHtml(name)}" ${r.person===name?'selected':''}>${escapeHtml(name)}</option>`).join('')}
+      </select>
       <button class="remove-role" onclick="removeDraftRole('${r.id}')">✕</button>
     </div>`).join('');
   const songsHtml = draftSongs.map(s=>`
@@ -801,9 +816,9 @@ function renderAddForm(){
   return `
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
-      <input type="date" id="new-date" />
+      <input type="date" id="new-date" value="${escapeHtml(draftDate)}" onchange="draftDate=this.value" />
       <label class="field-label">Nombre del servicio</label>
-      <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." />
+      <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." value="${escapeHtml(draftLabel)}" onchange="draftLabel=this.value" />
       <label class="field-label">Roles y responsables</label>
       <div id="roles-container">${rolesHtml}</div>
       <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
@@ -840,6 +855,12 @@ function escapeHtml(str){
 }
 
 loadAll();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=>console.error('No se pudo registrar el service worker:', e));
+  });
+}
 </script>
 </body>
 </html>
