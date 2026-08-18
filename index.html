@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
 <meta charset="UTF-8">
 <title>Coordinación · Alabanza</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <style>
@@ -206,7 +205,15 @@
 </style>
 </head>
 <body>
-<div class="wrap" id="app"></div>
+<div class="wrap" id="app">
+      <div class="overlay">
+        <div class="modal">
+          <h2>¿Quién eres?</h2>
+          <p>Escribe tu nombre para poder confirmar tu participación en los servicios. Solo lo pediremos una vez en este dispositivo.</p>
+          <input id="name-input" placeholder="Tu nombre completo">
+          <button class="btn-main" onclick="handleNameSubmit()">Continuar</button>
+        </div>
+      </div></div>
 
 <script>
 const firebaseConfig = {
@@ -617,6 +624,7 @@ function render(){
         ${(myRole==='coordinator' || myRole==='developer') ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
         <button onclick="changeName()">Cambiar nombre</button>
       </span>
+    </div>
 
     <div class="tabs">
       ${tabsAvailable.map(t=>`<div class="tab ${activeTab===t.id?'active':''}" onclick="setTab('${t.id}')">${t.label}</div>`).join('')}
@@ -848,5 +856,6 @@ function escapeHtml(str){
 
 loadAll();
 </script>
-</body>
-</html>
+
+
+</body></html>
