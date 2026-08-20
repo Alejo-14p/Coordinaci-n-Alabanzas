@@ -40,7 +40,7 @@
     -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:640px;margin:0 auto;padding:28px 20px 80px;}
-
+ 
   /* Header */
   .staff{height:14px;margin-bottom:18px;position:relative;}
   .staff::before, .staff::after, .staff .mid{
@@ -76,7 +76,7 @@
     background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;
     font-family:'IBM Plex Sans',sans-serif;text-decoration:underline;padding:0;
   }
-
+ 
   /* Tabs */
   .tabs{display:flex;gap:6px;margin-bottom:24px;background:var(--surface);padding:4px;border-radius:10px;}
   .tab{
@@ -85,7 +85,7 @@
     user-select:none;
   }
   .tab.active{background:var(--accent);color:#0E0F0C;font-weight:600;}
-
+ 
   /* Service card */
   .card{
     background:var(--surface);
@@ -98,7 +98,7 @@
   .card .date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.04em;}
   .card .label{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:2px 0 12px;}
   .divider{height:1px;background:var(--line);margin:12px 0;}
-
+ 
   .role-row{
     display:flex;align-items:center;justify-content:space-between;
     padding:9px 0;
@@ -114,7 +114,7 @@
   .badge.confirmed{background:rgba(127,191,110,0.18);color:var(--sage);}
   .badge.declined{background:rgba(201,124,124,0.18);color:var(--rose);}
   .badge.pending{background:rgba(224,169,75,0.18);color:var(--amber);}
-
+ 
   .confirm-actions{display:flex;gap:8px;}
   .btn-small{
     border:1px solid var(--line);background:var(--surface-2);color:var(--text);
@@ -122,12 +122,12 @@
   }
   .btn-small.yes:hover{border-color:var(--sage);color:var(--sage);}
   .btn-small.no:hover{border-color:var(--rose);color:var(--rose);}
-
+ 
   .empty{
     text-align:center;color:var(--text-muted);font-size:14px;padding:50px 20px;
   }
   .empty .big{font-family:'Fraunces',serif;font-size:20px;color:var(--text);margin-bottom:6px;}
-
+ 
   /* Forms */
   .btn-main{
     background:var(--accent);color:#0E0F0C;border:none;border-radius:10px;
@@ -154,7 +154,7 @@
     display:flex;justify-content:space-between;align-items:center;
     background:var(--surface-2);border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:13px;
   }
-
+ 
   /* Modal */
   .overlay{
     position:fixed;inset:0;background:rgba(0,0,0,0.55);
@@ -166,7 +166,7 @@
   }
   .modal h2{font-family:'Fraunces',serif;font-size:22px;margin:0 0 6px;}
   .modal p{color:var(--text-muted);font-size:13.5px;margin:0 0 18px;}
-
+ 
   .section-title{
     font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
     letter-spacing:0.1em;color:var(--text-muted);margin:26px 0 12px;
@@ -174,7 +174,7 @@
   .card-header-row{display:flex;justify-content:space-between;align-items:center;}
   .icon-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;}
   .icon-btn:hover{color:var(--rose);}
-
+ 
   .song-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;}
   .song-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);width:16px;flex-shrink:0;}
   .song-title{flex:1;font-weight:500;}
@@ -195,7 +195,7 @@
     text-decoration:none;flex-shrink:0;
   }
   .song-link:hover{background:rgba(92,174,88,0.25);}
-
+ 
   .song-search-wrap{position:relative;flex:1;}
   .song-dropdown{
     position:absolute;top:100%;left:0;right:0;background:var(--surface-2);
@@ -214,7 +214,7 @@
 </head>
 <body>
 <div class="wrap" id="app"></div>
-
+ 
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyCGdyD-x257YV9hXxH8-WgiAm-7yBUE_Ww",
@@ -227,7 +227,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const NAME_STORAGE_KEY = 'coordinacion-alabanza-my-name';
-
+ 
 const STORAGE_SERVICES_KEY = 'services';
 let myName = null;
 let services = [];
@@ -235,6 +235,10 @@ let activeTab = 'mias';
 let showAddForm = false;
 let draftDate = '';
 let draftLabel = '';
+let editingServiceId = null;
+let editDraftDate = '';
+let editDraftLabel = '';
+let editDraftRoles = [];
 let draftRoles = [];
 let draftSongs = [];
 let songFormOpenFor = null;
@@ -243,22 +247,22 @@ let searchTimers = {};
 let youtubeApiKey = null;
 let showApiKeyModal = false;
 let rolesMap = {};
-
+ 
 function loadAll(){
   try{
     myName = localStorage.getItem(NAME_STORAGE_KEY);
   }catch(e){ myName = null; }
-
+ 
   db.collection('shared').doc('services').onSnapshot(doc=>{
     services = doc.exists ? (doc.data().value || []) : [];
     render();
   }, e=>console.error('Error sincronizando servicios:', e));
-
+ 
   db.collection('shared').doc('youtube-api-key').onSnapshot(doc=>{
     youtubeApiKey = doc.exists ? (doc.data().value || null) : null;
     render();
   }, e=>console.error('Error sincronizando la clave de YouTube:', e));
-
+ 
   db.collection('shared').doc('user-roles').onSnapshot(doc=>{
     if(doc.exists){
       rolesMap = doc.data().value || {};
@@ -268,23 +272,23 @@ function loadAll(){
       saveRoles();
     }
   }, e=>console.error('Error sincronizando accesos:', e));
-
+ 
   render();
 }
-
+ 
 function getMyRole(name){
   if(!name) return 'member';
   return rolesMap[name.trim().toLowerCase()] || 'member';
 }
-
+ 
 function roleLabel(r){
   return r==='developer' ? 'Desarrollador' : r==='coordinator' ? 'Coordinador' : 'Miembro';
 }
-
+ 
 function titleCase(str){
   return str.replace(/\S+/g, t=> t.charAt(0).toUpperCase()+t.slice(1).toLowerCase());
 }
-
+ 
 async function saveRoles(){
   try{
     await db.collection('shared').doc('user-roles').set({ value: rolesMap });
@@ -292,7 +296,7 @@ async function saveRoles(){
     console.error('No se pudo guardar los accesos:', e);
   }
 }
-
+ 
 async function submitAccess(){
   const nameEl = document.getElementById('access-name-input');
   const roleEl = document.getElementById('access-role-select');
@@ -303,7 +307,7 @@ async function submitAccess(){
   nameEl.value = '';
   render();
 }
-
+ 
 async function removeRoleEntry(index){
   const entries = Object.entries(rolesMap);
   const entry = entries[index];
@@ -312,7 +316,7 @@ async function removeRoleEntry(index){
   await saveRoles();
   render();
 }
-
+ 
 async function saveApiKey(key){
   youtubeApiKey = key || null;
   try{
@@ -323,14 +327,14 @@ async function saveApiKey(key){
   showApiKeyModal = false;
   render();
 }
-
+ 
 function openApiKeyModal(){ showApiKeyModal = true; render(); }
 function closeApiKeyModal(){ showApiKeyModal = false; render(); }
 function handleApiKeySubmit(){
   const inp = document.getElementById('yt-key-input');
   saveApiKey(inp.value.trim());
 }
-
+ 
 async function saveServices(){
   try{
     await db.collection('shared').doc('services').set({ value: services });
@@ -338,7 +342,7 @@ async function saveServices(){
     console.error('No se pudo guardar los servicios:', e);
   }
 }
-
+ 
 function saveName(name){
   myName = name;
   try{
@@ -348,20 +352,20 @@ function saveName(name){
   }
   render();
 }
-
+ 
 function uid(){ return Math.random().toString(36).slice(2,10); }
-
+ 
 function fmtDate(d){
   const date = new Date(d + 'T00:00:00');
   const opts = { weekday:'long', day:'numeric', month:'long' };
   const s = date.toLocaleDateString('es-ES', opts);
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
-
+ 
 function upcomingSorted(list){
   return [...list].sort((a,b)=> a.date.localeCompare(b.date));
 }
-
+ 
 async function respond(serviceId, roleId, status){
   const svc = services.find(s=>s.id===serviceId);
   const role = svc.roles.find(r=>r.id===roleId);
@@ -369,13 +373,13 @@ async function respond(serviceId, roleId, status){
   await saveServices();
   render();
 }
-
+ 
 async function deleteService(id){
   services = services.filter(s=>s.id!==id);
   await saveServices();
   render();
 }
-
+ 
 function startAddForm(){
   showAddForm = true;
   draftDate = '';
@@ -412,7 +416,7 @@ function updateDraftSong(id, field, value){
   const s = draftSongs.find(x=>x.id===id);
   s[field] = value;
 }
-
+ 
 function handleSongInput(rowId, value){
   if(!rowId.startsWith('inline-')){
     const s = draftSongs.find(x=>x.id===rowId);
@@ -425,7 +429,7 @@ function handleSongInput(rowId, value){
   }
   searchTimers[rowId] = setTimeout(()=>fetchSongResults(rowId, value), 350);
 }
-
+ 
 async function fetchSongResults(rowId, query){
   const dropdown = document.getElementById('song-dropdown-'+rowId);
   if(!youtubeApiKey){
@@ -466,13 +470,13 @@ async function fetchSongResults(rowId, query){
   }
   renderDropdown(rowId);
 }
-
+ 
 function decodeHtml(str){
   const txt = document.createElement('textarea');
   txt.innerHTML = str;
   return txt.value;
 }
-
+ 
 function renderDropdown(rowId){
   const dropdown = document.getElementById('song-dropdown-'+rowId);
   if(!dropdown) return;
@@ -488,7 +492,7 @@ function renderDropdown(rowId){
       </div>
     </div>`).join('');
 }
-
+ 
 function selectSongSuggestion(rowId, index){
   const track = (lastResults[rowId] || [])[index];
   if(!track) return;
@@ -506,12 +510,12 @@ function selectSongSuggestion(rowId, index){
   lastResults[rowId] = [];
   hideDropdown(rowId);
 }
-
+ 
 function hideDropdown(rowId){
   const dropdown = document.getElementById('song-dropdown-'+rowId);
   if(dropdown){ dropdown.style.display = 'none'; dropdown.innerHTML = ''; }
 }
-
+ 
 async function submitNewService(){
   const dateVal = document.getElementById('new-date').value;
   const labelVal = document.getElementById('new-label').value.trim();
@@ -540,12 +544,12 @@ async function submitNewService(){
   activeTab = 'todas';
   render();
 }
-
+ 
 async function toggleSongForm(serviceId){
   songFormOpenFor = songFormOpenFor === serviceId ? null : serviceId;
   render();
 }
-
+ 
 async function addSongToService(serviceId){
   const rowId = 'inline-'+serviceId;
   const titleEl = document.getElementById('song-title-'+rowId);
@@ -564,17 +568,17 @@ async function addSongToService(serviceId){
   songFormOpenFor = null;
   render();
 }
-
+ 
 async function removeSongFromService(serviceId, songId){
   const svc = services.find(s=>s.id===serviceId);
   svc.songs = (svc.songs || []).filter(s=>s.id!==songId);
   await saveServices();
   render();
 }
-
+ 
 function render(){
   const app = document.getElementById('app');
-
+ 
   if(!myName){
     app.innerHTML = `
       <div class="overlay">
@@ -591,26 +595,26 @@ function render(){
     },0);
     return;
   }
-
+ 
   const myRole = getMyRole(myName);
   const mine = services
     .map(s=>({...s, myRole: s.roles.find(r=> r.person.toLowerCase() === myName.toLowerCase())}))
     .filter(s=>s.myRole);
   const mineSorted = upcomingSorted(mine);
   const allSorted = upcomingSorted(services);
-
+ 
   const tabsAvailable = [{ id:'mias', label:'Bandeja de convocatorias' }];
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'todas', label:'Todos los servicios' });
   tabsAvailable.push({ id:'calendario', label:'Calendario' });
   if(myRole==='developer') tabsAvailable.push({ id:'accesos', label:'Accesos' });
   if(!tabsAvailable.find(t=>t.id===activeTab)) activeTab = 'mias';
-
+ 
   let content;
   if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
   else if(activeTab==='calendario') content = renderCalendar(allSorted);
   else if(activeTab==='accesos' && myRole==='developer') content = renderAccess();
   else content = renderMine(mineSorted);
-
+ 
   app.innerHTML = `
     <div class="staff"><div class="mid"></div></div>
     <header>
@@ -625,16 +629,16 @@ function render(){
         <button onclick="changeName()">Cambiar nombre</button>
       </span>
     </div>
-
+ 
     <div class="tabs">
       ${tabsAvailable.map(t=>`<div class="tab ${activeTab===t.id?'active':''}" onclick="setTab('${t.id}')">${t.label}</div>`).join('')}
     </div>
-
+ 
     ${content}
     ${showApiKeyModal ? renderApiKeyModal() : ''}
   `;
 }
-
+ 
 function renderApiKeyModal(){
   return `
     <div class="overlay">
@@ -649,7 +653,7 @@ function renderApiKeyModal(){
       </div>
     </div>`;
 }
-
+ 
 function renderCalendar(list){
   if(list.length===0){
     return `<div class="empty"><div class="big">Sin fechas todavía</div>Cuando se agreguen servicios, aparecerán aquí.</div>`;
@@ -663,7 +667,7 @@ function renderCalendar(list){
     </div>`).join('<div class="divider"></div>');
   return `<div class="card">${rows}</div>`;
 }
-
+ 
 function renderAccess(){
   const entries = Object.entries(rolesMap);
   const rowsHtml = entries.map(([lname, role], i)=>`
@@ -687,7 +691,7 @@ function renderAccess(){
     ${entries.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Nadie más configurado todavía.</div>'}
   `;
 }
-
+ 
 function renderMine(list){
   if(list.length===0){
     return `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
@@ -728,13 +732,15 @@ function renderMine(list){
       </div>`;
   }).join('');
 }
-
+ 
 function renderAll(list){
   const formHtml = showAddForm ? renderAddForm() : `<button class="btn-main" onclick="startAddForm()">+ Agregar servicio</button>`;
   if(list.length===0){
     return formHtml + `<div class="empty"><div class="big">Aún no hay servicios</div>Agrega el primero para empezar a coordinar.</div>`;
   }
   const cards = list.map(s=>{
+    if(editingServiceId === s.id) return renderEditForm(s);
+ 
     const rolesHtml = s.roles.map(r=>{
       const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
         : r.status==='declined' ? '<span class="badge declined">No podrá ir</span>'
@@ -748,7 +754,7 @@ function renderAll(list){
           ${badge}
         </div>`;
     }).join('<div class="divider"></div>');
-
+ 
     const songs = s.songs || [];
     const songsListHtml = songs.map((sg,i)=>`
       <div class="song-row">
@@ -758,7 +764,7 @@ function renderAll(list){
         ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
         <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
       </div>`).join('');
-
+ 
     const songFormHtml = songFormOpenFor === s.id ? `
       <div class="add-song-row" style="align-items:flex-start;">
         <div class="song-search-wrap">
@@ -773,12 +779,15 @@ function renderAll(list){
         <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
         <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
       </div>` : `<button class="link-btn" onclick="toggleSongForm('${s.id}')">+ Agregar canción</button>`;
-
+ 
     return `
       <div class="card">
         <div class="card-header-row">
           <span class="date">${escapeHtml(fmtDate(s.date))}</span>
-          <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
+          <span style="display:flex;gap:10px;">
+            <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
+            <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
+          </span>
         </div>
         <div class="label">${escapeHtml(s.label)}</div>
         ${rolesHtml}
@@ -790,7 +799,86 @@ function renderAll(list){
   }).join('');
   return formHtml + cards;
 }
-
+ 
+function startEditService(serviceId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  editingServiceId = serviceId;
+  editDraftDate = svc.date;
+  editDraftLabel = svc.label;
+  editDraftRoles = svc.roles.map(r=>({ id:r.id, role:r.role, person:r.person }));
+  render();
+}
+ 
+function cancelEditService(){
+  editingServiceId = null;
+  render();
+}
+ 
+function addEditRole(){
+  editDraftRoles.push({ id:uid(), role:'', person:'' });
+  render();
+}
+ 
+function removeEditRole(id){
+  editDraftRoles = editDraftRoles.filter(r=>r.id!==id);
+  render();
+}
+ 
+function updateEditRoleField(id, field, value){
+  const r = editDraftRoles.find(x=>x.id===id);
+  if(r) r[field] = value;
+}
+ 
+function renderEditForm(svc){
+  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
+  const rolesHtml = editDraftRoles.map(r=>`
+    <div class="role-form-row">
+      <input id="edit-role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateEditRoleField('${r.id}','role',this.value)" />
+      <select id="edit-role-person-${r.id}" onchange="updateEditRoleField('${r.id}','person',this.value)">
+        <option value="">Selecciona un miembro</option>
+        ${memberOptions.map(name=>`<option value="${escapeHtml(name)}" ${r.person===name?'selected':''}>${escapeHtml(name)}</option>`).join('')}
+      </select>
+      <button class="remove-role" onclick="removeEditRole('${r.id}')">✕</button>
+    </div>`).join('');
+  return `
+    <div class="card">
+      <label class="field-label">Fecha del servicio</label>
+      <input type="date" id="edit-date" value="${escapeHtml(editDraftDate)}" onchange="editDraftDate=this.value" />
+      <label class="field-label">Nombre del servicio</label>
+      <input id="edit-label" value="${escapeHtml(editDraftLabel)}" onchange="editDraftLabel=this.value" />
+      <label class="field-label">Roles y responsables</label>
+      <div>${rolesHtml}</div>
+      <button class="btn-ghost" onclick="addEditRole()">+ Agregar rol</button>
+      <div style="display:flex;gap:8px;margin-top:16px;">
+        <button class="btn-main" onclick="submitEditService('${svc.id}')">Guardar cambios</button>
+        <button class="btn-small" onclick="cancelEditService()" style="flex:0 0 auto;">Cancelar</button>
+      </div>
+    </div>`;
+}
+ 
+async function submitEditService(serviceId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  if(!editDraftDate || !editDraftLabel.trim()){ alert('Falta la fecha o el nombre del servicio.'); return; }
+  const newRoles = editDraftRoles
+    .map(r=>{
+      const roleVal = (document.getElementById('edit-role-role-'+r.id)?.value || r.role || '').trim();
+      const personVal = (document.getElementById('edit-role-person-'+r.id)?.value || r.person || '').trim();
+      const existing = svc.roles.find(orig=>orig.id===r.id);
+      const samePerson = existing && existing.person.trim().toLowerCase()===personVal.toLowerCase();
+      return { id:r.id, role:roleVal, person:personVal, status: samePerson ? existing.status : 'pending' };
+    })
+    .filter(r=>r.role && r.person);
+  if(newRoles.length===0){ alert('Agrega al menos un rol con su responsable.'); return; }
+  svc.date = editDraftDate;
+  svc.label = editDraftLabel.trim();
+  svc.roles = newRoles;
+  await saveServices();
+  editingServiceId = null;
+  render();
+}
+ 
 function renderAddForm(){
   const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
   const rolesHtml = draftRoles.map(r=>`
@@ -822,40 +910,40 @@ function renderAddForm(){
       <label class="field-label">Roles y responsables</label>
       <div id="roles-container">${rolesHtml}</div>
       <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
-
+ 
       <label class="field-label" style="margin-top:18px;">Repertorio (opcional)</label>
       <div id="songs-container">${songsHtml}</div>
       <button class="btn-ghost" onclick="addDraftSong()">+ Agregar canción</button>
-
+ 
       <div style="display:flex;gap:8px;margin-top:16px;">
         <button class="btn-main" onclick="submitNewService()">Guardar servicio</button>
         <button class="btn-small" onclick="cancelAddForm()" style="flex:0 0 auto;">Cancelar</button>
       </div>
     </div>`;
 }
-
+ 
 function setTab(t){ activeTab = t; render(); }
-
+ 
 function handleNameSubmit(){
   const inp = document.getElementById('name-input');
   const val = inp.value.trim();
   if(!val){ inp.focus(); return; }
   saveName(val);
 }
-
+ 
 function changeName(){
   myName = null;
   render();
 }
-
+ 
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str ?? '';
   return div.innerHTML;
 }
-
+ 
 loadAll();
-
+ 
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('sw.js').catch(e=>console.error('No se pudo registrar el service worker:', e));
