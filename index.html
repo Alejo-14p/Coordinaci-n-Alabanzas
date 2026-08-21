@@ -10,7 +10,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0E0F0C">
+<meta name="theme-color" content="#042224">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,12 +18,12 @@
 <meta name="apple-mobile-web-app-title" content="Alabanza">
 <style>
   :root{
-    --bg: #0E0F0C;
-    --surface: #191A15;
-    --surface-2: #22241A;
-    --accent: #5CAE58;
-    --accent-soft: rgba(92,174,88,0.35);
-    --sage: #7FBF6E;
+    --bg: #042224;
+    --surface: #0C3934;
+    --surface-2: #123F3A;
+    --accent: #98F755;
+    --accent-soft: rgba(152,247,85,0.32);
+    --sage: #7CA890;
     --amber: #E0A94B;
     --rose: #C97C7C;
     --text: #F5EFE0;
@@ -84,7 +84,7 @@
     font-size:13px;font-weight:500;color:var(--text-muted);transition:all .15s;
     user-select:none;
   }
-  .tab.active{background:var(--accent);color:#0E0F0C;font-weight:600;}
+  .tab.active{background:var(--accent);color:#042224;font-weight:600;}
 
   /* Service card */
   .card{
@@ -111,7 +111,7 @@
     font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
     font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;
   }
-  .badge.confirmed{background:rgba(127,191,110,0.18);color:var(--sage);}
+  .badge.confirmed{background:rgba(124,168,144,0.20);color:var(--sage);}
   .badge.declined{background:rgba(201,124,124,0.18);color:var(--rose);}
   .badge.pending{background:rgba(224,169,75,0.18);color:var(--amber);}
 
@@ -130,7 +130,7 @@
 
   /* Forms */
   .btn-main{
-    background:var(--accent);color:#0E0F0C;border:none;border-radius:10px;
+    background:var(--accent);color:#042224;border:none;border-radius:10px;
     padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;width:100%;
     font-family:'IBM Plex Sans',sans-serif;
   }
@@ -191,10 +191,10 @@
   .song-artist{color:var(--text-muted);font-weight:400;font-size:12.5px;}
   .song-link{
     font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--accent);
-    background:rgba(92,174,88,0.14);padding:3px 9px;border-radius:6px;
+    background:rgba(152,247,85,0.14);padding:3px 9px;border-radius:6px;
     text-decoration:none;flex-shrink:0;
   }
-  .song-link:hover{background:rgba(92,174,88,0.25);}
+  .song-link:hover{background:rgba(152,247,85,0.25);}
 
   .song-search-wrap{position:relative;flex:1;}
   .song-dropdown{
@@ -204,7 +204,7 @@
     box-shadow:0 8px 20px rgba(0,0,0,0.35);
   }
   .song-suggestion{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;}
-  .song-suggestion:hover{background:rgba(92,174,88,0.14);}
+  .song-suggestion:hover{background:rgba(152,247,85,0.14);}
   .song-suggestion img{width:32px;height:32px;border-radius:4px;flex-shrink:0;object-fit:cover;}
   .song-suggestion .sinfo{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
   .song-suggestion .stitle{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
