@@ -235,9 +235,11 @@ let activeTab = 'mias';
 let showAddForm = false;
 let draftDate = '';
 let draftLabel = '';
+let draftTime = '';
 let editingServiceId = null;
 let editDraftDate = '';
 let editDraftLabel = '';
+let editDraftTime = '';
 let editDraftRoles = [];
 let draftRoles = [];
 let draftSongs = [];
@@ -422,6 +424,20 @@ function fmtDate(d){
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
  
+function fmtTime(t){
+  if(!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  const period = h>=12 ? 'p. m.' : 'a. m.';
+  let h12 = h % 12;
+  if(h12===0) h12 = 12;
+  return `${h12}:${String(m).padStart(2,'0')} ${period}`;
+}
+ 
+function fmtDateTime(d, t){
+  const base = fmtDate(d);
+  return t ? `${base} · ${fmtTime(t)}` : base;
+}
+ 
 function upcomingSorted(list){
   return [...list].sort((a,b)=> a.date.localeCompare(b.date));
 }
@@ -435,6 +451,9 @@ async function respond(serviceId, roleId, status){
 }
  
 async function deleteService(id){
+  const svc = services.find(s=>s.id===id);
+  const label = svc ? `"${svc.label}" (${fmtDate(svc.date)})` : 'este servicio';
+  if(!confirm(`¿Seguro que quieres eliminar ${label}? Esta acción no se puede deshacer.`)) return;
   services = services.filter(s=>s.id!==id);
   await saveServices();
   render();
@@ -444,6 +463,7 @@ function startAddForm(){
   showAddForm = true;
   draftDate = '';
   draftLabel = '';
+  draftTime = '';
   draftRoles = [{id:uid(), role:'', person:''}];
   draftSongs = [];
   render();
@@ -598,7 +618,7 @@ async function submitNewService(){
       key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
     }))
     .filter(s=>s.title);
-  services.push({ id:uid(), date:dateVal, label:labelVal, roles, songs });
+  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs });
   await saveServices();
   showAddForm = false;
   activeTab = 'todas';
@@ -723,7 +743,7 @@ function renderCalendar(list){
   const rows = list.map(s=>`
     <div class="role-row">
       <div class="role-info">
-        <span class="role-name">${escapeHtml(fmtDate(s.date))}</span>
+        <span class="role-name">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
         <span class="role-person">${escapeHtml(s.label)}</span>
       </div>
     </div>`).join('<div class="divider"></div>');
@@ -806,7 +826,7 @@ function renderMine(list){
     return `
       <div class="card">
         <div class="date-row">
-          <span class="date">${escapeHtml(fmtDate(s.date))}</span>
+          <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
           ${badge}
         </div>
         <div class="label">${escapeHtml(s.label)}</div>
@@ -879,7 +899,7 @@ function renderAll(list){
     return `
       <div class="card">
         <div class="card-header-row">
-          <span class="date">${escapeHtml(fmtDate(s.date))}</span>
+          <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
           <span style="display:flex;gap:10px;">
             <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
             <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
@@ -911,7 +931,7 @@ function renderPendingSummary(list){
   const rows = withPending.map(s=>`
     <div class="role-row">
       <div class="role-info">
-        <span class="role-name">${escapeHtml(fmtDate(s.date))} — ${escapeHtml(s.label)}</span>
+        <span class="role-name">${escapeHtml(fmtDateTime(s.date, s.time))} — ${escapeHtml(s.label)}</span>
         <span class="role-person">Falta: ${s.pendingRoles.map(r=>escapeHtml(r.person)).join(', ')}</span>
       </div>
       <span class="badge pending">${s.pendingRoles.length} de ${s.roles.length}</span>
@@ -928,6 +948,7 @@ function startEditService(serviceId){
   if(!svc) return;
   editingServiceId = serviceId;
   editDraftDate = svc.date;
+  editDraftTime = svc.time || '';
   editDraftLabel = svc.label;
   editDraftRoles = svc.roles.map(r=>({ id:r.id, role:r.role, person:r.person }));
   render();
@@ -968,6 +989,8 @@ function renderEditForm(svc){
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
       <input type="date" id="edit-date" value="${escapeHtml(editDraftDate)}" onchange="editDraftDate=this.value" />
+      <label class="field-label">Hora (opcional)</label>
+      <input type="time" id="edit-time" value="${escapeHtml(editDraftTime)}" onchange="editDraftTime=this.value" />
       <label class="field-label">Nombre del servicio</label>
       <input id="edit-label" value="${escapeHtml(editDraftLabel)}" onchange="editDraftLabel=this.value" />
       <label class="field-label">Roles y responsables</label>
@@ -995,6 +1018,7 @@ async function submitEditService(serviceId){
     .filter(r=>r.role && r.person);
   if(newRoles.length===0){ alert('Agrega al menos un rol con su responsable.'); return; }
   svc.date = editDraftDate;
+  svc.time = editDraftTime;
   svc.label = editDraftLabel.trim();
   svc.roles = newRoles;
   await saveServices();
@@ -1032,6 +1056,8 @@ function renderAddForm(){
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
       <input type="date" id="new-date" value="${escapeHtml(draftDate)}" onchange="draftDate=this.value" />
+      <label class="field-label">Hora (opcional)</label>
+      <input type="time" id="new-time" value="${escapeHtml(draftTime)}" onchange="draftTime=this.value" />
       <label class="field-label">Nombre del servicio</label>
       <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." value="${escapeHtml(draftLabel)}" onchange="draftLabel=this.value" />
       <label class="field-label">Roles y responsables</label>
