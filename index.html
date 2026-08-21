@@ -211,6 +211,23 @@
   .song-suggestion .sartist{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .song-loading{padding:8px 10px;font-size:12.5px;color:var(--text-muted);}
 
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-weekday{text-align:center;font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;padding-bottom:6px;}
+  .cal-cell{
+    position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);
+  }
+  .cal-cell.empty{cursor:default;}
+  .cal-cell:hover:not(.empty){background:var(--surface-2);}
+  .cal-cell.today{box-shadow:inset 0 0 0 1px var(--accent-soft);}
+  .cal-cell.selected{background:var(--accent);color:var(--bg);font-weight:600;}
+  .cal-dot{
+    position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+  }
+  .cal-cell.selected .cal-dot{background:var(--bg);}
+
   @media (max-width: 560px){
     .wrap{ padding:20px 14px 70px; }
     header h1{ font-size:24px; }
@@ -306,6 +323,8 @@ const STORAGE_SERVICES_KEY = 'services';
 let myName = null;
 let services = [];
 let activeTab = 'mias';
+let calendarViewDate = new Date();
+let selectedCalendarDay = null;
 let showAddForm = false;
 let draftDate = '';
 let draftLabel = '';
@@ -837,18 +856,85 @@ function renderApiKeyModal(){
     </div>`;
 }
 
+function prevMonth(){
+  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth()-1, 1);
+  render();
+}
+function nextMonth(){
+  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth()+1, 1);
+  render();
+}
+function selectCalendarDay(dateStr){
+  selectedCalendarDay = selectedCalendarDay === dateStr ? null : dateStr;
+  render();
+}
+
 function renderCalendar(list){
-  if(list.length===0){
-    return `<div class="empty"><div class="big">Sin fechas todavía</div>Cuando se agreguen servicios, aparecerán aquí.</div>`;
+  const year = calendarViewDate.getFullYear();
+  const month = calendarViewDate.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const startWeekday = firstOfMonth.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  let monthLabel = firstOfMonth.toLocaleDateString('es-ES', { month:'long', year:'numeric' });
+  monthLabel = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+  const servicesByDate = {};
+  list.forEach(s=>{
+    if(!servicesByDate[s.date]) servicesByDate[s.date] = [];
+    servicesByDate[s.date].push(s);
+  });
+
+  const todayStr = new Date().toISOString().slice(0,10);
+
+  let cells = '';
+  for(let i=0;i<startWeekday;i++){
+    cells += `<div class="cal-cell empty"></div>`;
   }
-  const rows = list.map(s=>`
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasService = !!servicesByDate[dateStr];
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === selectedCalendarDay;
+    cells += `
+      <div class="cal-cell ${hasService?'has-service':''} ${isToday?'today':''} ${isSelected?'selected':''}" onclick="selectCalendarDay('${dateStr}')">
+        <span class="cal-daynum">${d}</span>
+        ${hasService ? '<span class="cal-dot"></span>' : ''}
+      </div>`;
+  }
+
+  const weekdayHeaders = ['D','L','M','M','J','V','S'].map(w=>`<div class="cal-weekday">${w}</div>`).join('');
+
+  const calendarCard = `
+    <div class="card">
+      <div class="cal-header">
+        <button class="icon-btn" onclick="prevMonth()" title="Mes anterior">‹</button>
+        <span class="section-title" style="margin:0;">${escapeHtml(monthLabel)}</span>
+        <button class="icon-btn" onclick="nextMonth()" title="Mes siguiente">›</button>
+      </div>
+      <div class="cal-grid">${weekdayHeaders}${cells}</div>
+    </div>`;
+
+  if(list.length===0){
+    return calendarCard + `<div class="empty"><div class="big">Sin fechas todavía</div>Cuando se agreguen servicios, aparecerán aquí.</div>`;
+  }
+
+  const relevant = selectedCalendarDay ? (servicesByDate[selectedCalendarDay] || []) : list;
+  const detailRows = relevant.map(s=>`
     <div class="role-row">
       <div class="role-info">
         <span class="role-name">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
         <span class="role-person">${escapeHtml(s.label)}</span>
       </div>
-    </div>`).join('<div class="divider"></div>');
-  return `<div class="card">${rows}</div>`;
+    </div>`).join('<div class="divider"></div>') || `<div class="mini-note">Nada para este día.</div>`;
+
+  const detailTitle = selectedCalendarDay
+    ? `${escapeHtml(fmtDate(selectedCalendarDay))} <button class="link-btn" style="padding:0;margin-left:8px;" onclick="selectCalendarDay('${selectedCalendarDay}')">Ver todos</button>`
+    : 'Todos los próximos servicios';
+
+  return `
+    ${calendarCard}
+    <div class="section-title">${detailTitle}</div>
+    <div class="card">${detailRows}</div>`;
 }
 
 function renderAccess(){
