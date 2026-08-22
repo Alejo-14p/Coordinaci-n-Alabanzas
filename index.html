@@ -212,10 +212,13 @@
   .song-loading{padding:8px 10px;font-size:12.5px;color:var(--text-muted);}
 
   .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-grid{
+    display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
+    max-width:380px;margin:0 auto;
+  }
   .cal-weekday{text-align:center;font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;padding-bottom:6px;}
   .cal-cell{
-    position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    position:relative;height:40px;display:flex;align-items:center;justify-content:center;
     border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);
   }
   .cal-cell.empty{cursor:default;}
@@ -223,7 +226,7 @@
   .cal-cell.today{box-shadow:inset 0 0 0 1px var(--accent-soft);}
   .cal-cell.selected{background:var(--accent);color:var(--bg);font-weight:600;}
   .cal-dot{
-    position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+    position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
     width:5px;height:5px;border-radius:50%;background:var(--accent);
   }
   .cal-cell.selected .cal-dot{background:var(--bg);}
@@ -990,6 +993,66 @@ function renderLibrary(){
   `;
 }
 
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+function escapeICS(str){
+  return String(str).replace(/([,;])/g, '\\$1').replace(/\r?\n/g, '\\n');
+}
+
+function buildICS(svc){
+  const uid = svc.id + '@coordinacion-alabanza';
+  const now = new Date();
+  const dtstamp = `${now.getUTCFullYear()}${pad2(now.getUTCMonth()+1)}${pad2(now.getUTCDate())}T${pad2(now.getUTCHours())}${pad2(now.getUTCMinutes())}${pad2(now.getUTCSeconds())}Z`;
+  const [y, m, d] = svc.date.split('-').map(Number);
+  let dtStartLine, dtEndLine;
+
+  if(svc.time){
+    const [hh, mm] = svc.time.split(':').map(Number);
+    const startStr = `${y}${pad2(m)}${pad2(d)}T${pad2(hh)}${pad2(mm)}00`;
+    const endDate = new Date(y, m-1, d, hh, mm);
+    endDate.setHours(endDate.getHours()+2);
+    const endStr = `${endDate.getFullYear()}${pad2(endDate.getMonth()+1)}${pad2(endDate.getDate())}T${pad2(endDate.getHours())}${pad2(endDate.getMinutes())}00`;
+    dtStartLine = `DTSTART:${startStr}`;
+    dtEndLine = `DTEND:${endStr}`;
+  }else{
+    const nextDay = new Date(y, m-1, d+1);
+    const nextStr = `${nextDay.getFullYear()}${pad2(nextDay.getMonth()+1)}${pad2(nextDay.getDate())}`;
+    dtStartLine = `DTSTART;VALUE=DATE:${y}${pad2(m)}${pad2(d)}`;
+    dtEndLine = `DTEND;VALUE=DATE:${nextStr}`;
+  }
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Coordinacion Alabanza//ES',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${dtstamp}`,
+    dtStartLine,
+    dtEndLine,
+    `SUMMARY:${escapeICS(svc.label || 'Servicio')}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ];
+  return lines.join('\r\n');
+}
+
+function downloadICS(serviceId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  const ics = buildICS(svc);
+  const blob = new Blob([ics], { type:'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+
 function renderMine(list){
   if(list.length===0){
     return `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
@@ -1026,6 +1089,7 @@ function renderMine(list){
           <button class="btn-small yes" onclick="respond('${s.id}','${r.id}','confirmed')">Confirmar</button>
           <button class="btn-small no" onclick="respond('${s.id}','${r.id}','declined')">No podré ir</button>
         </div>
+        <button class="link-btn" style="margin-top:2px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
         ${songsHtml}
       </div>`;
   }).join('');
@@ -1093,6 +1157,7 @@ function renderAll(list){
           </span>
         </div>
         <div class="label">${escapeHtml(s.label)}</div>
+        <button class="link-btn" style="margin-bottom:4px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
         ${rolesHtml}
         <div class="divider"></div>
         <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
