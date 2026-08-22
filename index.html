@@ -345,6 +345,7 @@ let youtubeApiKey = null;
 let showApiKeyModal = false;
 let rolesMap = {};
 let songLibrary = [];
+let songSuggestions = [];
 
 function loadAll(){
   try{
@@ -376,6 +377,58 @@ function loadAll(){
     render();
   }, e=>console.error('Error sincronizando el repertorio guardado:', e));
 
+  db.collection('shared').doc('song-suggestions').onSnapshot(doc=>{
+    songSuggestions = doc.exists ? (doc.data().value || []) : [];
+    render();
+  }, e=>console.error('Error sincronizando las sugerencias:', e));
+
+  render();
+}
+
+async function saveSongSuggestions(){
+  try{
+    await db.collection('shared').doc('song-suggestions').set({ value: songSuggestions });
+  }catch(e){
+    console.error('No se pudo guardar las sugerencias:', e);
+  }
+}
+
+async function submitSuggestion(){
+  const rowId = 'suggestnew';
+  const titleEl = document.getElementById('song-title-'+rowId);
+  const artistEl = document.getElementById('song-artist-'+rowId);
+  const keyEl = document.getElementById('song-key-'+rowId);
+  const linkEl = document.getElementById('song-link-'+rowId);
+  const title = titleEl.value.trim();
+  if(!title){ titleEl.focus(); return; }
+  songSuggestions.push({
+    id: uid(),
+    title,
+    artist: (artistEl?.value || '').trim(),
+    key: (keyEl?.value || '').trim(),
+    link: (linkEl?.value || '').trim(),
+    suggestedBy: myName
+  });
+  await saveSongSuggestions();
+  titleEl.value = '';
+  if(artistEl) artistEl.value = '';
+  if(keyEl) keyEl.value = '';
+  if(linkEl) linkEl.value = '';
+  render();
+}
+
+async function approveSuggestion(id){
+  const sug = songSuggestions.find(s=>s.id===id);
+  if(!sug) return;
+  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link });
+  songSuggestions = songSuggestions.filter(s=>s.id!==id);
+  await saveSongSuggestions();
+  render();
+}
+
+async function rejectSuggestion(id){
+  songSuggestions = songSuggestions.filter(s=>s.id!==id);
+  await saveSongSuggestions();
   render();
 }
 
@@ -806,6 +859,7 @@ function render(){
   const allSorted = upcomingSorted(services);
 
   const tabsAvailable = [{ id:'mias', label:'Bandeja de convocatorias' }];
+  tabsAvailable.push({ id:'sugerencias', label:'Sugerencias' });
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'todas', label:'Todos los servicios' });
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'repertorio', label:'Repertorio' });
   tabsAvailable.push({ id:'calendario', label:'Calendario' });
@@ -815,6 +869,7 @@ function render(){
   let content;
   if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
   else if(activeTab==='repertorio' && (myRole==='coordinator' || myRole==='developer')) content = renderLibrary();
+  else if(activeTab==='sugerencias') content = renderSuggestions(myRole);
   else if(activeTab==='calendario') content = renderCalendar(allSorted);
   else if(activeTab==='accesos' && myRole==='developer') content = renderAccess();
   else content = renderMine(mineSorted);
@@ -989,6 +1044,45 @@ function renderLibrary(){
     </div>
     <div class="section-title">Canciones guardadas</div>
     ${songLibrary.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no has guardado ninguna canción.</div>'}
+  `;
+}
+
+function renderSuggestions(myRole){
+  const rowId = 'suggestnew';
+  const isManager = (myRole==='coordinator' || myRole==='developer');
+
+  const rowsHtml = songSuggestions.map(sg=>{
+    const canRemove = isManager || (sg.suggestedBy && myName && sg.suggestedBy.toLowerCase()===myName.toLowerCase());
+    const actions = isManager
+      ? `<button class="remove-song" style="color:var(--sage);" onclick="approveSuggestion('${sg.id}')" title="Aprobar y guardar en repertorio">✓</button>
+         <button class="remove-song" onclick="rejectSuggestion('${sg.id}')" title="Descartar">✕</button>`
+      : (canRemove ? `<button class="remove-song" onclick="rejectSuggestion('${sg.id}')" title="Quitar mi sugerencia">✕</button>` : '');
+    return `
+      <div class="song-row">
+        <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
+        ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
+        ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
+        ${actions}
+      </div>
+      <div class="mini-note" style="margin:-4px 0 2px;">Sugerida por ${escapeHtml(sg.suggestedBy || 'alguien')}</div>`;
+  }).join('<div class="divider"></div>');
+
+  return `
+    <div class="card">
+      <label class="field-label">Sugerir una canción para un próximo servicio</label>
+      <div class="role-form-row" style="align-items:flex-start;">
+        <div class="song-search-wrap">
+          <input id="song-title-${rowId}" placeholder="Buscar canción..." oninput="handleSongInput('${rowId}', this.value)" onblur="setTimeout(()=>hideDropdown('${rowId}'),150)" />
+          <input type="hidden" id="song-artist-${rowId}" />
+          <input type="hidden" id="song-link-${rowId}" />
+          <div class="song-dropdown" id="song-dropdown-${rowId}" style="display:none;"></div>
+        </div>
+        <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
+      </div>
+      <button class="btn-main" onclick="submitSuggestion()">Enviar sugerencia</button>
+    </div>
+    <div class="section-title">Sugerencias del equipo</div>
+    ${songSuggestions.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no hay sugerencias.</div>'}
   `;
 }
 
