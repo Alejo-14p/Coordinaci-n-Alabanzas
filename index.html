@@ -509,9 +509,19 @@ function pickFromLibrary(rowId, index){
   }
 }
 
+function getAccessRole(entry){
+  if(!entry) return 'member';
+  return typeof entry === 'string' ? entry : (entry.access || 'member');
+}
+
+function getMinistryRole(entry){
+  if(!entry) return '';
+  return typeof entry === 'string' ? '' : (entry.role || '');
+}
+
 function getMyRole(name){
   if(!name) return 'member';
-  return rolesMap[name.trim().toLowerCase()] || 'member';
+  return getAccessRole(rolesMap[name.trim().toLowerCase()]);
 }
 
 function roleLabel(r){
@@ -533,11 +543,13 @@ async function saveRoles(){
 async function submitAccess(){
   const nameEl = document.getElementById('access-name-input');
   const roleEl = document.getElementById('access-role-select');
+  const ministryEl = document.getElementById('access-ministry-input');
   const name = nameEl.value.trim();
   if(!name){ nameEl.focus(); return; }
-  rolesMap[name.toLowerCase()] = roleEl.value;
+  rolesMap[name.toLowerCase()] = { access: roleEl.value, role: (ministryEl?.value || '').trim() };
   await saveRoles();
   nameEl.value = '';
+  if(ministryEl) ministryEl.value = '';
   render();
 }
 
@@ -653,7 +665,16 @@ function removeDraftRole(id){
 }
 function updateDraftRole(id, field, value){
   const r = draftRoles.find(x=>x.id===id);
+  if(!r) return;
   r[field] = value;
+  if(field==='person' && value && !r.role){
+    const ministryRole = getMinistryRole(rolesMap[value.trim().toLowerCase()]);
+    if(ministryRole){
+      r.role = ministryRole;
+      const roleInput = document.getElementById('role-role-'+id);
+      if(roleInput) roleInput.value = ministryRole;
+    }
+  }
 }
 function addDraftSong(){
   draftSongs.push({id:uid(), title:'', key:''});
@@ -835,19 +856,22 @@ function render(){
   const app = document.getElementById('app');
 
   if(!myName){
+    const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
     app.innerHTML = `
       <div class="overlay">
         <div class="modal">
           <h2>¿Quién eres?</h2>
-          <p>Escribe tu nombre para poder confirmar tu participación en los servicios. Solo lo pediremos una vez en este dispositivo.</p>
-          <input id="name-input" placeholder="Tu nombre completo" />
+          <p>Elige tu nombre de la lista para poder confirmar tu participación en los servicios. Solo lo pediremos una vez en este dispositivo.</p>
+          ${memberOptions.length ? `
+            <select id="name-input">
+              <option value="">Selecciona tu nombre</option>
+              ${memberOptions.map(name=>`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('')}
+            </select>
+            <p class="mini-note" style="margin-top:-4px;">¿No apareces en la lista? Pídele al Desarrollador o Coordinador que te agregue primero en Accesos.</p>
+          ` : `<p class="mini-note">Cargando la lista de miembros…</p>`}
           <button class="btn-main" onclick="handleNameSubmit()">Continuar</button>
         </div>
       </div>`;
-    setTimeout(()=>{
-      const inp = document.getElementById('name-input');
-      if(inp){ inp.focus(); inp.addEventListener('keydown', e=>{ if(e.key==='Enter') handleNameSubmit(); }); }
-    },0);
     return;
   }
 
@@ -996,21 +1020,26 @@ function renderCalendar(list){
 
 function renderAccess(){
   const entries = Object.entries(rolesMap);
-  const rowsHtml = entries.map(([lname, role], i)=>`
+  const rowsHtml = entries.map(([lname, entry], i)=>{
+    const ministryRole = getMinistryRole(entry);
+    return `
     <div class="role-chip">
-      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(role)}</span>
+      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(getAccessRole(entry))}${ministryRole ? ` · ${escapeHtml(ministryRole)}` : ''}</span>
       <button class="icon-btn" onclick="removeRoleEntry(${i})">✕</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   return `
     <div class="card">
       <label class="field-label">Asignar acceso</label>
       <input id="access-name-input" placeholder="Nombre completo (igual al que usan para entrar)" />
-      <label class="field-label">Rol</label>
+      <label class="field-label">Rol de acceso</label>
       <select id="access-role-select">
         <option value="member">Miembro</option>
         <option value="coordinator">Coordinador</option>
         <option value="developer">Desarrollador</option>
       </select>
+      <label class="field-label">Rol / instrumento por defecto (opcional)</label>
+      <input id="access-ministry-input" placeholder="Ej. Guitarrista, Coro, Pianista..." />
       <button class="btn-main" onclick="submitAccess()">Guardar acceso</button>
     </div>
     <div class="section-title">Accesos actuales</div>
@@ -1316,7 +1345,16 @@ function removeEditRole(id){
 
 function updateEditRoleField(id, field, value){
   const r = editDraftRoles.find(x=>x.id===id);
-  if(r) r[field] = value;
+  if(!r) return;
+  r[field] = value;
+  if(field==='person' && value && !r.role){
+    const ministryRole = getMinistryRole(rolesMap[value.trim().toLowerCase()]);
+    if(ministryRole){
+      r.role = ministryRole;
+      const roleInput = document.getElementById('edit-role-role-'+id);
+      if(roleInput) roleInput.value = ministryRole;
+    }
+  }
 }
 
 function renderEditForm(svc){
