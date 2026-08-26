@@ -406,7 +406,7 @@ async function submitSuggestion(){
     title,
     artist: (artistEl?.value || '').trim(),
     key: (keyEl?.value || '').trim(),
-    link: (linkEl?.value || '').trim(),
+    link: safeYouTubeUrl(linkEl?.value)
     suggestedBy: myName
   });
   await saveSongSuggestions();
@@ -965,7 +965,7 @@ function renderCalendar(list){
     servicesByDate[s.date].push(s);
   });
 
-  const todayStr = new Date().toISOString().slice(0,10);
+ const todayStr = localTodayISO();
 
   let cells = '';
   for(let i=0;i<startWeekday;i++){
@@ -1053,7 +1053,7 @@ function renderLibrary(){
     <div class="song-row">
       <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
       ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-      ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
+      ${renderSongLink(sg.link)}
       <button class="remove-song" onclick="removeFromLibrary('${sg.id}')">✕</button>
     </div>`).join('<div class="divider"></div>');
 
@@ -1090,7 +1090,7 @@ function renderSuggestions(myRole){
       <div class="song-row">
         <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
         ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-        ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
+        ${renderSongLink(sg.link)}
         ${actions}
       </div>
       <div class="mini-note" style="margin:-4px 0 2px;">Sugerida por ${escapeHtml(sg.suggestedBy || 'alguien')}</div>`;
@@ -1193,7 +1193,7 @@ function renderMine(list){
             <span class="song-num">${i+1}.</span>
             <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
             ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-            ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
+            ${renderSongLink(sg.link)}
           </div>`).join('')}` : '';
     return `
       <div class="card">
@@ -1246,7 +1246,7 @@ function renderAll(list){
         <span class="song-num">${i+1}.</span>
         <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
         ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-        ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
+        ${renderSongLink(sg.link)}
         <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
       </div>`).join('');
 
