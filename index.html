@@ -1041,6 +1041,26 @@ function renderCalendar(list){
     <div class="card">${detailRows}</div>`;
 }
 
+function downloadBackup(){
+  const backup = {
+    exportedAt: new Date().toISOString(),
+    services,
+    rolesMap,
+    songLibrary,
+    songSuggestions
+  };
+  const json = JSON.stringify(backup, null, 2);
+  const blob = new Blob([json], { type:'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `respaldo-alabanza-${localTodayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+
 function renderAccess(){
   const entries = Object.entries(rolesMap);
   const rowsHtml = entries.map(([lname, entry], i)=>{
@@ -1067,6 +1087,11 @@ function renderAccess(){
     </div>
     <div class="section-title">Accesos actuales</div>
     ${entries.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Nadie más configurado todavía.</div>'}
+    <div class="section-title">Respaldo de datos</div>
+    <div class="card">
+      <div class="mini-note" style="margin-top:0;">Descarga una copia de todo (servicios, accesos, repertorio y sugerencias) en un archivo. Guárdala en un lugar seguro por si algo se pierde.</div>
+      <button class="btn-main" style="margin-top:12px;" onclick="downloadBackup()">Descargar respaldo completo</button>
+    </div>
   `;
 }
 
