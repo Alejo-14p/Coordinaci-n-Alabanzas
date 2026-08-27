@@ -385,6 +385,29 @@ function loadAll(){
   render();
 }
 
+function renderSongLink(link){
+  return link ? `<a class="song-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">▶ Video</a>` : '';
+}
+
+function safeYouTubeUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  if(!trimmed) return '';
+  try{
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.replace(/^www\./,'').replace(/^m\./,'');
+    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    const okHost = host === 'youtube.com' || host === 'youtu.be';
+    if(okProtocol && okHost) return trimmed;
+  }catch(e){ /* URL inválida */ }
+  return '';
+}
+
+function localTodayISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 async function saveSongSuggestions(){
   try{
     await db.collection('shared').doc('song-suggestions').set({ value: songSuggestions });
@@ -454,7 +477,7 @@ async function addToLibraryIfNew(song){
     title: song.title,
     artist: song.artist || '',
     key: song.key || '',
-    link: song.link || ''
+    link: safeYouTubeUrl(song.link || '')
   });
   await saveSongLibrary();
 }
@@ -471,7 +494,7 @@ async function addToLibrary(){
     title,
     artist: (artistEl?.value || '').trim(),
     key: (keyEl?.value || '').trim(),
-    link: (linkEl?.value || '').trim()
+    link: safeYouTubeUrl(linkEl?.value)
   };
   const alreadyExists = songLibrary.some(sg=>songsMatch(sg, newSong));
   if(alreadyExists){
@@ -806,7 +829,7 @@ async function submitNewService(){
       id:s.id,
       title:(document.getElementById('song-title-'+s.id)?.value || '').trim(),
       artist:(document.getElementById('song-artist-'+s.id)?.value || '').trim(),
-      link:(document.getElementById('song-link-'+s.id)?.value || '').trim(),
+      link:safeYouTubeUrl(document.getElementById('song-link-'+s.id)?.value),
       key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
     }))
     .filter(s=>s.title);
@@ -835,7 +858,7 @@ async function addSongToService(serviceId){
   if(!title){ titleEl.focus(); return; }
   const key = keyEl.value.trim();
   const artist = (artistEl?.value || '').trim();
-  const link = (linkEl?.value || '').trim();
+  const link = safeYouTubeUrl(linkEl?.value);
   const svc = services.find(s=>s.id===serviceId);
   if(!svc.songs) svc.songs = [];
   svc.songs.push({ id:uid(), title, key, artist, link });
@@ -965,7 +988,7 @@ function renderCalendar(list){
     servicesByDate[s.date].push(s);
   });
 
- const todayStr = localTodayISO();
+  const todayStr = localTodayISO();
 
   let cells = '';
   for(let i=0;i<startWeekday;i++){
@@ -1291,7 +1314,7 @@ function renderAll(list){
 }
 
 function renderPendingSummary(list){
-  const todayStr = new Date().toISOString().slice(0,10);
+  const todayStr = localTodayISO();
   const upcoming = list.filter(s=>s.date >= todayStr);
   const withPending = upcoming
     .map(s=>({ ...s, pendingRoles: s.roles.filter(r=>r.status==='pending') }))
