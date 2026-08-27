@@ -346,6 +346,8 @@ let showApiKeyModal = false;
 let rolesMap = {};
 let songLibrary = [];
 let songSuggestions = [];
+let showPastMine = false;
+let showPastAll = false;
 
 function loadAll(){
   try{
@@ -1223,47 +1225,131 @@ function downloadICS(serviceId){
   setTimeout(()=>URL.revokeObjectURL(url), 1500);
 }
 
-function renderMine(list){
-  if(list.length===0){
-    return `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
-  }
-  return list.map(s=>{
-    const r = s.myRole;
-    const songs = s.songs || [];
-    const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
-      : r.status==='declined' ? '<span class="badge declined">No podré ir</span>'
-      : '<span class="badge pending">Por confirmar</span>';
-    const songsHtml = songs.length ? `
-        <div class="divider"></div>
-        <div class="mini-note" style="margin-bottom:6px;">Repertorio</div>
-        ${songs.map((sg,i)=>`
-          <div class="song-row" style="padding:4px 0;">
-            <span class="song-num">${i+1}.</span>
-            <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-            ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-            ${renderSongLink(sg.link)}
-          </div>`).join('')}` : '';
-    return `
-      <div class="card">
-        <div class="date-row">
-          <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-          ${badge}
+function renderMineCard(s){
+  const r = s.myRole;
+  const songs = s.songs || [];
+  const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
+    : r.status==='declined' ? '<span class="badge declined">No podré ir</span>'
+    : '<span class="badge pending">Por confirmar</span>';
+  const songsHtml = songs.length ? `
+      <div class="divider"></div>
+      <div class="mini-note" style="margin-bottom:6px;">Repertorio</div>
+      ${songs.map((sg,i)=>`
+        <div class="song-row" style="padding:4px 0;">
+          <span class="song-num">${i+1}.</span>
+          <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
+          ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
+          ${renderSongLink(sg.link)}
+        </div>`).join('')}` : '';
+  return `
+    <div class="card">
+      <div class="date-row">
+        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
+        ${badge}
+      </div>
+      <div class="label">${escapeHtml(s.label)}</div>
+      <div class="role-row" style="padding-top:0;">
+        <div class="role-info">
+          <span class="role-name">Tu rol: ${escapeHtml(r.role)}</span>
         </div>
-        <div class="label">${escapeHtml(s.label)}</div>
-        <div class="role-row" style="padding-top:0;">
-          <div class="role-info">
-            <span class="role-name">Tu rol: ${escapeHtml(r.role)}</span>
-          </div>
-        </div>
-        <div class="confirm-actions" style="margin-top:10px;">
-          <button class="btn-small yes" onclick="respond('${s.id}','${r.id}','confirmed')">Confirmar</button>
-          <button class="btn-small no" onclick="respond('${s.id}','${r.id}','declined')">No podré ir</button>
-        </div>
-        <button class="link-btn" style="margin-top:2px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
-        ${songsHtml}
-      </div>`;
-  }).join('');
+      </div>
+      <div class="confirm-actions" style="margin-top:10px;">
+        <button class="btn-small yes" onclick="respond('${s.id}','${r.id}','confirmed')">Confirmar</button>
+        <button class="btn-small no" onclick="respond('${s.id}','${r.id}','declined')">No podré ir</button>
+      </div>
+      <button class="link-btn" style="margin-top:2px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
+      ${songsHtml}
+    </div>`;
 }
+
+function togglePastMine(){ showPastMine = !showPastMine; render(); }
+
+function renderMine(list){
+  const todayStr = localTodayISO();
+  const upcoming = list.filter(s=>s.date >= todayStr);
+  const past = list.filter(s=>s.date < todayStr);
+
+  let html = '';
+  if(upcoming.length===0){
+    html += `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
+  }else{
+    html += upcoming.map(renderMineCard).join('');
+  }
+
+  if(past.length>0){
+    html += `<button class="link-btn" onclick="togglePastMine()">${showPastMine ? 'Ocultar' : 'Ver'} historial (${past.length})</button>`;
+    if(showPastMine) html += past.map(renderMineCard).join('');
+  }
+
+  return html;
+}
+
+function renderAllCard(s){
+  if(editingServiceId === s.id) return renderEditForm(s);
+
+  const rolesHtml = s.roles.map(r=>{
+    const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
+      : r.status==='declined' ? '<span class="badge declined">No podrá ir</span>'
+      : '<span class="badge pending">Por confirmar</span>';
+    return `
+      <div class="role-row">
+        <div class="role-info">
+          <span class="role-name">${escapeHtml(r.role)}</span>
+          <span class="role-person">${escapeHtml(r.person)}</span>
+        </div>
+        ${badge}
+      </div>`;
+  }).join('<div class="divider"></div>');
+
+  const songs = s.songs || [];
+  const songsListHtml = songs.map((sg,i)=>`
+    <div class="song-row">
+      <span class="song-num">${i+1}.</span>
+      <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
+      ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
+      ${renderSongLink(sg.link)}
+      <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
+    </div>`).join('');
+
+  const songFormHtml = songFormOpenFor === s.id ? `
+    ${songLibrary.length ? `<select onchange="pickFromLibrary('inline-${s.id}', this.value)" style="margin-bottom:8px;">
+      <option value="">O elige del repertorio guardado...</option>
+      ${songLibrary.map((sg,i)=>`<option value="${i}">${escapeHtml(sg.title)}${sg.artist ? ' — '+escapeHtml(sg.artist) : ''}</option>`).join('')}
+    </select>` : ''}
+    <div class="add-song-row" style="align-items:flex-start;">
+      <div class="song-search-wrap">
+        <input id="song-title-inline-${s.id}" placeholder="Buscar canción..." oninput="handleSongInput('inline-${s.id}', this.value)" onblur="setTimeout(()=>hideDropdown('inline-${s.id}'),150)" />
+        <input type="hidden" id="song-artist-inline-${s.id}" />
+        <input type="hidden" id="song-link-inline-${s.id}" />
+        <div class="song-dropdown" id="song-dropdown-inline-${s.id}" style="display:none;"></div>
+      </div>
+      <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
+      <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
+    </div>` : `<button class="link-btn" onclick="toggleSongForm('${s.id}')">+ Agregar canción</button>`;
+
+  return `
+    <div class="card">
+      <div class="card-header-row">
+        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
+        <span style="display:flex;gap:10px;">
+          <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
+          <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
+        </span>
+      </div>
+      <div class="label">${escapeHtml(s.label)}</div>
+      <button class="link-btn" style="margin-bottom:4px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
+      ${rolesHtml}
+      <div class="divider"></div>
+      <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
+      ${songsListHtml}
+      ${songFormHtml}
+    </div>`;
+}
+
+function togglePastAll(){ showPastAll = !showPastAll; render(); }
 
 function renderAll(list){
   const summaryHtml = renderPendingSummary(list);
@@ -1271,71 +1357,20 @@ function renderAll(list){
   if(list.length===0){
     return summaryHtml + formHtml + `<div class="empty"><div class="big">Aún no hay servicios</div>Agrega el primero para empezar a coordinar.</div>`;
   }
-  const cards = list.map(s=>{
-    if(editingServiceId === s.id) return renderEditForm(s);
 
-    const rolesHtml = s.roles.map(r=>{
-      const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
-        : r.status==='declined' ? '<span class="badge declined">No podrá ir</span>'
-        : '<span class="badge pending">Por confirmar</span>';
-      return `
-        <div class="role-row">
-          <div class="role-info">
-            <span class="role-name">${escapeHtml(r.role)}</span>
-            <span class="role-person">${escapeHtml(r.person)}</span>
-          </div>
-          ${badge}
-        </div>`;
-    }).join('<div class="divider"></div>');
+  const todayStr = localTodayISO();
+  const upcoming = list.filter(s=>s.date >= todayStr || s.id===editingServiceId);
+  const past = list.filter(s=>s.date < todayStr && s.id!==editingServiceId);
 
-    const songs = s.songs || [];
-    const songsListHtml = songs.map((sg,i)=>`
-      <div class="song-row">
-        <span class="song-num">${i+1}.</span>
-        <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-        ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-        ${renderSongLink(sg.link)}
-        <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
-      </div>`).join('');
+  let cardsHtml = upcoming.length ? upcoming.map(renderAllCard).join('') : `<div class="mini-note">No hay servicios próximos.</div>`;
 
-    const songFormHtml = songFormOpenFor === s.id ? `
-      ${songLibrary.length ? `<select onchange="pickFromLibrary('inline-${s.id}', this.value)" style="margin-bottom:8px;">
-        <option value="">O elige del repertorio guardado...</option>
-        ${songLibrary.map((sg,i)=>`<option value="${i}">${escapeHtml(sg.title)}${sg.artist ? ' — '+escapeHtml(sg.artist) : ''}</option>`).join('')}
-      </select>` : ''}
-      <div class="add-song-row" style="align-items:flex-start;">
-        <div class="song-search-wrap">
-          <input id="song-title-inline-${s.id}" placeholder="Buscar canción..." oninput="handleSongInput('inline-${s.id}', this.value)" onblur="setTimeout(()=>hideDropdown('inline-${s.id}'),150)" />
-          <input type="hidden" id="song-artist-inline-${s.id}" />
-          <input type="hidden" id="song-link-inline-${s.id}" />
-          <div class="song-dropdown" id="song-dropdown-inline-${s.id}" style="display:none;"></div>
-        </div>
-        <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px;">
-        <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
-        <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
-      </div>` : `<button class="link-btn" onclick="toggleSongForm('${s.id}')">+ Agregar canción</button>`;
+  let pastHtml = '';
+  if(past.length>0){
+    pastHtml = `<button class="link-btn" onclick="togglePastAll()">${showPastAll ? 'Ocultar' : 'Ver'} historial (${past.length})</button>`;
+    if(showPastAll) pastHtml += past.map(renderAllCard).join('');
+  }
 
-    return `
-      <div class="card">
-        <div class="card-header-row">
-          <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-          <span style="display:flex;gap:10px;">
-            <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
-            <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
-          </span>
-        </div>
-        <div class="label">${escapeHtml(s.label)}</div>
-        <button class="link-btn" style="margin-bottom:4px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
-        ${rolesHtml}
-        <div class="divider"></div>
-        <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
-        ${songsListHtml}
-        ${songFormHtml}
-      </div>`;
-  }).join('');
-  return summaryHtml + formHtml + cards;
+  return summaryHtml + formHtml + cardsHtml + pastHtml;
 }
 
 function renderPendingSummary(list){
