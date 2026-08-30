@@ -387,8 +387,34 @@ function loadAll(){
   render();
 }
 
-function renderSongLink(link){
-  return link ? `<a class="song-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">▶ Video</a>` : '';
+function safeSpotifyUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  if(!trimmed) return '';
+  try{
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.replace(/^www\./,'');
+    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    const okHost = host === 'open.spotify.com';
+    if(okProtocol && okHost) return trimmed;
+  }catch(e){ /* URL inválida */ }
+  return '';
+}
+
+function spotifySearchUrl(title, artist){
+  const q = artist ? `${title} ${artist}` : title;
+  return 'https://open.spotify.com/search/' + encodeURIComponent(q);
+}
+
+function renderSongLinks(sg){
+  const yt = sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener noreferrer">▶ YouTube</a>` : '';
+  let sp = '';
+  if(sg.spotifyLink){
+    sp = `<a class="song-link" href="${escapeHtml(sg.spotifyLink)}" target="_blank" rel="noopener noreferrer">🎵 Spotify</a>`;
+  }else if(sg.title){
+    sp = `<a class="song-link" href="${escapeHtml(spotifySearchUrl(sg.title, sg.artist))}" target="_blank" rel="noopener noreferrer">🎵 Buscar en Spotify</a>`;
+  }
+  return yt + sp;
 }
 
 function safeYouTubeUrl(url){
@@ -424,6 +450,7 @@ async function submitSuggestion(){
   const artistEl = document.getElementById('song-artist-'+rowId);
   const keyEl = document.getElementById('song-key-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
   songSuggestions.push({
@@ -432,6 +459,7 @@ async function submitSuggestion(){
     artist: (artistEl?.value || '').trim(),
     key: (keyEl?.value || '').trim(),
     link: safeYouTubeUrl(linkEl?.value),
+    spotifyLink: safeSpotifyUrl(spotifyEl?.value),
     suggestedBy: myName
   });
   await saveSongSuggestions();
@@ -439,13 +467,14 @@ async function submitSuggestion(){
   if(artistEl) artistEl.value = '';
   if(keyEl) keyEl.value = '';
   if(linkEl) linkEl.value = '';
+  if(spotifyEl) spotifyEl.value = '';
   render();
 }
 
 async function approveSuggestion(id){
   const sug = songSuggestions.find(s=>s.id===id);
   if(!sug) return;
-  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link });
+  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link, spotifyLink: sug.spotifyLink });
   songSuggestions = songSuggestions.filter(s=>s.id!==id);
   await saveSongSuggestions();
   render();
@@ -479,7 +508,8 @@ async function addToLibraryIfNew(song){
     title: song.title,
     artist: song.artist || '',
     key: song.key || '',
-    link: safeYouTubeUrl(song.link || '')
+    link: safeYouTubeUrl(song.link || ''),
+    spotifyLink: safeSpotifyUrl(song.spotifyLink || '')
   });
   await saveSongLibrary();
 }
@@ -490,13 +520,15 @@ async function addToLibrary(){
   const artistEl = document.getElementById('song-artist-'+rowId);
   const keyEl = document.getElementById('song-key-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
   const newSong = {
     title,
     artist: (artistEl?.value || '').trim(),
     key: (keyEl?.value || '').trim(),
-    link: safeYouTubeUrl(linkEl?.value)
+    link: safeYouTubeUrl(linkEl?.value),
+    spotifyLink: safeSpotifyUrl(spotifyEl?.value)
   };
   const alreadyExists = songLibrary.some(sg=>songsMatch(sg, newSong));
   if(alreadyExists){
@@ -508,6 +540,7 @@ async function addToLibrary(){
   if(artistEl) artistEl.value = '';
   if(keyEl) keyEl.value = '';
   if(linkEl) linkEl.value = '';
+  if(spotifyEl) spotifyEl.value = '';
   render();
 }
 
@@ -524,13 +557,15 @@ function pickFromLibrary(rowId, index){
   const artistEl = document.getElementById('song-artist-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
   const keyEl = document.getElementById('song-key-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
   if(titleEl) titleEl.value = song.title || '';
   if(artistEl) artistEl.value = song.artist || '';
   if(linkEl) linkEl.value = song.link || '';
   if(keyEl) keyEl.value = song.key || '';
+  if(spotifyEl) spotifyEl.value = song.spotifyLink || '';
   if(!rowId.startsWith('inline-')){
     const s = draftSongs.find(x=>x.id===rowId);
-    if(s){ s.title = song.title || ''; s.artist = song.artist || ''; s.link = song.link || ''; s.key = song.key || ''; }
+    if(s){ s.title = song.title || ''; s.artist = song.artist || ''; s.link = song.link || ''; s.key = song.key || ''; s.spotifyLink = song.spotifyLink || ''; }
   }
 }
 
@@ -832,6 +867,7 @@ async function submitNewService(){
       title:(document.getElementById('song-title-'+s.id)?.value || '').trim(),
       artist:(document.getElementById('song-artist-'+s.id)?.value || '').trim(),
       link:safeYouTubeUrl(document.getElementById('song-link-'+s.id)?.value),
+      spotifyLink:safeSpotifyUrl(document.getElementById('song-spotify-'+s.id)?.value),
       key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
     }))
     .filter(s=>s.title);
@@ -856,15 +892,17 @@ async function addSongToService(serviceId){
   const keyEl = document.getElementById('song-key-'+rowId);
   const artistEl = document.getElementById('song-artist-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
   const key = keyEl.value.trim();
   const artist = (artistEl?.value || '').trim();
   const link = safeYouTubeUrl(linkEl?.value);
+  const spotifyLink = safeSpotifyUrl(spotifyEl?.value);
   const svc = services.find(s=>s.id===serviceId);
   if(!svc.songs) svc.songs = [];
-  svc.songs.push({ id:uid(), title, key, artist, link });
-  await addToLibraryIfNew({ title, key, artist, link });
+  svc.songs.push({ id:uid(), title, key, artist, link, spotifyLink });
+  await addToLibraryIfNew({ title, key, artist, link, spotifyLink });
   await saveServices();
   songFormOpenFor = null;
   render();
@@ -1103,7 +1141,7 @@ function renderLibrary(){
     <div class="song-row">
       <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
       ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-      ${renderSongLink(sg.link)}
+      ${renderSongLinks(sg)}
       <button class="remove-song" onclick="removeFromLibrary('${sg.id}')">✕</button>
     </div>`).join('<div class="divider"></div>');
 
@@ -1119,6 +1157,7 @@ function renderLibrary(){
         </div>
         <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
       </div>
+      <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
       <button class="btn-main" onclick="addToLibrary()">Guardar en repertorio</button>
     </div>
     <div class="section-title">Canciones guardadas</div>
@@ -1140,7 +1179,7 @@ function renderSuggestions(myRole){
       <div class="song-row">
         <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
         ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-        ${renderSongLink(sg.link)}
+        ${renderSongLinks(sg)}
         ${actions}
       </div>
       <div class="mini-note" style="margin:-4px 0 2px;">Sugerida por ${escapeHtml(sg.suggestedBy || 'alguien')}</div>`;
@@ -1158,6 +1197,7 @@ function renderSuggestions(myRole){
         </div>
         <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
       </div>
+      <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
       <button class="btn-main" onclick="submitSuggestion()">Enviar sugerencia</button>
     </div>
     <div class="section-title">Sugerencias del equipo</div>
@@ -1239,7 +1279,7 @@ function renderMineCard(s){
           <span class="song-num">${i+1}.</span>
           <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
           ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-          ${renderSongLink(sg.link)}
+          ${renderSongLinks(sg)}
         </div>`).join('')}` : '';
   return `
     <div class="card">
@@ -1307,7 +1347,7 @@ function renderAllCard(s){
       <span class="song-num">${i+1}.</span>
       <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
       ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-      ${renderSongLink(sg.link)}
+      ${renderSongLinks(sg)}
       <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
     </div>`).join('');
 
@@ -1325,6 +1365,7 @@ function renderAllCard(s){
       </div>
       <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
     </div>
+    <input id="song-spotify-inline-${s.id}" placeholder="Link de Spotify (opcional)" />
     <div style="display:flex;gap:8px;margin-top:8px;">
       <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
       <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
@@ -1517,7 +1558,8 @@ function renderAddForm(){
       </div>
       <input id="song-key-${s.id}" placeholder="Tono" value="${escapeHtml(s.key)}" style="max-width:90px;" />
       <button class="remove-role" onclick="removeDraftSong('${s.id}')">✕</button>
-    </div>`).join('');
+    </div>
+    <input id="song-spotify-${s.id}" placeholder="Link de Spotify (opcional)" value="${escapeHtml(s.spotifyLink||'')}" />`).join('');
   return `
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
