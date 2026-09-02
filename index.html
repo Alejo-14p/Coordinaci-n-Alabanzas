@@ -1,1851 +1,254 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Coordinación · Alabanza</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#042224">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alabanza">
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Panel de Coordinación - Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#133535",
+                        "surface-container": "#082323",
+                        "on-primary-fixed": "#0a2000",
+                        "secondary": "#aacdcc",
+                        "secondary-fixed": "#c6e9e9",
+                        "on-primary": "#163800",
+                        "on-surface": "#cce8e7",
+                        "outline-variant": "#404a37",
+                        "error-container": "#93000a",
+                        "on-surface-variant": "#bfcab2",
+                        "on-secondary-fixed": "#002020",
+                        "background": "#001717",
+                        "on-primary-fixed-variant": "#235100",
+                        "surface-container-high": "#142e2e",
+                        "surface-tint": "#7edd3c",
+                        "surface-variant": "#1f3939",
+                        "tertiary-container": "#bcebeb",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#7edd3c",
+                        "surface-container-lowest": "#001111",
+                        "tertiary-fixed-dim": "#a0cfce",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#99fb56",
+                        "on-tertiary-container": "#3e6c6c",
+                        "surface-container-low": "#041f1f",
+                        "on-primary-container": "#357200",
+                        "surface-dim": "#001717",
+                        "error": "#ffb4ab",
+                        "on-background": "#cce8e7",
+                        "on-secondary-fixed-variant": "#2b4c4c",
+                        "secondary-container": "#2b4c4c",
+                        "tertiary-fixed": "#bcebeb",
+                        "inverse-primary": "#316b00",
+                        "outline": "#8a947e",
+                        "on-tertiary-fixed-variant": "#1f4e4e",
+                        "primary": "#ffffff",
+                        "on-tertiary": "#003737",
+                        "on-secondary-container": "#99bcbb",
+                        "primary-fixed": "#99fb56",
+                        "inverse-surface": "#cce8e7",
+                        "surface-bright": "#243d3d",
+                        "surface-container-highest": "#1f3939",
+                        "surface": "#001717",
+                        "on-tertiary-fixed": "#002020",
+                        "secondary-fixed-dim": "#aacdcc",
+                        "tertiary": "#ffffff",
+                        "inverse-on-surface": "#1b3534"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "container-max": "1200px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-lg": ["Epilogue"],
+                        "button": ["Manrope"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-md": ["Manrope"],
+                        "headline-lg-mobile": ["Epilogue"],
+                        "headline-md": ["Epilogue"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "button": ["16px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
 <style>
-  :root{
-    --bg: #042224;
-    --surface: #0C3934;
-    --surface-2: #123F3A;
-    --accent: #98F755;
-    --accent-soft: rgba(152,247,85,0.32);
-    --sage: #7CA890;
-    --amber: #E0A94B;
-    --rose: #C97C7C;
-    --text: #F5EFE0;
-    --text-muted: #B8AFC4;
-    --line: rgba(245,239,224,0.12);
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 80px;}
-
-  /* Header */
-  .staff{height:14px;margin-bottom:18px;position:relative;}
-  .staff::before, .staff::after, .staff .mid{
-    content:"";position:absolute;left:0;right:0;height:1px;background:var(--accent-soft);
-  }
-  .staff::before{top:0;}
-  .staff::after{bottom:0;}
-  .staff .mid{top:50%;}
-  header h1{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:30px;
-    letter-spacing:-0.01em;
-    margin:0 0 2px;
-  }
-  header .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--accent);
-    margin-bottom:6px;
-  }
-  header .sub{color:var(--text-muted);font-size:14px;margin-bottom:22px;}
-  .who{
-    display:flex;align-items:center;justify-content:space-between;
-    font-size:13px;color:var(--text-muted);
-    margin-bottom:22px;
-    padding-bottom:14px;
-    border-bottom:1px solid var(--line);
-  }
-  .who button{
-    background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;
-    font-family:'IBM Plex Sans',sans-serif;text-decoration:underline;padding:0;
-  }
-
-  /* Tabs */
-  .tabs{display:flex;gap:6px;margin-bottom:24px;background:var(--surface);padding:4px;border-radius:10px;}
-  .tab{
-    flex:1;text-align:center;padding:10px 8px;border-radius:8px;cursor:pointer;
-    font-size:13px;font-weight:500;color:var(--text-muted);transition:all .15s;
-    user-select:none;
-  }
-  .tab.active{background:var(--accent);color:#042224;font-weight:600;}
-
-  /* Service card */
-  .card{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:18px 20px;
-    margin-bottom:16px;
-  }
-  .card .date-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
-  .card .date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.04em;}
-  .card .label{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:2px 0 12px;}
-  .divider{height:1px;background:var(--line);margin:12px 0;}
-
-  .role-row{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:9px 0;
-    font-size:14px;
-  }
-  .role-row .role-info{display:flex;flex-direction:column;gap:2px;}
-  .role-name{font-weight:500;}
-  .role-person{color:var(--text-muted);font-size:12.5px;}
-  .badge{
-    font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
-    font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;
-  }
-  .badge.confirmed{background:rgba(124,168,144,0.20);color:var(--sage);}
-  .badge.declined{background:rgba(201,124,124,0.18);color:var(--rose);}
-  .badge.pending{background:rgba(224,169,75,0.18);color:var(--amber);}
-
-  .confirm-actions{display:flex;gap:8px;}
-  .btn-small{
-    border:1px solid var(--line);background:var(--surface-2);color:var(--text);
-    padding:6px 12px;border-radius:8px;font-size:12.5px;cursor:pointer;font-weight:500;
-  }
-  .btn-small.yes:hover{border-color:var(--sage);color:var(--sage);}
-  .btn-small.no:hover{border-color:var(--rose);color:var(--rose);}
-
-  .empty{
-    text-align:center;color:var(--text-muted);font-size:14px;padding:50px 20px;
-  }
-  .empty .big{font-family:'Fraunces',serif;font-size:20px;color:var(--text);margin-bottom:6px;}
-
-  /* Forms */
-  .btn-main{
-    background:var(--accent);color:#042224;border:none;border-radius:10px;
-    padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;width:100%;
-    font-family:'IBM Plex Sans',sans-serif;
-  }
-  .btn-main:hover{filter:brightness(1.08);}
-  .btn-ghost{
-    background:none;border:1px dashed var(--line);color:var(--text-muted);
-    border-radius:10px;padding:12px;width:100%;cursor:pointer;font-size:14px;margin-top:6px;
-  }
-  input, select{
-    width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
-    padding:11px 12px;border-radius:9px;font-size:14px;margin-bottom:10px;
-    font-family:'IBM Plex Sans',sans-serif;
-  }
-  input::placeholder{color:var(--text-muted);}
-  label.field-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;font-family:'IBM Plex Mono',monospace;}
-  .role-form-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-  .role-form-row input{margin-bottom:0;}
-  .remove-role{background:none;border:none;color:var(--rose);cursor:pointer;font-size:18px;padding:0 4px;}
-  .role-list-mini{margin:10px 0;}
-  .role-chip{
-    display:flex;justify-content:space-between;align-items:center;
-    background:var(--surface-2);border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:13px;
-  }
-
-  /* Modal */
-  .overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,0.55);
-    display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;
-  }
-  .modal{
-    background:var(--surface);border:1px solid var(--line);border-radius:16px;
-    padding:26px;max-width:380px;width:100%;
-  }
-  .modal h2{font-family:'Fraunces',serif;font-size:22px;margin:0 0 6px;}
-  .modal p{color:var(--text-muted);font-size:13.5px;margin:0 0 18px;}
-
-  .section-title{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
-    letter-spacing:0.1em;color:var(--text-muted);margin:26px 0 12px;
-  }
-  .card-header-row{display:flex;justify-content:space-between;align-items:center;}
-  .icon-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;}
-  .icon-btn:hover{color:var(--rose);}
-
-  .song-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;}
-  .song-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);width:16px;flex-shrink:0;}
-  .song-title{flex:1;font-weight:500;}
-  .song-key{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-muted);background:var(--surface-2);padding:3px 9px;border-radius:6px;}
-  .remove-song{background:none;border:none;color:var(--rose);cursor:pointer;font-size:15px;padding:0 2px;flex-shrink:0;}
-  .add-song-row{display:flex;gap:8px;align-items:center;margin-top:8px;}
-  .add-song-row input{margin-bottom:0;}
-  .add-song-row .song-key-input{max-width:90px;}
-  .link-btn{
-    background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;
-    font-family:'IBM Plex Sans',sans-serif;padding:6px 0;font-weight:500;
-  }
-  .mini-note{color:var(--text-muted);font-size:12.5px;margin-top:6px;}
-  .song-artist{color:var(--text-muted);font-weight:400;font-size:12.5px;}
-  .song-link{
-    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--accent);
-    background:rgba(152,247,85,0.14);padding:3px 9px;border-radius:6px;
-    text-decoration:none;flex-shrink:0;
-  }
-  .song-link:hover{background:rgba(152,247,85,0.25);}
-
-  .song-search-wrap{position:relative;flex:1;}
-  .song-dropdown{
-    position:absolute;top:100%;left:0;right:0;background:var(--surface-2);
-    border:1px solid var(--line);border-radius:10px;margin-top:4px;
-    max-height:220px;overflow-y:auto;z-index:20;
-    box-shadow:0 8px 20px rgba(0,0,0,0.35);
-  }
-  .song-suggestion{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;}
-  .song-suggestion:hover{background:rgba(152,247,85,0.14);}
-  .song-suggestion img{width:32px;height:32px;border-radius:4px;flex-shrink:0;object-fit:cover;}
-  .song-suggestion .sinfo{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
-  .song-suggestion .stitle{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .song-suggestion .sartist{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .song-loading{padding:8px 10px;font-size:12.5px;color:var(--text-muted);}
-
-  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .cal-grid{
-    display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
-  }
-  .cal-weekday{text-align:center;font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;padding-bottom:6px;}
-  .cal-cell{
-    position:relative;height:40px;display:flex;align-items:center;justify-content:center;
-    border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);
-  }
-  .cal-cell.empty{cursor:default;}
-  .cal-cell:hover:not(.empty){background:var(--surface-2);}
-  .cal-cell.today{box-shadow:inset 0 0 0 1px var(--accent-soft);}
-  .cal-cell.selected{background:var(--accent);color:var(--bg);font-weight:600;}
-  .cal-dot{
-    position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
-    width:5px;height:5px;border-radius:50%;background:var(--accent);
-  }
-  .cal-cell.selected .cal-dot{background:var(--bg);}
-
-  @media (max-width: 560px){
-    .wrap{ padding:20px 14px 70px; }
-    header h1{ font-size:24px; }
-
-    input, select{
-      font-size:16px;
-    }
-
-    .who{
-      flex-direction:column;
-      align-items:flex-start;
-      gap:10px;
-    }
-    .who > span:first-child{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
-    .who > span:last-child{ width:100%; }
-
-    .tabs{
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-      justify-content:flex-start;
-    }
-    .tab{
-      flex:0 0 auto;
-      white-space:nowrap;
-      padding:10px 14px;
-    }
-
-    .role-form-row{
-      flex-wrap:wrap;
-      row-gap:8px;
-    }
-    .role-form-row input,
-    .role-form-row select{
-      flex:1 1 100%;
-      min-width:0;
-    }
-    .role-form-row .remove-role{
-      flex:0 0 auto;
-      margin-left:auto;
-    }
-
-    .add-song-row{
-      flex-wrap:wrap;
-      row-gap:8px;
-    }
-    .add-song-row .song-search-wrap{
-      flex:1 1 100%;
-    }
-    .add-song-row .song-key-input{
-      flex:1 1 100%;
-      max-width:none;
-    }
-
-    .song-row{
-      flex-wrap:wrap;
-      row-gap:6px;
-    }
-    .song-row .song-title{
-      flex:1 1 100%;
-      order:1;
-    }
-    .song-row .song-num{ order:0; }
-    .song-row .song-key,
-    .song-row .song-link{ order:2; }
-    .song-row .remove-song{
-      order:3;
-      margin-left:auto;
-    }
-
-    .confirm-actions{
-      flex-wrap:wrap;
-    }
-  }
-
-  .presenter{
-    position:fixed;inset:0;background:#000;color:#fff;z-index:200;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:60px 40px;text-align:center;
-  }
-  .presenter .slide-label{
-    font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:0.12em;
-    text-transform:uppercase;color:var(--accent);margin-bottom:24px;
-  }
-  .presenter .slide-text{
-    font-family:'Fraunces',serif;font-weight:600;
-    font-size:clamp(26px,4.5vw,52px);line-height:1.45;white-space:pre-wrap;
-    max-width:900px;
-  }
-  .presenter .slide-counter{
-    position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-    font-family:'IBM Plex Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);
-  }
-  .presenter .presenter-close{
-    position:absolute;top:20px;right:24px;background:none;border:none;
-    color:rgba(255,255,255,0.7);font-size:24px;cursor:pointer;
-  }
-  .presenter .presenter-nav{
-    position:absolute;top:50%;transform:translateY(-50%);
-    background:none;border:none;color:rgba(255,255,255,0.4);
-    font-size:40px;cursor:pointer;padding:10px 16px;
-  }
-  .presenter .presenter-nav:hover{color:#fff;}
-  .presenter .presenter-nav.prev{left:10px;}
-  .presenter .presenter-nav.next{right:10px;}
-
-  .lyrics-box{margin:10px 0 14px;}
-  .lyrics-box textarea{
-    width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
-    border-radius:9px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;
-    resize:vertical;min-height:120px;
-  }
-</style>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+        body {
+            background-color: #001717; /* Base background from system */
+            color: #cce8e7; /* on-background */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
 </head>
-<body>
-<div class="wrap" id="app"></div>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCGdyD-x257YV9hXxH8-WgiAm-7yBUE_Ww",
-  authDomain: "coordinacion-de-servicio-fde40.firebaseapp.com",
-  projectId: "coordinacion-de-servicio-fde40",
-  storageBucket: "coordinacion-de-servicio-fde40.firebasestorage.app",
-  messagingSenderId: "564912686128",
-  appId: "1:564912686128:web:d810e6dd51e80cf97599f5"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const NAME_STORAGE_KEY = 'coordinacion-alabanza-my-name';
-
-const STORAGE_SERVICES_KEY = 'services';
-let myName = null;
-let services = [];
-let activeTab = 'mias';
-let calendarViewDate = new Date();
-let selectedCalendarDay = null;
-let showAddForm = false;
-let draftDate = '';
-let draftLabel = '';
-let draftTime = '';
-let editingServiceId = null;
-let editDraftDate = '';
-let editDraftLabel = '';
-let editDraftTime = '';
-let editDraftRoles = [];
-let draftRoles = [];
-let draftSongs = [];
-let songFormOpenFor = null;
-let lastResults = {};
-let searchTimers = {};
-let youtubeApiKey = null;
-let showApiKeyModal = false;
-let rolesMap = {};
-let songLibrary = [];
-let songSuggestions = [];
-let showPastMine = false;
-let showPastAll = false;
-let presentingServiceId = null;
-let presentSlides = [];
-let presentIndex = 0;
-let lyricsEditingSongId = null;
-
-function loadAll(){
-  try{
-    myName = localStorage.getItem(NAME_STORAGE_KEY);
-  }catch(e){ myName = null; }
-
-  db.collection('shared').doc('services').onSnapshot(doc=>{
-    services = doc.exists ? (doc.data().value || []) : [];
-    render();
-  }, e=>console.error('Error sincronizando servicios:', e));
-
-  db.collection('shared').doc('youtube-api-key').onSnapshot(doc=>{
-    youtubeApiKey = doc.exists ? (doc.data().value || null) : null;
-    render();
-  }, e=>console.error('Error sincronizando la clave de YouTube:', e));
-
-  db.collection('shared').doc('user-roles').onSnapshot(doc=>{
-    if(doc.exists){
-      rolesMap = doc.data().value || {};
-      render();
-    }else{
-      rolesMap = { 'diego escobar':'coordinator', 'alejandro pérez':'developer' };
-      saveRoles();
-    }
-  }, e=>console.error('Error sincronizando accesos:', e));
-
-  db.collection('shared').doc('song-library').onSnapshot(doc=>{
-    songLibrary = doc.exists ? (doc.data().value || []) : [];
-    render();
-  }, e=>console.error('Error sincronizando el repertorio guardado:', e));
-
-  db.collection('shared').doc('song-suggestions').onSnapshot(doc=>{
-    songSuggestions = doc.exists ? (doc.data().value || []) : [];
-    render();
-  }, e=>console.error('Error sincronizando las sugerencias:', e));
-
-  render();
-}
-
-function safeSpotifyUrl(url){
-  if(!url) return '';
-  const trimmed = String(url).trim();
-  if(!trimmed) return '';
-  try{
-    const parsed = new URL(trimmed);
-    const host = parsed.hostname.replace(/^www\./,'');
-    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
-    const okHost = host === 'open.spotify.com';
-    if(okProtocol && okHost) return trimmed;
-  }catch(e){ /* URL inválida */ }
-  return '';
-}
-
-function spotifySearchUrl(title, artist){
-  const q = artist ? `${title} ${artist}` : title;
-  return 'https://open.spotify.com/search/' + encodeURIComponent(q);
-}
-
-function safeAppleMusicUrl(url){
-  if(!url) return '';
-  const trimmed = String(url).trim();
-  if(!trimmed) return '';
-  try{
-    const parsed = new URL(trimmed);
-    const host = parsed.hostname.replace(/^www\./,'');
-    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
-    const okHost = host === 'music.apple.com';
-    if(okProtocol && okHost) return trimmed;
-  }catch(e){ /* URL inválida */ }
-  return '';
-}
-
-function appleMusicSearchUrl(title, artist){
-  const q = artist ? `${title} ${artist}` : title;
-  return 'https://music.apple.com/us/search?term=' + encodeURIComponent(q);
-}
-
-function renderSongLinks(sg){
-  const yt = sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener noreferrer">▶ YouTube</a>` : '';
-  let sp = '';
-  if(sg.spotifyLink){
-    sp = `<a class="song-link" href="${escapeHtml(sg.spotifyLink)}" target="_blank" rel="noopener noreferrer">🎵 Spotify</a>`;
-  }else if(sg.title){
-    sp = `<a class="song-link" href="${escapeHtml(spotifySearchUrl(sg.title, sg.artist))}" target="_blank" rel="noopener noreferrer">🎵 Buscar en Spotify</a>`;
-  }
-  let am = '';
-  if(sg.appleMusicLink){
-    am = `<a class="song-link" href="${escapeHtml(sg.appleMusicLink)}" target="_blank" rel="noopener noreferrer">🍎 Apple Music</a>`;
-  }else if(sg.title){
-    am = `<a class="song-link" href="${escapeHtml(appleMusicSearchUrl(sg.title, sg.artist))}" target="_blank" rel="noopener noreferrer">🍎 Buscar en Apple Music</a>`;
-  }
-  return yt + sp + am;
-}
-
-function safeYouTubeUrl(url){
-  if(!url) return '';
-  const trimmed = String(url).trim();
-  if(!trimmed) return '';
-  try{
-    const parsed = new URL(trimmed);
-    const host = parsed.hostname.replace(/^www\./,'').replace(/^m\./,'');
-    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
-    const okHost = host === 'youtube.com' || host === 'youtu.be';
-    if(okProtocol && okHost) return trimmed;
-  }catch(e){ /* URL inválida */ }
-  return '';
-}
-
-function localTodayISO(){
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-async function saveSongSuggestions(){
-  try{
-    await db.collection('shared').doc('song-suggestions').set({ value: songSuggestions });
-  }catch(e){
-    console.error('No se pudo guardar las sugerencias:', e);
-  }
-}
-
-async function submitSuggestion(){
-  const rowId = 'suggestnew';
-  const titleEl = document.getElementById('song-title-'+rowId);
-  const artistEl = document.getElementById('song-artist-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
-  const spotifyEl = document.getElementById('song-spotify-'+rowId);
-  const appleEl = document.getElementById('song-apple-'+rowId);
-  const title = titleEl.value.trim();
-  if(!title){ titleEl.focus(); return; }
-  songSuggestions.push({
-    id: uid(),
-    title,
-    artist: (artistEl?.value || '').trim(),
-    key: (keyEl?.value || '').trim(),
-    link: safeYouTubeUrl(linkEl?.value),
-    spotifyLink: safeSpotifyUrl(spotifyEl?.value),
-    appleMusicLink: safeAppleMusicUrl(appleEl?.value),
-    suggestedBy: myName
-  });
-  await saveSongSuggestions();
-  titleEl.value = '';
-  if(artistEl) artistEl.value = '';
-  if(keyEl) keyEl.value = '';
-  if(linkEl) linkEl.value = '';
-  if(spotifyEl) spotifyEl.value = '';
-  if(appleEl) appleEl.value = '';
-  render();
-}
-
-async function approveSuggestion(id){
-  const sug = songSuggestions.find(s=>s.id===id);
-  if(!sug) return;
-  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link, spotifyLink: sug.spotifyLink, appleMusicLink: sug.appleMusicLink });
-  songSuggestions = songSuggestions.filter(s=>s.id!==id);
-  await saveSongSuggestions();
-  render();
-}
-
-async function rejectSuggestion(id){
-  songSuggestions = songSuggestions.filter(s=>s.id!==id);
-  await saveSongSuggestions();
-  render();
-}
-
-async function saveSongLibrary(){
-  try{
-    await db.collection('shared').doc('song-library').set({ value: songLibrary });
-  }catch(e){
-    console.error('No se pudo guardar el repertorio:', e);
-  }
-}
-
-function songsMatch(a, b){
-  if(a.link && b.link && a.link === b.link) return true;
-  return (a.title||'').trim().toLowerCase() === (b.title||'').trim().toLowerCase();
-}
-
-async function addToLibraryIfNew(song){
-  if(!song.title) return;
-  const exists = songLibrary.some(sg=>songsMatch(sg, song));
-  if(exists) return;
-  songLibrary.push({
-    id: uid(),
-    title: song.title,
-    artist: song.artist || '',
-    key: song.key || '',
-    link: safeYouTubeUrl(song.link || ''),
-    spotifyLink: safeSpotifyUrl(song.spotifyLink || ''),
-    appleMusicLink: safeAppleMusicUrl(song.appleMusicLink || '')
-  });
-  await saveSongLibrary();
-}
-
-async function addToLibrary(){
-  const rowId = 'libnew';
-  const titleEl = document.getElementById('song-title-'+rowId);
-  const artistEl = document.getElementById('song-artist-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
-  const spotifyEl = document.getElementById('song-spotify-'+rowId);
-  const appleEl = document.getElementById('song-apple-'+rowId);
-  const title = titleEl.value.trim();
-  if(!title){ titleEl.focus(); return; }
-  const newSong = {
-    title,
-    artist: (artistEl?.value || '').trim(),
-    key: (keyEl?.value || '').trim(),
-    link: safeYouTubeUrl(linkEl?.value),
-    spotifyLink: safeSpotifyUrl(spotifyEl?.value),
-    appleMusicLink: safeAppleMusicUrl(appleEl?.value)
-  };
-  const alreadyExists = songLibrary.some(sg=>songsMatch(sg, newSong));
-  if(alreadyExists){
-    alert('Esa canción ya está guardada en el repertorio.');
-    return;
-  }
-  await addToLibraryIfNew(newSong);
-  titleEl.value = '';
-  if(artistEl) artistEl.value = '';
-  if(keyEl) keyEl.value = '';
-  if(linkEl) linkEl.value = '';
-  if(spotifyEl) spotifyEl.value = '';
-  if(appleEl) appleEl.value = '';
-  render();
-}
-
-async function removeFromLibrary(id){
-  songLibrary = songLibrary.filter(s=>s.id!==id);
-  await saveSongLibrary();
-  render();
-}
-
-function pickFromLibrary(rowId, index){
-  const song = songLibrary[index];
-  if(!song) return;
-  const titleEl = document.getElementById('song-title-'+rowId);
-  const artistEl = document.getElementById('song-artist-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const spotifyEl = document.getElementById('song-spotify-'+rowId);
-  const appleEl = document.getElementById('song-apple-'+rowId);
-  if(titleEl) titleEl.value = song.title || '';
-  if(artistEl) artistEl.value = song.artist || '';
-  if(linkEl) linkEl.value = song.link || '';
-  if(keyEl) keyEl.value = song.key || '';
-  if(spotifyEl) spotifyEl.value = song.spotifyLink || '';
-  if(appleEl) appleEl.value = song.appleMusicLink || '';
-  if(!rowId.startsWith('inline-')){
-    const s = draftSongs.find(x=>x.id===rowId);
-    if(s){ s.title = song.title || ''; s.artist = song.artist || ''; s.link = song.link || ''; s.key = song.key || ''; s.spotifyLink = song.spotifyLink || ''; s.appleMusicLink = song.appleMusicLink || ''; }
-  }
-}
-
-function getAccessRole(entry){
-  if(!entry) return 'member';
-  return typeof entry === 'string' ? entry : (entry.access || 'member');
-}
-
-function getMinistryRole(entry){
-  if(!entry) return '';
-  return typeof entry === 'string' ? '' : (entry.role || '');
-}
-
-function getMyRole(name){
-  if(!name) return 'member';
-  return getAccessRole(rolesMap[name.trim().toLowerCase()]);
-}
-
-function roleLabel(r){
-  return r==='developer' ? 'Desarrollador' : r==='coordinator' ? 'Coordinador' : 'Miembro';
-}
-
-function titleCase(str){
-  return str.replace(/\S+/g, t=> t.charAt(0).toUpperCase()+t.slice(1).toLowerCase());
-}
-
-async function saveRoles(){
-  try{
-    await db.collection('shared').doc('user-roles').set({ value: rolesMap });
-  }catch(e){
-    console.error('No se pudo guardar los accesos:', e);
-  }
-}
-
-async function submitAccess(){
-  const nameEl = document.getElementById('access-name-input');
-  const roleEl = document.getElementById('access-role-select');
-  const ministryEl = document.getElementById('access-ministry-input');
-  const name = nameEl.value.trim();
-  if(!name){ nameEl.focus(); return; }
-  rolesMap[name.toLowerCase()] = { access: roleEl.value, role: (ministryEl?.value || '').trim() };
-  await saveRoles();
-  nameEl.value = '';
-  if(ministryEl) ministryEl.value = '';
-  render();
-}
-
-async function removeRoleEntry(index){
-  const entries = Object.entries(rolesMap);
-  const entry = entries[index];
-  if(!entry) return;
-  delete rolesMap[entry[0]];
-  await saveRoles();
-  render();
-}
-
-async function saveApiKey(key){
-  youtubeApiKey = key || null;
-  try{
-    await db.collection('shared').doc('youtube-api-key').set({ value: key || '' });
-  }catch(e){
-    console.error('No se pudo guardar la clave de YouTube:', e);
-  }
-  showApiKeyModal = false;
-  render();
-}
-
-function openApiKeyModal(){ showApiKeyModal = true; render(); }
-function closeApiKeyModal(){ showApiKeyModal = false; render(); }
-function handleApiKeySubmit(){
-  const inp = document.getElementById('yt-key-input');
-  saveApiKey(inp.value.trim());
-}
-
-async function saveServices(){
-  try{
-    await db.collection('shared').doc('services').set({ value: services });
-  }catch(e){
-    console.error('No se pudo guardar los servicios:', e);
-  }
-}
-
-function saveName(name){
-  myName = name;
-  try{
-    localStorage.setItem(NAME_STORAGE_KEY, name);
-  }catch(e){
-    console.error('No se pudo guardar el nombre en este dispositivo:', e);
-  }
-  render();
-}
-
-function uid(){ return Math.random().toString(36).slice(2,10); }
-
-function fmtDate(d){
-  const date = new Date(d + 'T00:00:00');
-  const opts = { weekday:'long', day:'numeric', month:'long' };
-  const s = date.toLocaleDateString('es-ES', opts);
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function fmtTime(t){
-  if(!t) return '';
-  const [h, m] = t.split(':').map(Number);
-  const period = h>=12 ? 'p. m.' : 'a. m.';
-  let h12 = h % 12;
-  if(h12===0) h12 = 12;
-  return `${h12}:${String(m).padStart(2,'0')} ${period}`;
-}
-
-function fmtDateTime(d, t){
-  const base = fmtDate(d);
-  return t ? `${base} · ${fmtTime(t)}` : base;
-}
-
-function upcomingSorted(list){
-  return [...list].sort((a,b)=> a.date.localeCompare(b.date));
-}
-
-async function respond(serviceId, roleId, status){
-  const svc = services.find(s=>s.id===serviceId);
-  const role = svc.roles.find(r=>r.id===roleId);
-  role.status = status;
-  await saveServices();
-  render();
-}
-
-async function deleteService(id){
-  const svc = services.find(s=>s.id===id);
-  const label = svc ? `"${svc.label}" (${fmtDate(svc.date)})` : 'este servicio';
-  if(!confirm(`¿Seguro que quieres eliminar ${label}? Esta acción no se puede deshacer.`)) return;
-  services = services.filter(s=>s.id!==id);
-  await saveServices();
-  render();
-}
-
-function startAddForm(){
-  showAddForm = true;
-  draftDate = '';
-  draftLabel = '';
-  draftTime = '';
-  draftRoles = [{id:uid(), role:'', person:''}];
-  draftSongs = [];
-  render();
-}
-function cancelAddForm(){
-  showAddForm = false;
-  render();
-}
-function addDraftRole(){
-  draftRoles.push({id:uid(), role:'', person:''});
-  render();
-}
-function removeDraftRole(id){
-  draftRoles = draftRoles.filter(r=>r.id!==id);
-  render();
-}
-function updateDraftRole(id, field, value){
-  const r = draftRoles.find(x=>x.id===id);
-  if(!r) return;
-  r[field] = value;
-  if(field==='person' && value && !r.role){
-    const ministryRole = getMinistryRole(rolesMap[value.trim().toLowerCase()]);
-    if(ministryRole){
-      r.role = ministryRole;
-      const roleInput = document.getElementById('role-role-'+id);
-      if(roleInput) roleInput.value = ministryRole;
-    }
-  }
-}
-function addDraftSong(){
-  draftSongs.push({id:uid(), title:'', key:''});
-  render();
-}
-function removeDraftSong(id){
-  draftSongs = draftSongs.filter(s=>s.id!==id);
-  render();
-}
-function updateDraftSong(id, field, value){
-  const s = draftSongs.find(x=>x.id===id);
-  s[field] = value;
-}
-
-function handleSongInput(rowId, value){
-  if(!rowId.startsWith('inline-')){
-    const s = draftSongs.find(x=>x.id===rowId);
-    if(s) s.title = value;
-  }
-  clearTimeout(searchTimers[rowId]);
-  if(!value || value.trim().length < 2){
-    hideDropdown(rowId);
-    return;
-  }
-  searchTimers[rowId] = setTimeout(()=>fetchSongResults(rowId, value), 350);
-}
-
-async function fetchSongResults(rowId, query){
-  const dropdown = document.getElementById('song-dropdown-'+rowId);
-  if(!youtubeApiKey){
-    if(dropdown){
-      dropdown.style.display='block';
-      dropdown.innerHTML = '<div class="song-loading">Configura una clave de YouTube para buscar. <button class="link-btn" style="padding:0;display:inline;" onclick="openApiKeyModal()">Configurar</button></div>';
-    }
-    return;
-  }
-  if(dropdown){ dropdown.style.display='block'; dropdown.innerHTML = '<div class="song-loading">Buscando…</div>'; }
-  try{
-    const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=6&q='+encodeURIComponent(query)+'&key='+encodeURIComponent(youtubeApiKey);
-    const res = await fetch(url, { method:'GET', mode:'cors' });
-    if(!res.ok){
-      let msg = 'No se pudo buscar (HTTP '+res.status+').';
-      if(res.status===403) msg = 'La clave de YouTube no es válida o no tiene permisos.';
-      lastResults[rowId] = [];
-      if(dropdown){ dropdown.style.display='block'; dropdown.innerHTML = '<div class="song-loading">'+msg+'</div>'; }
-      return;
-    }
-    const data = await res.json();
-    const items = data.items || [];
-    lastResults[rowId] = items.map(it=>({
-      trackName: decodeHtml(it.snippet?.title || ''),
-      artistName: decodeHtml(it.snippet?.channelTitle || ''),
-      artworkUrl60: (it.snippet?.thumbnails?.default?.url) || '',
-      videoId: it.id?.videoId || ''
-    }));
-    if(lastResults[rowId].length === 0){
-      if(dropdown){ dropdown.style.display='block'; dropdown.innerHTML = '<div class="song-loading">Sin resultados. Puedes escribir el nombre manualmente.</div>'; }
-      return;
-    }
-  }catch(e){
-    console.error('Error buscando en YouTube:', e);
-    lastResults[rowId] = [];
-    if(dropdown){ dropdown.style.display='block'; dropdown.innerHTML = '<div class="song-loading">No se pudo buscar ahora mismo. Escribe el nombre manualmente.</div>'; }
-    return;
-  }
-  renderDropdown(rowId);
-}
-
-function decodeHtml(str){
-  const txt = document.createElement('textarea');
-  txt.innerHTML = str;
-  return txt.value;
-}
-
-function renderDropdown(rowId){
-  const dropdown = document.getElementById('song-dropdown-'+rowId);
-  if(!dropdown) return;
-  const results = lastResults[rowId] || [];
-  if(results.length === 0){ dropdown.style.display = 'none'; dropdown.innerHTML = ''; return; }
-  dropdown.style.display = 'block';
-  dropdown.innerHTML = results.map((r,i)=>`
-    <div class="song-suggestion" onmousedown="selectSongSuggestion('${rowId}', ${i})">
-      ${r.artworkUrl60 ? `<img src="${r.artworkUrl60}" onerror="this.style.display='none'" />` : ''}
-      <div class="sinfo">
-        <span class="stitle">${escapeHtml(r.trackName || '')}</span>
-        <span class="sartist">${escapeHtml(r.artistName || '')}</span>
-      </div>
-    </div>`).join('');
-}
-
-function selectSongSuggestion(rowId, index){
-  const track = (lastResults[rowId] || [])[index];
-  if(!track) return;
-  const titleEl = document.getElementById('song-title-'+rowId);
-  const artistEl = document.getElementById('song-artist-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
-  const link = track.videoId ? ('https://www.youtube.com/watch?v='+track.videoId) : '';
-  if(titleEl) titleEl.value = track.trackName || '';
-  if(artistEl) artistEl.value = track.artistName || '';
-  if(linkEl) linkEl.value = link;
-  if(!rowId.startsWith('inline-')){
-    const s = draftSongs.find(x=>x.id===rowId);
-    if(s){ s.title = track.trackName || ''; s.artist = track.artistName || ''; s.link = link; }
-  }
-  lastResults[rowId] = [];
-  hideDropdown(rowId);
-}
-
-function hideDropdown(rowId){
-  const dropdown = document.getElementById('song-dropdown-'+rowId);
-  if(dropdown){ dropdown.style.display = 'none'; dropdown.innerHTML = ''; }
-}
-
-async function submitNewService(){
-  const dateVal = document.getElementById('new-date').value;
-  const labelVal = document.getElementById('new-label').value.trim();
-  if(!dateVal || !labelVal){ alert('Falta la fecha o el nombre del servicio.'); return; }
-  const roles = draftRoles
-    .map(r=>({
-      id:r.id,
-      role: (document.getElementById('role-role-'+r.id)?.value || '').trim(),
-      person: (document.getElementById('role-person-'+r.id)?.value || '').trim(),
-      status:'pending'
-    }))
-    .filter(r=>r.role && r.person);
-  if(roles.length===0){ alert('Agrega al menos un rol con su responsable.'); return; }
-  const songs = draftSongs
-    .map(s=>({
-      id:s.id,
-      title:(document.getElementById('song-title-'+s.id)?.value || '').trim(),
-      artist:(document.getElementById('song-artist-'+s.id)?.value || '').trim(),
-      link:safeYouTubeUrl(document.getElementById('song-link-'+s.id)?.value),
-      spotifyLink:safeSpotifyUrl(document.getElementById('song-spotify-'+s.id)?.value),
-      appleMusicLink:safeAppleMusicUrl(document.getElementById('song-apple-'+s.id)?.value),
-      key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
-    }))
-    .filter(s=>s.title);
-  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs });
-  for(const sg of songs){
-    await addToLibraryIfNew(sg);
-  }
-  await saveServices();
-  showAddForm = false;
-  activeTab = 'todas';
-  render();
-}
-
-async function toggleSongForm(serviceId){
-  songFormOpenFor = songFormOpenFor === serviceId ? null : serviceId;
-  render();
-}
-
-async function addSongToService(serviceId){
-  const rowId = 'inline-'+serviceId;
-  const titleEl = document.getElementById('song-title-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const artistEl = document.getElementById('song-artist-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
-  const spotifyEl = document.getElementById('song-spotify-'+rowId);
-  const appleEl = document.getElementById('song-apple-'+rowId);
-  const title = titleEl.value.trim();
-  if(!title){ titleEl.focus(); return; }
-  const key = keyEl.value.trim();
-  const artist = (artistEl?.value || '').trim();
-  const link = safeYouTubeUrl(linkEl?.value);
-  const spotifyLink = safeSpotifyUrl(spotifyEl?.value);
-  const appleMusicLink = safeAppleMusicUrl(appleEl?.value);
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc.songs) svc.songs = [];
-  svc.songs.push({ id:uid(), title, key, artist, link, spotifyLink, appleMusicLink });
-  await addToLibraryIfNew({ title, key, artist, link, spotifyLink, appleMusicLink });
-  await saveServices();
-  songFormOpenFor = null;
-  render();
-}
-
-async function removeSongFromService(serviceId, songId){
-  const svc = services.find(s=>s.id===serviceId);
-  svc.songs = (svc.songs || []).filter(s=>s.id!==songId);
-  await saveServices();
-  render();
-}
-
-function startEditLyrics(songId){
-  lyricsEditingSongId = songId;
-  render();
-}
-
-function cancelEditLyrics(){
-  lyricsEditingSongId = null;
-  render();
-}
-
-async function saveLyrics(serviceId, songId){
-  const ta = document.getElementById('lyrics-textarea-'+songId);
-  if(!ta) return;
-  const text = ta.value;
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc) return;
-  const sg = svc.songs.find(x=>x.id===songId);
-  if(!sg) return;
-  sg.lyrics = text;
-  await saveServices();
-  const libEntry = songLibrary.find(l=>songsMatch(l, sg));
-  if(libEntry){
-    libEntry.lyrics = text;
-    await saveSongLibrary();
-  }
-  lyricsEditingSongId = null;
-  render();
-}
-
-function splitLyrics(text){
-  return (text||'').split(/\n\s*-{3,}\s*\n/).map(t=>t.trim()).filter(Boolean);
-}
-
-function buildSlidesForService(svc){
-  const slides = [];
-  (svc.songs||[]).forEach(sg=>{
-    slides.push({ type:'title', text: sg.title || 'Canción' });
-    splitLyrics(sg.lyrics).forEach(chunk=>{
-      slides.push({ type:'lyric', text: chunk });
-    });
-  });
-  return slides;
-}
-
-function startPresent(serviceId){
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc) return;
-  presentSlides = buildSlidesForService(svc);
-  if(presentSlides.length===0){
-    alert('Este servicio todavía no tiene canciones en el repertorio.');
-    return;
-  }
-  presentIndex = 0;
-  presentingServiceId = serviceId;
-  render();
-}
-
-function stopPresent(){
-  presentingServiceId = null;
-  render();
-}
-
-function nextSlide(){
-  if(presentIndex < presentSlides.length-1){
-    presentIndex++;
-    render();
-  }
-}
-
-function prevSlide(){
-  if(presentIndex > 0){
-    presentIndex--;
-    render();
-  }
-}
-
-window.addEventListener('keydown', (e)=>{
-  if(!presentingServiceId) return;
-  if(e.key==='ArrowRight' || e.key===' '){ e.preventDefault(); nextSlide(); }
-  else if(e.key==='ArrowLeft'){ prevSlide(); }
-  else if(e.key==='Escape'){ stopPresent(); }
-});
-
-function downloadPptxForService(serviceId){
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc) return;
-  if(typeof PptxGenJS === 'undefined'){
-    alert('No se pudo cargar el generador de PowerPoint. Revisa tu conexión e intenta de nuevo.');
-    return;
-  }
-  const pptx = new PptxGenJS();
-  pptx.defineLayout({ name:'WIDE', width:13.33, height:7.5 });
-  pptx.layout = 'WIDE';
-  let hasContent = false;
-  (svc.songs||[]).forEach(sg=>{
-    hasContent = true;
-    const titleSlide = pptx.addSlide();
-    titleSlide.background = { color:'042224' };
-    titleSlide.addText(sg.title || 'Canción', {
-      x:0.5, y:3, w:12.33, h:1.5, align:'center', fontSize:44, bold:true, color:'98F755', fontFace:'Georgia'
-    });
-    splitLyrics(sg.lyrics).forEach(chunk=>{
-      const slide = pptx.addSlide();
-      slide.background = { color:'042224' };
-      slide.addText(chunk, {
-        x:0.5, y:0.5, w:12.33, h:6.5, align:'center', valign:'middle',
-        fontSize:32, color:'FFFFFF', fontFace:'Georgia', wrap:true
-      });
-    });
-  });
-  if(!hasContent){
-    alert('Este servicio todavía no tiene canciones en el repertorio.');
-    return;
-  }
-  pptx.writeFile({ fileName: `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-diapositivas.pptx` });
-}
-
-function render(){
-  const app = document.getElementById('app');
-
-  if(presentingServiceId){
-    const slide = presentSlides[presentIndex];
-    app.innerHTML = `
-      <div class="presenter">
-        <button class="presenter-close" onclick="stopPresent()" title="Cerrar (Esc)">✕</button>
-        ${presentIndex>0 ? `<button class="presenter-nav prev" onclick="prevSlide()">‹</button>` : ''}
-        ${presentIndex < presentSlides.length-1 ? `<button class="presenter-nav next" onclick="nextSlide()">›</button>` : ''}
-        ${slide.type==='title' ? `<div class="slide-label">Siguiente canción</div>` : ''}
-        <div class="slide-text">${escapeHtml(slide.text)}</div>
-        <div class="slide-counter">${presentIndex+1} / ${presentSlides.length}</div>
-      </div>`;
-    return;
-  }
-
-  if(!myName){
-    const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
-    app.innerHTML = `
-      <div class="overlay">
-        <div class="modal">
-          <h2>¿Quién eres?</h2>
-          <p>Elige tu nombre de la lista para poder confirmar tu participación en los servicios. Solo lo pediremos una vez en este dispositivo.</p>
-          ${memberOptions.length ? `
-            <select id="name-input">
-              <option value="">Selecciona tu nombre</option>
-              ${memberOptions.map(name=>`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('')}
-            </select>
-            <p class="mini-note" style="margin-top:-4px;">¿No apareces en la lista? Pídele al Desarrollador o Coordinador que te agregue primero en Accesos.</p>
-          ` : `<p class="mini-note">Cargando la lista de miembros…</p>`}
-          <button class="btn-main" onclick="handleNameSubmit()">Continuar</button>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const myRole = getMyRole(myName);
-  const mine = services
-    .map(s=>({...s, myRole: s.roles.find(r=> r.person.toLowerCase() === myName.toLowerCase())}))
-    .filter(s=>s.myRole);
-  const mineSorted = upcomingSorted(mine);
-  const allSorted = upcomingSorted(services);
-
-  const tabsAvailable = [{ id:'mias', label:'Bandeja de convocatorias' }];
-  tabsAvailable.push({ id:'sugerencias', label:'Sugerencias' });
-  if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'todas', label:'Todos los servicios' });
-  if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'repertorio', label:'Repertorio' });
-  tabsAvailable.push({ id:'calendario', label:'Calendario' });
-  if(myRole==='developer') tabsAvailable.push({ id:'accesos', label:'Accesos' });
-  if(!tabsAvailable.find(t=>t.id===activeTab)) activeTab = 'mias';
-
-  let content;
-  if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
-  else if(activeTab==='repertorio' && (myRole==='coordinator' || myRole==='developer')) content = renderLibrary();
-  else if(activeTab==='sugerencias') content = renderSuggestions(myRole);
-  else if(activeTab==='calendario') content = renderCalendar(allSorted);
-  else if(activeTab==='accesos' && myRole==='developer') content = renderAccess();
-  else content = renderMine(mineSorted);
-
-  app.innerHTML = `
-    <div class="staff"><div class="mid"></div></div>
-    <header>
-      <div class="eyebrow">Ministerio de alabanza</div>
-      <h1>Coordinación de servicios</h1>
-      <div class="sub">Organiza quién participa en cada servicio y confirma tu lugar.</div>
-    </header>
-    <div class="who">
-      <span>Conectado como <strong style="color:var(--text)">${escapeHtml(myName)}</strong> <span class="song-key" style="margin-left:4px;">${roleLabel(myRole)}</span></span>
-      <span style="display:flex;gap:14px;">
-        ${(myRole==='coordinator' || myRole==='developer') ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
-        <button onclick="changeName()">Cambiar nombre</button>
-      </span>
-    </div>
-
-    <div class="tabs">
-      ${tabsAvailable.map(t=>`<div class="tab ${activeTab===t.id?'active':''}" onclick="setTab('${t.id}')">${t.label}</div>`).join('')}
-    </div>
-
-    ${content}
-    ${showApiKeyModal ? renderApiKeyModal() : ''}
-  `;
-}
-
-function renderApiKeyModal(){
-  return `
-    <div class="overlay">
-      <div class="modal">
-        <h2>Clave de YouTube</h2>
-        <p>Pega aquí tu clave de API de YouTube Data v3. Se guarda compartida para que todo el equipo pueda buscar canciones.</p>
-        <input id="yt-key-input" placeholder="Tu clave de API" value="${escapeHtml(youtubeApiKey||'')}" />
-        <div style="display:flex;gap:8px;">
-          <button class="btn-main" onclick="handleApiKeySubmit()">Guardar</button>
-          <button class="btn-small" onclick="closeApiKeyModal()">Cancelar</button>
-        </div>
-      </div>
-    </div>`;
-}
-
-function prevMonth(){
-  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth()-1, 1);
-  render();
-}
-function nextMonth(){
-  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth()+1, 1);
-  render();
-}
-function selectCalendarDay(dateStr){
-  selectedCalendarDay = selectedCalendarDay === dateStr ? null : dateStr;
-  render();
-}
-
-function renderCalendar(list){
-  const year = calendarViewDate.getFullYear();
-  const month = calendarViewDate.getMonth();
-  const firstOfMonth = new Date(year, month, 1);
-  const startWeekday = firstOfMonth.getDay();
-  const daysInMonth = new Date(year, month+1, 0).getDate();
-  let monthLabel = firstOfMonth.toLocaleDateString('es-ES', { month:'long', year:'numeric' });
-  monthLabel = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
-
-  const servicesByDate = {};
-  list.forEach(s=>{
-    if(!servicesByDate[s.date]) servicesByDate[s.date] = [];
-    servicesByDate[s.date].push(s);
-  });
-
-  const todayStr = localTodayISO();
-
-  let cells = '';
-  for(let i=0;i<startWeekday;i++){
-    cells += `<div class="cal-cell empty"></div>`;
-  }
-  for(let d=1; d<=daysInMonth; d++){
-    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const hasService = !!servicesByDate[dateStr];
-    const isToday = dateStr === todayStr;
-    const isSelected = dateStr === selectedCalendarDay;
-    cells += `
-      <div class="cal-cell ${hasService?'has-service':''} ${isToday?'today':''} ${isSelected?'selected':''}" onclick="selectCalendarDay('${dateStr}')">
-        <span class="cal-daynum">${d}</span>
-        ${hasService ? '<span class="cal-dot"></span>' : ''}
-      </div>`;
-  }
-
-  const weekdayHeaders = ['D','L','M','M','J','V','S'].map(w=>`<div class="cal-weekday">${w}</div>`).join('');
-
-  const calendarCard = `
-    <div class="card">
-      <div class="cal-header">
-        <button class="icon-btn" onclick="prevMonth()" title="Mes anterior">‹</button>
-        <span class="section-title" style="margin:0;">${escapeHtml(monthLabel)}</span>
-        <button class="icon-btn" onclick="nextMonth()" title="Mes siguiente">›</button>
-      </div>
-      <div class="cal-grid">${weekdayHeaders}${cells}</div>
-    </div>`;
-
-  if(list.length===0){
-    return calendarCard + `<div class="empty"><div class="big">Sin fechas todavía</div>Cuando se agreguen servicios, aparecerán aquí.</div>`;
-  }
-
-  const relevant = selectedCalendarDay ? (servicesByDate[selectedCalendarDay] || []) : list;
-  const detailRows = relevant.map(s=>`
-    <div class="role-row">
-      <div class="role-info">
-        <span class="role-name">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-        <span class="role-person">${escapeHtml(s.label)}</span>
-      </div>
-    </div>`).join('<div class="divider"></div>') || `<div class="mini-note">Nada para este día.</div>`;
-
-  const detailTitle = selectedCalendarDay
-    ? `${escapeHtml(fmtDate(selectedCalendarDay))} <button class="link-btn" style="padding:0;margin-left:8px;" onclick="selectCalendarDay('${selectedCalendarDay}')">Ver todos</button>`
-    : 'Todos los próximos servicios';
-
-  return `
-    ${calendarCard}
-    <div class="section-title">${detailTitle}</div>
-    <div class="card">${detailRows}</div>`;
-}
-
-function downloadBackup(){
-  const backup = {
-    exportedAt: new Date().toISOString(),
-    services,
-    rolesMap,
-    songLibrary,
-    songSuggestions
-  };
-  const json = JSON.stringify(backup, null, 2);
-  const blob = new Blob([json], { type:'application/json;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `respaldo-alabanza-${localTodayISO()}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url), 1500);
-}
-
-function renderAccess(){
-  const entries = Object.entries(rolesMap);
-  const rowsHtml = entries.map(([lname, entry], i)=>{
-    const ministryRole = getMinistryRole(entry);
-    return `
-    <div class="role-chip">
-      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(getAccessRole(entry))}${ministryRole ? ` · ${escapeHtml(ministryRole)}` : ''}</span>
-      <button class="icon-btn" onclick="removeRoleEntry(${i})">✕</button>
-    </div>`;
-  }).join('');
-  return `
-    <div class="card">
-      <label class="field-label">Asignar acceso</label>
-      <input id="access-name-input" placeholder="Nombre completo (igual al que usan para entrar)" />
-      <label class="field-label">Rol de acceso</label>
-      <select id="access-role-select">
-        <option value="member">Miembro</option>
-        <option value="coordinator">Coordinador</option>
-        <option value="developer">Desarrollador</option>
-      </select>
-      <label class="field-label">Rol / instrumento por defecto (opcional)</label>
-      <input id="access-ministry-input" placeholder="Ej. Guitarrista, Coro, Pianista..." />
-      <button class="btn-main" onclick="submitAccess()">Guardar acceso</button>
-    </div>
-    <div class="section-title">Accesos actuales</div>
-    ${entries.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Nadie más configurado todavía.</div>'}
-    <div class="section-title">Respaldo de datos</div>
-    <div class="card">
-      <div class="mini-note" style="margin-top:0;">Descarga una copia de todo (servicios, accesos, repertorio y sugerencias) en un archivo. Guárdala en un lugar seguro por si algo se pierde.</div>
-      <button class="btn-main" style="margin-top:12px;" onclick="downloadBackup()">Descargar respaldo completo</button>
-    </div>
-  `;
-}
-
-function renderLibrary(){
-  const rowId = 'libnew';
-  const rowsHtml = songLibrary.map(sg=>`
-    <div class="song-row">
-      <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-      ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-      ${renderSongLinks(sg)}
-      <button class="remove-song" onclick="removeFromLibrary('${sg.id}')">✕</button>
-    </div>`).join('<div class="divider"></div>');
-
-  return `
-    <div class="card">
-      <label class="field-label">Agregar canción al repertorio guardado</label>
-      <div class="role-form-row" style="align-items:flex-start;">
-        <div class="song-search-wrap">
-          <input id="song-title-${rowId}" placeholder="Buscar canción..." oninput="handleSongInput('${rowId}', this.value)" onblur="setTimeout(()=>hideDropdown('${rowId}'),150)" />
-          <input type="hidden" id="song-artist-${rowId}" />
-          <input type="hidden" id="song-link-${rowId}" />
-          <div class="song-dropdown" id="song-dropdown-${rowId}" style="display:none;"></div>
-        </div>
-        <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
-      </div>
-      <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
-      <input id="song-apple-${rowId}" placeholder="Link de Apple Music (opcional)" />
-      <button class="btn-main" onclick="addToLibrary()">Guardar en repertorio</button>
-    </div>
-    <div class="section-title">Canciones guardadas</div>
-    ${songLibrary.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no has guardado ninguna canción.</div>'}
-  `;
-}
-
-function renderSuggestions(myRole){
-  const rowId = 'suggestnew';
-  const isManager = (myRole==='coordinator' || myRole==='developer');
-
-  const rowsHtml = songSuggestions.map(sg=>{
-    const canRemove = isManager || (sg.suggestedBy && myName && sg.suggestedBy.toLowerCase()===myName.toLowerCase());
-    const actions = isManager
-      ? `<button class="remove-song" style="color:var(--sage);" onclick="approveSuggestion('${sg.id}')" title="Aprobar y guardar en repertorio">✓</button>
-         <button class="remove-song" onclick="rejectSuggestion('${sg.id}')" title="Descartar">✕</button>`
-      : (canRemove ? `<button class="remove-song" onclick="rejectSuggestion('${sg.id}')" title="Quitar mi sugerencia">✕</button>` : '');
-    return `
-      <div class="song-row">
-        <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-        ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-        ${renderSongLinks(sg)}
-        ${actions}
-      </div>
-      <div class="mini-note" style="margin:-4px 0 2px;">Sugerida por ${escapeHtml(sg.suggestedBy || 'alguien')}</div>`;
-  }).join('<div class="divider"></div>');
-
-  return `
-    <div class="card">
-      <label class="field-label">Sugerir una canción para un próximo servicio</label>
-      <div class="role-form-row" style="align-items:flex-start;">
-        <div class="song-search-wrap">
-          <input id="song-title-${rowId}" placeholder="Buscar canción..." oninput="handleSongInput('${rowId}', this.value)" onblur="setTimeout(()=>hideDropdown('${rowId}'),150)" />
-          <input type="hidden" id="song-artist-${rowId}" />
-          <input type="hidden" id="song-link-${rowId}" />
-          <div class="song-dropdown" id="song-dropdown-${rowId}" style="display:none;"></div>
-        </div>
-        <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
-      </div>
-      <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
-      <input id="song-apple-${rowId}" placeholder="Link de Apple Music (opcional)" />
-      <button class="btn-main" onclick="submitSuggestion()">Enviar sugerencia</button>
-    </div>
-    <div class="section-title">Sugerencias del equipo</div>
-    ${songSuggestions.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no hay sugerencias.</div>'}
-  `;
-}
-
-function pad2(n){ return String(n).padStart(2,'0'); }
-
-function escapeICS(str){
-  return String(str).replace(/([,;])/g, '\\$1').replace(/\r?\n/g, '\\n');
-}
-
-function buildICS(svc){
-  const uid = svc.id + '@coordinacion-alabanza';
-  const now = new Date();
-  const dtstamp = `${now.getUTCFullYear()}${pad2(now.getUTCMonth()+1)}${pad2(now.getUTCDate())}T${pad2(now.getUTCHours())}${pad2(now.getUTCMinutes())}${pad2(now.getUTCSeconds())}Z`;
-  const [y, m, d] = svc.date.split('-').map(Number);
-  let dtStartLine, dtEndLine;
-
-  if(svc.time){
-    const [hh, mm] = svc.time.split(':').map(Number);
-    const startStr = `${y}${pad2(m)}${pad2(d)}T${pad2(hh)}${pad2(mm)}00`;
-    const endDate = new Date(y, m-1, d, hh, mm);
-    endDate.setHours(endDate.getHours()+2);
-    const endStr = `${endDate.getFullYear()}${pad2(endDate.getMonth()+1)}${pad2(endDate.getDate())}T${pad2(endDate.getHours())}${pad2(endDate.getMinutes())}00`;
-    dtStartLine = `DTSTART:${startStr}`;
-    dtEndLine = `DTEND:${endStr}`;
-  }else{
-    const nextDay = new Date(y, m-1, d+1);
-    const nextStr = `${nextDay.getFullYear()}${pad2(nextDay.getMonth()+1)}${pad2(nextDay.getDate())}`;
-    dtStartLine = `DTSTART;VALUE=DATE:${y}${pad2(m)}${pad2(d)}`;
-    dtEndLine = `DTEND;VALUE=DATE:${nextStr}`;
-  }
-
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Coordinacion Alabanza//ES',
-    'CALSCALE:GREGORIAN',
-    'BEGIN:VEVENT',
-    `UID:${uid}`,
-    `DTSTAMP:${dtstamp}`,
-    dtStartLine,
-    dtEndLine,
-    `SUMMARY:${escapeICS(svc.label || 'Servicio')}`,
-    'END:VEVENT',
-    'END:VCALENDAR'
-  ];
-  return lines.join('\r\n');
-}
-
-function downloadICS(serviceId){
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc) return;
-  const ics = buildICS(svc);
-  const blob = new Blob([ics], { type:'text/calendar;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}.ics`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url), 1500);
-}
-
-function renderMineCard(s){
-  const r = s.myRole;
-  const songs = s.songs || [];
-  const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
-    : r.status==='declined' ? '<span class="badge declined">No podré ir</span>'
-    : '<span class="badge pending">Por confirmar</span>';
-  const songsHtml = songs.length ? `
-      <div class="divider"></div>
-      <div class="mini-note" style="margin-bottom:6px;">Repertorio</div>
-      ${songs.map((sg,i)=>`
-        <div class="song-row" style="padding:4px 0;">
-          <span class="song-num">${i+1}.</span>
-          <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-          ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-          ${renderSongLinks(sg)}
-        </div>`).join('')}` : '';
-  return `
-    <div class="card">
-      <div class="date-row">
-        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-        ${badge}
-      </div>
-      <div class="label">${escapeHtml(s.label)}</div>
-      <div class="role-row" style="padding-top:0;">
-        <div class="role-info">
-          <span class="role-name">Tu rol: ${escapeHtml(r.role)}</span>
-        </div>
-      </div>
-      <div class="confirm-actions" style="margin-top:10px;">
-        <button class="btn-small yes" onclick="respond('${s.id}','${r.id}','confirmed')">Confirmar</button>
-        <button class="btn-small no" onclick="respond('${s.id}','${r.id}','declined')">No podré ir</button>
-      </div>
-      <button class="link-btn" style="margin-top:2px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
-      ${songs.length ? `<button class="link-btn" style="padding:0;margin-top:4px;" onclick="startPresent('${s.id}')">🎤 Ver diapositivas</button>` : ''}
-      ${songsHtml}
-    </div>`;
-}
-
-function togglePastMine(){ showPastMine = !showPastMine; render(); }
-
-function renderMine(list){
-  const todayStr = localTodayISO();
-  const upcoming = list.filter(s=>s.date >= todayStr);
-  const past = list.filter(s=>s.date < todayStr);
-
-  let html = '';
-  if(upcoming.length===0){
-    html += `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
-  }else{
-    html += upcoming.map(renderMineCard).join('');
-  }
-
-  if(past.length>0){
-    html += `<button class="link-btn" onclick="togglePastMine()">${showPastMine ? 'Ocultar' : 'Ver'} historial (${past.length})</button>`;
-    if(showPastMine) html += past.map(renderMineCard).join('');
-  }
-
-  return html;
-}
-
-function renderAllCard(s){
-  if(editingServiceId === s.id) return renderEditForm(s);
-
-  const rolesHtml = s.roles.map(r=>{
-    const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
-      : r.status==='declined' ? '<span class="badge declined">No podrá ir</span>'
-      : '<span class="badge pending">Por confirmar</span>';
-    return `
-      <div class="role-row">
-        <div class="role-info">
-          <span class="role-name">${escapeHtml(r.role)}</span>
-          <span class="role-person">${escapeHtml(r.person)}</span>
-        </div>
-        ${badge}
-      </div>`;
-  }).join('<div class="divider"></div>');
-
-  const songs = s.songs || [];
-  const songsListHtml = songs.map((sg,i)=>`
-    <div class="song-row">
-      <span class="song-num">${i+1}.</span>
-      <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-      ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-      ${renderSongLinks(sg)}
-      <button class="remove-song" style="color:var(--accent);" onclick="startEditLyrics('${sg.id}')" title="Editar letra para diapositivas">📝</button>
-      <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
-    </div>
-    ${lyricsEditingSongId === sg.id ? `
-      <div class="lyrics-box">
-        <label class="field-label">Letra de "${escapeHtml(sg.title)}" (separa cada diapositiva con una línea que diga ---)</label>
-        <textarea id="lyrics-textarea-${sg.id}" placeholder="Primera estrofa aquí...
-
----
-
-Coro aquí...">${escapeHtml(sg.lyrics||'')}</textarea>
-        <div style="display:flex;gap:8px;margin-top:8px;">
-          <button class="btn-small yes" onclick="saveLyrics('${s.id}','${sg.id}')">Guardar letra</button>
-          <button class="btn-small" onclick="cancelEditLyrics()">Cancelar</button>
-        </div>
-      </div>` : (sg.lyrics ? `<div class="mini-note" style="margin:-6px 0 8px;">✓ Letra guardada (${splitLyrics(sg.lyrics).length} diapositivas)</div>` : '')}
-  `).join('');
-
-  const songFormHtml = songFormOpenFor === s.id ? `
-    ${songLibrary.length ? `<select onchange="pickFromLibrary('inline-${s.id}', this.value)" style="margin-bottom:8px;">
-      <option value="">O elige del repertorio guardado...</option>
-      ${songLibrary.map((sg,i)=>`<option value="${i}">${escapeHtml(sg.title)}${sg.artist ? ' — '+escapeHtml(sg.artist) : ''}</option>`).join('')}
-    </select>` : ''}
-    <div class="add-song-row" style="align-items:flex-start;">
-      <div class="song-search-wrap">
-        <input id="song-title-inline-${s.id}" placeholder="Buscar canción..." oninput="handleSongInput('inline-${s.id}', this.value)" onblur="setTimeout(()=>hideDropdown('inline-${s.id}'),150)" />
-        <input type="hidden" id="song-artist-inline-${s.id}" />
-        <input type="hidden" id="song-link-inline-${s.id}" />
-        <div class="song-dropdown" id="song-dropdown-inline-${s.id}" style="display:none;"></div>
-      </div>
-      <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
-    </div>
-    <input id="song-spotify-inline-${s.id}" placeholder="Link de Spotify (opcional)" />
-    <input id="song-apple-inline-${s.id}" placeholder="Link de Apple Music (opcional)" />
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
-      <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
-    </div>` : `<button class="link-btn" onclick="toggleSongForm('${s.id}')">+ Agregar canción</button>`;
-
-  return `
-    <div class="card">
-      <div class="card-header-row">
-        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-        <span style="display:flex;gap:10px;">
-          <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
-          <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
-        </span>
-      </div>
-      <div class="label">${escapeHtml(s.label)}</div>
-      <button class="link-btn" style="margin-bottom:4px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
-      ${rolesHtml}
-      <div class="divider"></div>
-      <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
-      ${songsListHtml}
-      ${songs.length ? `
-        <div style="display:flex;gap:16px;margin:6px 0 2px;">
-          <button class="link-btn" style="padding:0;" onclick="startPresent('${s.id}')">🎤 Ver diapositivas</button>
-          <button class="link-btn" style="padding:0;" onclick="downloadPptxForService('${s.id}')">⬇️ Descargar PowerPoint</button>
-        </div>` : ''}
-      ${songFormHtml}
-    </div>`;
-}
-
-function togglePastAll(){ showPastAll = !showPastAll; render(); }
-
-function renderAll(list){
-  const summaryHtml = renderPendingSummary(list);
-  const formHtml = showAddForm ? renderAddForm() : `<button class="btn-main" onclick="startAddForm()">+ Agregar servicio</button>`;
-  if(list.length===0){
-    return summaryHtml + formHtml + `<div class="empty"><div class="big">Aún no hay servicios</div>Agrega el primero para empezar a coordinar.</div>`;
-  }
-
-  const todayStr = localTodayISO();
-  const upcoming = list.filter(s=>s.date >= todayStr || s.id===editingServiceId);
-  const past = list.filter(s=>s.date < todayStr && s.id!==editingServiceId);
-
-  let cardsHtml = upcoming.length ? upcoming.map(renderAllCard).join('') : `<div class="mini-note">No hay servicios próximos.</div>`;
-
-  let pastHtml = '';
-  if(past.length>0){
-    pastHtml = `<button class="link-btn" onclick="togglePastAll()">${showPastAll ? 'Ocultar' : 'Ver'} historial (${past.length})</button>`;
-    if(showPastAll) pastHtml += past.map(renderAllCard).join('');
-  }
-
-  return summaryHtml + formHtml + cardsHtml + pastHtml;
-}
-
-function renderPendingSummary(list){
-  const todayStr = localTodayISO();
-  const upcoming = list.filter(s=>s.date >= todayStr);
-  const withPending = upcoming
-    .map(s=>({ ...s, pendingRoles: s.roles.filter(r=>r.status==='pending') }))
-    .filter(s=>s.pendingRoles.length>0);
-
-  if(upcoming.length===0) return '';
-
-  if(withPending.length===0){
-    return `<div class="card"><div class="mini-note" style="margin-top:0;">Todos han confirmado en los próximos servicios. 🎉</div></div>`;
-  }
-  const rows = withPending.map(s=>`
-    <div class="role-row">
-      <div class="role-info">
-        <span class="role-name">${escapeHtml(fmtDateTime(s.date, s.time))} — ${escapeHtml(s.label)}</span>
-        <span class="role-person">Falta: ${s.pendingRoles.map(r=>escapeHtml(r.person)).join(', ')}</span>
-      </div>
-      <span class="badge pending">${s.pendingRoles.length} de ${s.roles.length}</span>
-    </div>`).join('<div class="divider"></div>');
-  return `
-    <div class="card">
-      <div class="section-title" style="margin-top:0;">Pendientes por confirmar</div>
-      ${rows}
-    </div>`;
-}
-
-function startEditService(serviceId){
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc) return;
-  editingServiceId = serviceId;
-  editDraftDate = svc.date;
-  editDraftTime = svc.time || '';
-  editDraftLabel = svc.label;
-  editDraftRoles = svc.roles.map(r=>({ id:r.id, role:r.role, person:r.person }));
-  render();
-}
-
-function cancelEditService(){
-  editingServiceId = null;
-  render();
-}
-
-function addEditRole(){
-  editDraftRoles.push({ id:uid(), role:'', person:'' });
-  render();
-}
-
-function removeEditRole(id){
-  editDraftRoles = editDraftRoles.filter(r=>r.id!==id);
-  render();
-}
-
-function updateEditRoleField(id, field, value){
-  const r = editDraftRoles.find(x=>x.id===id);
-  if(!r) return;
-  r[field] = value;
-  if(field==='person' && value && !r.role){
-    const ministryRole = getMinistryRole(rolesMap[value.trim().toLowerCase()]);
-    if(ministryRole){
-      r.role = ministryRole;
-      const roleInput = document.getElementById('edit-role-role-'+id);
-      if(roleInput) roleInput.value = ministryRole;
-    }
-  }
-}
-
-function renderEditForm(svc){
-  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
-  const rolesHtml = editDraftRoles.map(r=>`
-    <div class="role-form-row">
-      <input id="edit-role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateEditRoleField('${r.id}','role',this.value)" />
-      <select id="edit-role-person-${r.id}" onchange="updateEditRoleField('${r.id}','person',this.value)">
-        <option value="">Selecciona un miembro</option>
-        ${memberOptions.map(name=>`<option value="${escapeHtml(name)}" ${r.person===name?'selected':''}>${escapeHtml(name)}</option>`).join('')}
-      </select>
-      <button class="remove-role" onclick="removeEditRole('${r.id}')">✕</button>
-    </div>`).join('');
-  return `
-    <div class="card">
-      <label class="field-label">Fecha del servicio</label>
-      <input type="date" id="edit-date" value="${escapeHtml(editDraftDate)}" onchange="editDraftDate=this.value" />
-      <label class="field-label">Hora (opcional)</label>
-      <input type="time" id="edit-time" value="${escapeHtml(editDraftTime)}" onchange="editDraftTime=this.value" />
-      <label class="field-label">Nombre del servicio</label>
-      <input id="edit-label" value="${escapeHtml(editDraftLabel)}" onchange="editDraftLabel=this.value" />
-      <label class="field-label">Roles y responsables</label>
-      <div>${rolesHtml}</div>
-      <button class="btn-ghost" onclick="addEditRole()">+ Agregar rol</button>
-      <div style="display:flex;gap:8px;margin-top:16px;">
-        <button class="btn-main" onclick="submitEditService('${svc.id}')">Guardar cambios</button>
-        <button class="btn-small" onclick="cancelEditService()" style="flex:0 0 auto;">Cancelar</button>
-      </div>
-    </div>`;
-}
-
-async function submitEditService(serviceId){
-  const svc = services.find(s=>s.id===serviceId);
-  if(!svc) return;
-  if(!editDraftDate || !editDraftLabel.trim()){ alert('Falta la fecha o el nombre del servicio.'); return; }
-  const newRoles = editDraftRoles
-    .map(r=>{
-      const roleVal = (document.getElementById('edit-role-role-'+r.id)?.value || r.role || '').trim();
-      const personVal = (document.getElementById('edit-role-person-'+r.id)?.value || r.person || '').trim();
-      const existing = svc.roles.find(orig=>orig.id===r.id);
-      const samePerson = existing && existing.person.trim().toLowerCase()===personVal.toLowerCase();
-      return { id:r.id, role:roleVal, person:personVal, status: samePerson ? existing.status : 'pending' };
-    })
-    .filter(r=>r.role && r.person);
-  if(newRoles.length===0){ alert('Agrega al menos un rol con su responsable.'); return; }
-  svc.date = editDraftDate;
-  svc.time = editDraftTime;
-  svc.label = editDraftLabel.trim();
-  svc.roles = newRoles;
-  await saveServices();
-  editingServiceId = null;
-  render();
-}
-
-function renderAddForm(){
-  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
-  const rolesHtml = draftRoles.map(r=>`
-    <div class="role-form-row">
-      <input id="role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateDraftRole('${r.id}','role',this.value)" />
-      <select id="role-person-${r.id}" onchange="updateDraftRole('${r.id}','person',this.value)">
-        <option value="">Selecciona un miembro</option>
-        ${memberOptions.map(name=>`<option value="${escapeHtml(name)}" ${r.person===name?'selected':''}>${escapeHtml(name)}</option>`).join('')}
-      </select>
-      <button class="remove-role" onclick="removeDraftRole('${r.id}')">✕</button>
-    </div>`).join('');
-  const songsHtml = draftSongs.map(s=>`
-    ${songLibrary.length ? `<select onchange="pickFromLibrary('${s.id}', this.value)" style="margin-bottom:6px;">
-      <option value="">O elige del repertorio guardado...</option>
-      ${songLibrary.map((sg,i)=>`<option value="${i}">${escapeHtml(sg.title)}${sg.artist ? ' — '+escapeHtml(sg.artist) : ''}</option>`).join('')}
-    </select>` : ''}
-    <div class="role-form-row" style="align-items:flex-start;">
-      <div class="song-search-wrap">
-        <input id="song-title-${s.id}" placeholder="Buscar canción..." value="${escapeHtml(s.title)}" oninput="handleSongInput('${s.id}', this.value)" onblur="setTimeout(()=>hideDropdown('${s.id}'),150)" />
-        <input type="hidden" id="song-artist-${s.id}" value="${escapeHtml(s.artist||'')}" />
-        <input type="hidden" id="song-link-${s.id}" value="${escapeHtml(s.link||'')}" />
-        <div class="song-dropdown" id="song-dropdown-${s.id}" style="display:none;"></div>
-      </div>
-      <input id="song-key-${s.id}" placeholder="Tono" value="${escapeHtml(s.key)}" style="max-width:90px;" />
-      <button class="remove-role" onclick="removeDraftSong('${s.id}')">✕</button>
-    </div>
-    <input id="song-spotify-${s.id}" placeholder="Link de Spotify (opcional)" value="${escapeHtml(s.spotifyLink||'')}" />
-    <input id="song-apple-${s.id}" placeholder="Link de Apple Music (opcional)" value="${escapeHtml(s.appleMusicLink||'')}" />`).join('');
-  return `
-    <div class="card">
-      <label class="field-label">Fecha del servicio</label>
-      <input type="date" id="new-date" value="${escapeHtml(draftDate)}" onchange="draftDate=this.value" />
-      <label class="field-label">Hora (opcional)</label>
-      <input type="time" id="new-time" value="${escapeHtml(draftTime)}" onchange="draftTime=this.value" />
-      <label class="field-label">Nombre del servicio</label>
-      <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." value="${escapeHtml(draftLabel)}" onchange="draftLabel=this.value" />
-      <label class="field-label">Roles y responsables</label>
-      <div id="roles-container">${rolesHtml}</div>
-      <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
-
-      <label class="field-label" style="margin-top:18px;">Repertorio (opcional)</label>
-      <div id="songs-container">${songsHtml}</div>
-      <button class="btn-ghost" onclick="addDraftSong()">+ Agregar canción</button>
-
-      <div style="display:flex;gap:8px;margin-top:16px;">
-        <button class="btn-main" onclick="submitNewService()">Guardar servicio</button>
-        <button class="btn-small" onclick="cancelAddForm()" style="flex:0 0 auto;">Cancelar</button>
-      </div>
-    </div>`;
-}
-
-function setTab(t){ activeTab = t; render(); }
-
-function handleNameSubmit(){
-  const inp = document.getElementById('name-input');
-  const val = inp.value.trim();
-  if(!val){ inp.focus(); return; }
-  saveName(val);
-}
-
-function changeName(){
-  myName = null;
-  render();
-}
-
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str ?? '';
-  return div.innerHTML;
-}
-
-loadAll();
-
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').catch(e=>console.error('No se pudo registrar el service worker:', e));
-  });
-}
-</script>
-</body>
-</html>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar (Shared Component JSON) -->
+<header class="bg-background/80 backdrop-blur-xl border-b border-white/10 fixed top-0 w-full z-50">
+<div class="flex justify-between items-center px-margin-desktop h-20 w-full max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-semibold text-primary">Sanctuary</div>
+<nav class="hidden md:flex gap-8">
+<!-- Intent: Dashboard is active -->
+<a class="text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer active:scale-95 duration-200" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors cursor-pointer active:scale-95 duration-200" href="#">Preparation</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors cursor-pointer active:scale-95 duration-200" href="#">Volunteers</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors cursor-pointer active:scale-95 duration-200" href="#">Library</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 duration-200 hover:text-primary-fixed transition-colors">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 duration-200 hover:text-primary-fixed transition-colors">settings</span>
+<img alt="Lead Coordinator Profile" class="w-10 h-10 rounded-full object-cover border border-white/10" data-alt="A small, circular profile picture of a person with a neutral background, lit softly, suitable for a professional avatar in a dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvucSRxe7V0obq8UGrCd6z0u3L2Ktn6PGIXE7fRkqAhydtUmN1nK0pz6O8eREUqZlZuRctdPn6bAXHO1Fte7kRqLWoq878ksfqZU-uETOVy0Oldo2GiPIQpBTDZL8RJgrt0tf19l1qB7ce1Jo6poSWSDKHnJDMX_4TDCry5T-JmO-oXnGrs13nCOU77FH-XnKZoqOhML_j2er3XPjvsK6XzBztIJBYIpLOXDA3KW7yBWuHGVVjUTN0"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-28 pb-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full flex flex-col gap-12">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-6 gap-4">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-primary">Panel de Coordinación</h1>
+<p class="font-body-md text-on-surface-variant mt-2">Visión general y estado en tiempo real</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-full border border-surface-container-highest">
+<div class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></div>
+<span class="font-label-sm text-primary-fixed uppercase tracking-widest">Sincronizado</span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Section 1: Momento de Preparación (Spans 8 cols on desktop) -->
+<div class="md:col-span-8 bg-[#0a2e2e] rounded-xl p-6 border border-[#144545] flex flex-col justify-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-fixed/5 to-transparent opacity-50 z-0"></div>
+<div class="relative z-10 flex flex-col gap-4">
+<div class="flex items-center gap-2 text-primary-fixed">
+<span class="material-symbols-outlined fill-icon">auto_awesome</span>
+<h2 class="font-label-sm uppercase tracking-widest">Momento de Preparación</h2>
+</div>
+<blockquote class="font-headline-md text-primary italic">
+                        "Cantad alegres a Dios, habitantes de toda la tierra."
+                    </blockquote>
+<p class="font-label-sm text-on-surface-variant tracking-widest uppercase">— SALMO 100:1</p>
+</div>
+</div>
+<!-- Section 2: Próximo Servicio (Spans 4 cols on desktop) -->
+<div class="md:col-span-4 bg-[#0a2e2e] rounded-xl p-6 border border-[#144545] flex flex-col justify-between">
+<div class="flex items-center gap-2 text-secondary-fixed mb-4">
+<span class="material-symbols-outlined">event</span>
+<h2 class="font-label-sm uppercase tracking-widest">Próximo Servicio</h2>
+</div>
+<div>
+<h3 class="font-headline-md text-primary mb-2">Servicio Principal</h3>
+<div class="flex flex-col gap-2 font-body-md text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>10:00 AM</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Auditorio Central</span>
+</div>
+</div>
+</div>
+<button class="mt-6 w-full bg-primary-fixed text-[#163800] font-button py-3 rounded hover:bg-primary-fixed-dim transition-colors active:scale-95 duration-200">
+                    Ver Detalles
+                </button>
+</div>
+<!-- Section 3: Estado del Equipo (Full width) -->
+<div class="md:col-span-12 bg-[#0a2e2e] rounded-xl p-6 border border-[#144545]">
+<div class="flex items-center gap-2 text-secondary-fixed mb-6">
+<span class="material-symbols-outlined">group_work</span>
+<h2 class="font-label-sm uppercase tracking-widest">Estado del Equipo</h2>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Sonido -->
+<div class="bg-surface-container-high rounded-lg p-4 border border-surface-container-highest flex flex-col items-center justify-center gap-2 text-center">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">mic</span>
+<span class="font-body-md text-primary">Sonido</span>
+<span class="font-label-sm bg-primary-fixed/15 text-primary-fixed px-2 py-1 rounded-full uppercase tracking-widest">Ready</span>
+</div>
+<!-- Banda -->
+<div class="bg-surface-container-high rounded-lg p-4 border border-surface-container-highest flex flex-col items-center justify-center gap-2 text-center">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">piano</span>
+<span class="font-body-md text-primary">Banda</span>
+<span class="font-label-sm bg-primary-fixed/15 text-primary-fixed px-2 py-1 rounded-full uppercase tracking-widest">Ready</span>
+</div>
+<!-- Voces (In Progress) -->
+<div class="bg-surface-container-high rounded-lg p-4 border border-surface-container-highest flex flex-col items-center justify-center gap-2 text-center">
+<span class="material-symbols-outlined text-secondary-fixed text-3xl">record_voice_over</span>
+<span class="font-body-md text-primary">Voces</span>
+<span class="font-label-sm bg-secondary-fixed/15 text-secondary-fixed px-2 py-1 rounded-full uppercase tracking-widest">In Progress</span>
+</div>
+<!-- Proyección -->
+<div class="bg-surface-container-high rounded-lg p-4 border border-surface-container-highest flex flex-col items-center justify-center gap-2 text-center">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">cast</span>
+<span class="font-body-md text-primary">Proyección</span>
+<span class="font-label-sm bg-primary-fixed/15 text-primary-fixed px-2 py-1 rounded-full uppercase tracking-widest">Ready</span>
+</div>
+</div>
+</div>
+<!-- Section 4: ¿Quién eres? (Full width) -->
+<div class="md:col-span-12 flex flex-col items-center justify-center py-12">
+<div class="bg-[#0a2e2e] rounded-xl p-8 border border-[#144545] max-w-md w-full shadow-2xl shadow-primary-fixed/5">
+<h2 class="font-headline-md text-primary mb-2 text-center">¿Quién eres?</h2>
+<p class="font-body-md text-on-surface-variant mb-6 text-center text-sm">Selecciona tu rol para acceder al panel correspondiente.</p>
+<div class="flex flex-col gap-3">
+<button class="w-full text-left bg-surface-container-high hover:bg-surface-container-highest border border-surface-container-highest hover:border-primary-fixed transition-all p-4 rounded-lg flex items-center justify-between group active:scale-[0.98] duration-200">
+<span class="font-body-md text-primary group-hover:text-primary-fixed transition-colors">Director Técnico</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">arrow_forward</span>
+</button>
+<button class="w-full text-left bg-surface-container-high hover:bg-surface-container-highest border border-surface-container-highest hover:border-primary-fixed transition-all p-4 rounded-lg flex items-center justify-between group active:scale-[0.98] duration-200">
+<span class="font-body-md text-primary group-hover:text-primary-fixed transition-colors">Director de Alabanza</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">arrow_forward</span>
+</button>
+<button class="w-full text-left bg-surface-container-high hover:bg-surface-container-highest border border-surface-container-highest hover:border-primary-fixed transition-all p-4 rounded-lg flex items-center justify-between group active:scale-[0.98] duration-200">
+<span class="font-body-md text-primary group-hover:text-primary-fixed transition-colors">Voluntario</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-fixed transition-colors">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component JSON) -->
+<footer class="bg-background w-full py-12 border-t border-white/10 mt-auto">
+<div class="flex flex-col items-center justify-center gap-6 max-w-container-max mx-auto px-margin-desktop">
+<div class="font-label-sm text-label-sm text-primary">Sanctuary</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-primary underline-offset-4 transition-opacity duration-300" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary underline-offset-4 transition-opacity duration-300" href="#">Theology</a>
+<a class="text-on-surface-variant hover:text-primary underline-offset-4 transition-opacity duration-300" href="#">Contact</a>
+</div>
+<div class="font-body-md text-body-md italic text-on-surface-variant text-center">
+                © 2024 Sanctuary Praise. 'Praise Him with the strings and pipe.'
+            </div>
+</div>
+</footer>
+</body></html>
