@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -6,11 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#042224">
+<meta name="theme-color" content="#001717">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,24 +18,27 @@
 <meta name="apple-mobile-web-app-title" content="Alabanza">
 <style>
   :root{
-    --bg: #042224;
-    --surface: #0C3934;
-    --surface-2: #123F3A;
-    --accent: #98F755;
-    --accent-soft: rgba(152,247,85,0.32);
-    --sage: #7CA890;
-    --amber: #E0A94B;
-    --rose: #C97C7C;
-    --text: #F5EFE0;
-    --text-muted: #B8AFC4;
-    --line: rgba(245,239,224,0.12);
+    --bg: #001717;
+    --surface: #0A2E2E;
+    --surface-2: #142E2E;
+    --surface-3: #1F3939;
+    --accent: #99FB56;
+    --accent-dim: #7EDD3C;
+    --accent-soft: rgba(153,251,86,0.18);
+    --on-accent: #163800;
+    --sage: #7EDD3C;
+    --amber: #E0C24B;
+    --rose: #FFB4AB;
+    --text: #CCE8E7;
+    --text-muted: #BFCAB2;
+    --line: #144545;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background: var(--bg);
     color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
@@ -50,14 +53,14 @@
   .staff::after{bottom:0;}
   .staff .mid{top:50%;}
   header h1{
-    font-family:'Fraunces', serif;
+    font-family:'Epilogue', sans-serif;
     font-weight:600;
     font-size:30px;
     letter-spacing:-0.01em;
     margin:0 0 2px;
   }
   header .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'JetBrains Mono', monospace;
     font-size:11px;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -74,7 +77,7 @@
   }
   .who button{
     background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;
-    font-family:'IBM Plex Sans',sans-serif;text-decoration:underline;padding:0;
+    font-family:'Manrope',sans-serif;text-decoration:underline;padding:0;
   }
 
   /* Tabs */
@@ -84,7 +87,7 @@
     font-size:13px;font-weight:500;color:var(--text-muted);transition:all .15s;
     user-select:none;
   }
-  .tab.active{background:var(--accent);color:#042224;font-weight:600;}
+  .tab.active{background:var(--accent);color:var(--on-accent);font-weight:600;}
 
   /* Service card */
   .card{
@@ -95,8 +98,8 @@
     margin-bottom:16px;
   }
   .card .date-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
-  .card .date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.04em;}
-  .card .label{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:2px 0 12px;}
+  .card .date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.04em;}
+  .card .label{font-family:'Epilogue',sans-serif;font-size:19px;font-weight:600;margin:2px 0 12px;}
   .divider{height:1px;background:var(--line);margin:12px 0;}
 
   .role-row{
@@ -109,9 +112,9 @@
   .role-person{color:var(--text-muted);font-size:12.5px;}
   .badge{
     font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
-    font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;
+    font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;
   }
-  .badge.confirmed{background:rgba(124,168,144,0.20);color:var(--sage);}
+  .badge.confirmed{background:rgba(126,221,60,0.18);color:var(--sage);}
   .badge.declined{background:rgba(201,124,124,0.18);color:var(--rose);}
   .badge.pending{background:rgba(224,169,75,0.18);color:var(--amber);}
 
@@ -126,13 +129,13 @@
   .empty{
     text-align:center;color:var(--text-muted);font-size:14px;padding:50px 20px;
   }
-  .empty .big{font-family:'Fraunces',serif;font-size:20px;color:var(--text);margin-bottom:6px;}
+  .empty .big{font-family:'Epilogue',sans-serif;font-size:20px;color:var(--text);margin-bottom:6px;}
 
   /* Forms */
   .btn-main{
-    background:var(--accent);color:#042224;border:none;border-radius:10px;
+    background:var(--accent);color:var(--on-accent);border:none;border-radius:10px;
     padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;width:100%;
-    font-family:'IBM Plex Sans',sans-serif;
+    font-family:'Manrope',sans-serif;
   }
   .btn-main:hover{filter:brightness(1.08);}
   .btn-ghost{
@@ -142,10 +145,10 @@
   input, select{
     width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
     padding:11px 12px;border-radius:9px;font-size:14px;margin-bottom:10px;
-    font-family:'IBM Plex Sans',sans-serif;
+    font-family:'Manrope',sans-serif;
   }
   input::placeholder{color:var(--text-muted);}
-  label.field-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;font-family:'IBM Plex Mono',monospace;}
+  label.field-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;font-family:'JetBrains Mono',monospace;}
   .role-form-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
   .role-form-row input{margin-bottom:0;}
   .remove-role{background:none;border:none;color:var(--rose);cursor:pointer;font-size:18px;padding:0 4px;}
@@ -164,11 +167,11 @@
     background:var(--surface);border:1px solid var(--line);border-radius:16px;
     padding:26px;max-width:380px;width:100%;
   }
-  .modal h2{font-family:'Fraunces',serif;font-size:22px;margin:0 0 6px;}
+  .modal h2{font-family:'Epilogue',sans-serif;font-size:22px;margin:0 0 6px;}
   .modal p{color:var(--text-muted);font-size:13.5px;margin:0 0 18px;}
 
   .section-title{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;
     letter-spacing:0.1em;color:var(--text-muted);margin:26px 0 12px;
   }
   .card-header-row{display:flex;justify-content:space-between;align-items:center;}
@@ -176,25 +179,25 @@
   .icon-btn:hover{color:var(--rose);}
 
   .song-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;}
-  .song-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);width:16px;flex-shrink:0;}
+  .song-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);width:16px;flex-shrink:0;}
   .song-title{flex:1;font-weight:500;}
-  .song-key{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-muted);background:var(--surface-2);padding:3px 9px;border-radius:6px;}
+  .song-key{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-muted);background:var(--surface-2);padding:3px 9px;border-radius:6px;}
   .remove-song{background:none;border:none;color:var(--rose);cursor:pointer;font-size:15px;padding:0 2px;flex-shrink:0;}
   .add-song-row{display:flex;gap:8px;align-items:center;margin-top:8px;}
   .add-song-row input{margin-bottom:0;}
   .add-song-row .song-key-input{max-width:90px;}
   .link-btn{
     background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;
-    font-family:'IBM Plex Sans',sans-serif;padding:6px 0;font-weight:500;
+    font-family:'Manrope',sans-serif;padding:6px 0;font-weight:500;
   }
   .mini-note{color:var(--text-muted);font-size:12.5px;margin-top:6px;}
   .song-artist{color:var(--text-muted);font-weight:400;font-size:12.5px;}
   .song-link{
-    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--accent);
-    background:rgba(152,247,85,0.14);padding:3px 9px;border-radius:6px;
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--accent);
+    background:rgba(153,251,86,0.14);padding:3px 9px;border-radius:6px;
     text-decoration:none;flex-shrink:0;
   }
-  .song-link:hover{background:rgba(152,247,85,0.25);}
+  .song-link:hover{background:rgba(153,251,86,0.25);}
 
   .song-search-wrap{position:relative;flex:1;}
   .song-dropdown{
@@ -204,7 +207,7 @@
     box-shadow:0 8px 20px rgba(0,0,0,0.35);
   }
   .song-suggestion{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;}
-  .song-suggestion:hover{background:rgba(152,247,85,0.14);}
+  .song-suggestion:hover{background:rgba(153,251,86,0.14);}
   .song-suggestion img{width:32px;height:32px;border-radius:4px;flex-shrink:0;object-fit:cover;}
   .song-suggestion .sinfo{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
   .song-suggestion .stitle{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -215,7 +218,7 @@
   .cal-grid{
     display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
   }
-  .cal-weekday{text-align:center;font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;padding-bottom:6px;}
+  .cal-weekday{text-align:center;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding-bottom:6px;}
   .cal-cell{
     position:relative;height:40px;display:flex;align-items:center;justify-content:center;
     border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);
@@ -310,17 +313,17 @@
     padding:60px 40px;text-align:center;
   }
   .presenter .slide-label{
-    font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:0.12em;
+    font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.12em;
     text-transform:uppercase;color:var(--accent);margin-bottom:24px;
   }
   .presenter .slide-text{
-    font-family:'Fraunces',serif;font-weight:600;
+    font-family:'Epilogue',sans-serif;font-weight:600;
     font-size:clamp(26px,4.5vw,52px);line-height:1.45;white-space:pre-wrap;
     max-width:900px;
   }
   .presenter .slide-counter{
     position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
-    font-family:'IBM Plex Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);
   }
   .presenter .presenter-close{
     position:absolute;top:20px;right:24px;background:none;border:none;
@@ -338,8 +341,46 @@
   .lyrics-box{margin:10px 0 14px;}
   .lyrics-box textarea{
     width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
-    border-radius:9px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;
+    border-radius:9px;padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;
     resize:vertical;min-height:120px;
+  }
+
+  .material-symbols-outlined{
+    font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;
+    font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;
+    display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;
+    vertical-align:middle;
+    font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  }
+
+  .team-status-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .team-status-row input:not([type=checkbox]){flex:1;margin-bottom:0;}
+  .ts-check{width:20px;height:20px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;}
+
+  .ts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:10px 0;}
+  .ts-pill{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:14px 8px;border-radius:10px;font-size:12.5px;font-weight:600;text-align:center;
+    background:var(--surface-2);border:1px solid var(--line);cursor:pointer;
+    transition:all .15s;
+  }
+  .ts-pill.ready{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+  .ts-pill.not-ready{color:var(--text-muted);}
+  .ts-pill .ts-badge{
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;
+    letter-spacing:0.06em;padding:2px 8px;border-radius:20px;
+  }
+  .ts-pill.ready .ts-badge{background:rgba(153,251,86,0.22);}
+  .ts-pill.not-ready .ts-badge{background:rgba(224,194,75,0.18);color:var(--amber);}
+
+  .hero-card{
+    background:linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;margin-bottom:16px;
+  }
+  .hero-eyebrow{
+    display:flex;align-items:center;gap:6px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;
+    letter-spacing:0.12em;color:var(--accent);margin-bottom:10px;
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
@@ -363,7 +404,7 @@ const NAME_STORAGE_KEY = 'coordinacion-alabanza-my-name';
 const STORAGE_SERVICES_KEY = 'services';
 let myName = null;
 let services = [];
-let activeTab = 'mias';
+let activeTab = 'inicio';
 let calendarViewDate = new Date();
 let selectedCalendarDay = null;
 let showAddForm = false;
@@ -375,6 +416,8 @@ let editDraftDate = '';
 let editDraftLabel = '';
 let editDraftTime = '';
 let editDraftRoles = [];
+let draftTeamStatus = [];
+let editDraftTeamStatus = [];
 let draftRoles = [];
 let draftSongs = [];
 let songFormOpenFor = null;
@@ -786,6 +829,12 @@ function startAddForm(){
   draftTime = '';
   draftRoles = [{id:uid(), role:'', person:''}];
   draftSongs = [];
+  draftTeamStatus = [
+    {id:uid(), label:'Sonido', ready:false},
+    {id:uid(), label:'Banda', ready:false},
+    {id:uid(), label:'Voces', ready:false},
+    {id:uid(), label:'Proyección', ready:false}
+  ];
   render();
 }
 function cancelAddForm(){
@@ -815,6 +864,47 @@ function updateDraftRole(id, field, value){
 }
 function addDraftSong(){
   draftSongs.push({id:uid(), title:'', key:''});
+  render();
+}
+function addDraftTeamStatus(){
+  draftTeamStatus.push({id:uid(), label:'', ready:false});
+  render();
+}
+function removeDraftTeamStatus(id){
+  draftTeamStatus = draftTeamStatus.filter(t=>t.id!==id);
+  render();
+}
+function updateDraftTeamStatusLabel(id, value){
+  const t = draftTeamStatus.find(x=>x.id===id);
+  if(t) t.label = value;
+}
+function toggleDraftTeamStatusReady(id){
+  const t = draftTeamStatus.find(x=>x.id===id);
+  if(t){ t.ready = !t.ready; render(); }
+}
+function addEditTeamStatus(){
+  editDraftTeamStatus.push({id:uid(), label:'', ready:false});
+  render();
+}
+function removeEditTeamStatus(id){
+  editDraftTeamStatus = editDraftTeamStatus.filter(t=>t.id!==id);
+  render();
+}
+function updateEditTeamStatusLabel(id, value){
+  const t = editDraftTeamStatus.find(x=>x.id===id);
+  if(t) t.label = value;
+}
+function toggleEditTeamStatusReady(id){
+  const t = editDraftTeamStatus.find(x=>x.id===id);
+  if(t){ t.ready = !t.ready; render(); }
+}
+async function toggleTeamStatus(serviceId, itemId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc || !svc.teamStatus) return;
+  const item = svc.teamStatus.find(t=>t.id===itemId);
+  if(!item) return;
+  item.ready = !item.ready;
+  await saveServices();
   render();
 }
 function removeDraftSong(id){
@@ -949,7 +1039,14 @@ async function submitNewService(){
       key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
     }))
     .filter(s=>s.title);
-  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs });
+  const teamStatus = draftTeamStatus
+    .map(t=>({
+      id:t.id,
+      label:(document.getElementById('team-status-'+t.id)?.value || '').trim(),
+      ready: !!t.ready
+    }))
+    .filter(t=>t.label);
+  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs, teamStatus });
   for(const sg of songs){
     await addToLibraryIfNew(sg);
   }
@@ -1156,16 +1253,18 @@ function render(){
   const mineSorted = upcomingSorted(mine);
   const allSorted = upcomingSorted(services);
 
-  const tabsAvailable = [{ id:'mias', label:'Bandeja de convocatorias' }];
+  const tabsAvailable = [{ id:'inicio', label:'Inicio' }];
+  tabsAvailable.push({ id:'mias', label:'Bandeja de convocatorias' });
   tabsAvailable.push({ id:'sugerencias', label:'Sugerencias' });
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'todas', label:'Todos los servicios' });
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'repertorio', label:'Repertorio' });
   tabsAvailable.push({ id:'calendario', label:'Calendario' });
   if(myRole==='developer') tabsAvailable.push({ id:'accesos', label:'Accesos' });
-  if(!tabsAvailable.find(t=>t.id===activeTab)) activeTab = 'mias';
+  if(!tabsAvailable.find(t=>t.id===activeTab)) activeTab = 'inicio';
 
   let content;
-  if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
+  if(activeTab==='inicio') content = renderDashboard(myRole, mineSorted, allSorted);
+  else if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
   else if(activeTab==='repertorio' && (myRole==='coordinator' || myRole==='developer')) content = renderLibrary();
   else if(activeTab==='sugerencias') content = renderSuggestions(myRole);
   else if(activeTab==='calendario') content = renderCalendar(allSorted);
@@ -1478,6 +1577,23 @@ function downloadICS(serviceId){
   setTimeout(()=>URL.revokeObjectURL(url), 1500);
 }
 
+function renderTeamStatusGrid(svc, interactive){
+  const items = svc.teamStatus || [];
+  if(items.length===0) return '';
+  const pills = items.map(t=>{
+    const icon = teamStatusIcon(t.label);
+    const cls = t.ready ? 'ready' : 'not-ready';
+    const onclick = interactive ? ` onclick="toggleTeamStatus('${svc.id}','${t.id}')"` : '';
+    return `
+      <div class="ts-pill ${cls}"${onclick}>
+        <span class="material-symbols-outlined">${icon}</span>
+        <span>${escapeHtml(t.label)}</span>
+        <span class="ts-badge">${t.ready ? 'Listo' : 'Pendiente'}</span>
+      </div>`;
+  }).join('');
+  return `<div class="ts-grid">${pills}</div>`;
+}
+
 function renderMineCard(s){
   const r = s.myRole;
   const songs = s.songs || [];
@@ -1512,6 +1628,7 @@ function renderMineCard(s){
       </div>
       <button class="link-btn" style="margin-top:2px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
       ${songs.length ? `<button class="link-btn" style="padding:0;margin-top:4px;" onclick="startPresent('${s.id}')">🎤 Ver diapositivas</button>` : ''}
+      ${renderTeamStatusGrid(s, false)}
       ${songsHtml}
     </div>`;
 }
@@ -1612,6 +1729,9 @@ Coro aquí...">${escapeHtml(sg.lyrics||'')}</textarea>
       </div>
       <div class="label">${escapeHtml(s.label)}</div>
       <button class="link-btn" style="margin-bottom:4px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
+      ${(s.teamStatus && s.teamStatus.length) ? `
+        <div class="mini-note" style="margin:8px 0 0;">Estado del equipo</div>
+        ${renderTeamStatusGrid(s, true)}` : ''}
       ${rolesHtml}
       <div class="divider"></div>
       <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
@@ -1649,6 +1769,41 @@ function renderAll(list){
   return summaryHtml + formHtml + cardsHtml + pastHtml;
 }
 
+function renderDashboard(myRole, mineSorted, allSorted){
+  const todayStr = localTodayISO();
+  const isManager = myRole==='coordinator' || myRole==='developer';
+  const sourceList = isManager ? allSorted : mineSorted;
+  const upcoming = sourceList.filter(s=>s.date >= todayStr);
+  const next = upcoming[0];
+
+  if(!next){
+    return `<div class="empty"><div class="big">Sin servicios próximos</div>${isManager ? 'Agrega uno en "Todos los servicios" para empezar.' : 'Cuando te convoquen a uno, aparecerá aquí.'}</div>`;
+  }
+
+  const heroLabel = isManager ? 'Próximo servicio' : 'Tu próximo servicio';
+  const roleInfo = !isManager ? next.myRole : null;
+
+  const hero = `
+    <div class="hero-card">
+      <div class="hero-eyebrow">
+        <span class="material-symbols-outlined" style="font-size:16px;">event</span>
+        ${heroLabel}
+      </div>
+      <div class="label" style="font-size:24px;margin-bottom:6px;">${escapeHtml(next.label)}</div>
+      <div class="date" style="font-size:14px;">${escapeHtml(fmtDateTime(next.date, next.time))}</div>
+      ${roleInfo ? `<div class="mini-note" style="margin-top:10px;">Tu rol: ${escapeHtml(roleInfo.role)}</div>` : ''}
+      <button class="btn-main" style="margin-top:16px;" onclick="setTab('${isManager ? 'todas' : 'mias'}')">Ver detalles</button>
+    </div>`;
+
+  const teamStatusSection = (next.teamStatus && next.teamStatus.length) ? `
+    <div class="section-title" style="margin-top:0;">Estado del equipo</div>
+    ${renderTeamStatusGrid(next, isManager)}` : '';
+
+  const pendingSection = isManager ? renderPendingSummary(allSorted) : '';
+
+  return hero + teamStatusSection + pendingSection;
+}
+
 function renderPendingSummary(list){
   const todayStr = localTodayISO();
   const upcoming = list.filter(s=>s.date >= todayStr);
@@ -1684,6 +1839,7 @@ function startEditService(serviceId){
   editDraftTime = svc.time || '';
   editDraftLabel = svc.label;
   editDraftRoles = svc.roles.map(r=>({ id:r.id, role:r.role, person:r.person }));
+  editDraftTeamStatus = (svc.teamStatus||[]).map(t=>({ id:t.id, label:t.label, ready:t.ready }));
   render();
 }
 
@@ -1716,6 +1872,17 @@ function updateEditRoleField(id, field, value){
   }
 }
 
+function teamStatusIcon(label){
+  const l = (label||'').toLowerCase();
+  if(l.includes('son')) return 'mic';
+  if(l.includes('band') || l.includes('instrument') || l.includes('musi')) return 'piano';
+  if(l.includes('voz') || l.includes('voc') || l.includes('coro')) return 'record_voice_over';
+  if(l.includes('proyec') || l.includes('pantalla') || l.includes('video')) return 'cast';
+  if(l.includes('luc') || l.includes('light')) return 'lightbulb';
+  if(l.includes('cámar') || l.includes('camar') || l.includes('camera')) return 'videocam';
+  return 'check_circle';
+}
+
 function renderEditForm(svc){
   const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
   const rolesHtml = editDraftRoles.map(r=>`
@@ -1726,6 +1893,12 @@ function renderEditForm(svc){
         ${memberOptions.map(name=>`<option value="${escapeHtml(name)}" ${r.person===name?'selected':''}>${escapeHtml(name)}</option>`).join('')}
       </select>
       <button class="remove-role" onclick="removeEditRole('${r.id}')">✕</button>
+    </div>`).join('');
+  const teamStatusHtml = editDraftTeamStatus.map(t=>`
+    <div class="team-status-row">
+      <input type="checkbox" class="ts-check" ${t.ready?'checked':''} onchange="toggleEditTeamStatusReady('${t.id}')" title="Listo" />
+      <input id="edit-team-status-${t.id}" placeholder="Ej. Sonido, Banda, Proyección..." value="${escapeHtml(t.label)}" onchange="updateEditTeamStatusLabel('${t.id}', this.value)" />
+      <button class="remove-role" onclick="removeEditTeamStatus('${t.id}')">✕</button>
     </div>`).join('');
   return `
     <div class="card">
@@ -1738,6 +1911,11 @@ function renderEditForm(svc){
       <label class="field-label">Roles y responsables</label>
       <div>${rolesHtml}</div>
       <button class="btn-ghost" onclick="addEditRole()">+ Agregar rol</button>
+
+      <label class="field-label" style="margin-top:18px;">Estado del equipo (opcional)</label>
+      <div>${teamStatusHtml}</div>
+      <button class="btn-ghost" onclick="addEditTeamStatus()">+ Agregar ítem</button>
+
       <div style="display:flex;gap:8px;margin-top:16px;">
         <button class="btn-main" onclick="submitEditService('${svc.id}')">Guardar cambios</button>
         <button class="btn-small" onclick="cancelEditService()" style="flex:0 0 auto;">Cancelar</button>
@@ -1759,10 +1937,18 @@ async function submitEditService(serviceId){
     })
     .filter(r=>r.role && r.person);
   if(newRoles.length===0){ alert('Agrega al menos un rol con su responsable.'); return; }
+  const newTeamStatus = editDraftTeamStatus
+    .map(t=>({
+      id:t.id,
+      label:(document.getElementById('edit-team-status-'+t.id)?.value || t.label || '').trim(),
+      ready: !!t.ready
+    }))
+    .filter(t=>t.label);
   svc.date = editDraftDate;
   svc.time = editDraftTime;
   svc.label = editDraftLabel.trim();
   svc.roles = newRoles;
+  svc.teamStatus = newTeamStatus;
   await saveServices();
   editingServiceId = null;
   render();
@@ -1796,6 +1982,12 @@ function renderAddForm(){
     </div>
     <input id="song-spotify-${s.id}" placeholder="Link de Spotify (opcional)" value="${escapeHtml(s.spotifyLink||'')}" />
     <input id="song-apple-${s.id}" placeholder="Link de Apple Music (opcional)" value="${escapeHtml(s.appleMusicLink||'')}" />`).join('');
+  const teamStatusHtml = draftTeamStatus.map(t=>`
+    <div class="team-status-row">
+      <input type="checkbox" class="ts-check" ${t.ready?'checked':''} onchange="toggleDraftTeamStatusReady('${t.id}')" title="Listo" />
+      <input id="team-status-${t.id}" placeholder="Ej. Sonido, Banda, Proyección..." value="${escapeHtml(t.label)}" onchange="updateDraftTeamStatusLabel('${t.id}', this.value)" />
+      <button class="remove-role" onclick="removeDraftTeamStatus('${t.id}')">✕</button>
+    </div>`).join('');
   return `
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
@@ -1807,6 +1999,10 @@ function renderAddForm(){
       <label class="field-label">Roles y responsables</label>
       <div id="roles-container">${rolesHtml}</div>
       <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
+
+      <label class="field-label" style="margin-top:18px;">Estado del equipo (opcional)</label>
+      <div id="team-status-container">${teamStatusHtml}</div>
+      <button class="btn-ghost" onclick="addDraftTeamStatus()">+ Agregar ítem</button>
 
       <label class="field-label" style="margin-top:18px;">Repertorio (opcional)</label>
       <div id="songs-container">${songsHtml}</div>
