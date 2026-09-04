@@ -6,11 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500;600&family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#042224">
+<meta name="theme-color" content="#001717">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,24 +18,27 @@
 <meta name="apple-mobile-web-app-title" content="Alabanza">
 <style>
   :root{
-    --bg: #042224;
-    --surface: #0C3934;
-    --surface-2: #123F3A;
-    --accent: #98F755;
-    --accent-soft: rgba(152,247,85,0.32);
-    --sage: #7CA890;
-    --amber: #E0A94B;
-    --rose: #C97C7C;
-    --text: #F5EFE0;
-    --text-muted: #B8AFC4;
-    --line: rgba(245,239,224,0.12);
+    --bg: #001717;
+    --surface: #0A2E2E;
+    --surface-2: #142E2E;
+    --surface-3: #1F3939;
+    --accent: #99FB56;
+    --accent-dim: #7EDD3C;
+    --accent-soft: rgba(153,251,86,0.18);
+    --on-accent: #163800;
+    --sage: #7EDD3C;
+    --amber: #E0C24B;
+    --rose: #FFB4AB;
+    --text: #CCE8E7;
+    --text-muted: #BFCAB2;
+    --line: #144545;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background: var(--bg);
     color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
@@ -50,14 +53,14 @@
   .staff::after{bottom:0;}
   .staff .mid{top:50%;}
   header h1{
-    font-family:'Fraunces', serif;
+    font-family:'Epilogue', sans-serif;
     font-weight:600;
     font-size:30px;
     letter-spacing:-0.01em;
     margin:0 0 2px;
   }
   header .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
+    font-family:'JetBrains Mono', monospace;
     font-size:11px;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -74,7 +77,7 @@
   }
   .who button{
     background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;
-    font-family:'IBM Plex Sans',sans-serif;text-decoration:underline;padding:0;
+    font-family:'Manrope',sans-serif;text-decoration:underline;padding:0;
   }
 
   /* Tabs */
@@ -84,7 +87,7 @@
     font-size:13px;font-weight:500;color:var(--text-muted);transition:all .15s;
     user-select:none;
   }
-  .tab.active{background:var(--accent);color:#042224;font-weight:600;}
+  .tab.active{background:var(--accent);color:var(--on-accent);font-weight:600;}
 
   /* Service card */
   .card{
@@ -95,8 +98,8 @@
     margin-bottom:16px;
   }
   .card .date-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
-  .card .date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.04em;}
-  .card .label{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:2px 0 12px;}
+  .card .date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.04em;}
+  .card .label{font-family:'Epilogue',sans-serif;font-size:19px;font-weight:600;margin:2px 0 12px;}
   .divider{height:1px;background:var(--line);margin:12px 0;}
 
   .role-row{
@@ -109,9 +112,9 @@
   .role-person{color:var(--text-muted);font-size:12.5px;}
   .badge{
     font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
-    font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;
+    font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;
   }
-  .badge.confirmed{background:rgba(124,168,144,0.20);color:var(--sage);}
+  .badge.confirmed{background:rgba(126,221,60,0.18);color:var(--sage);}
   .badge.declined{background:rgba(201,124,124,0.18);color:var(--rose);}
   .badge.pending{background:rgba(224,169,75,0.18);color:var(--amber);}
 
@@ -126,13 +129,13 @@
   .empty{
     text-align:center;color:var(--text-muted);font-size:14px;padding:50px 20px;
   }
-  .empty .big{font-family:'Fraunces',serif;font-size:20px;color:var(--text);margin-bottom:6px;}
+  .empty .big{font-family:'Epilogue',sans-serif;font-size:20px;color:var(--text);margin-bottom:6px;}
 
   /* Forms */
   .btn-main{
-    background:var(--accent);color:#042224;border:none;border-radius:10px;
+    background:var(--accent);color:var(--on-accent);border:none;border-radius:10px;
     padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer;width:100%;
-    font-family:'IBM Plex Sans',sans-serif;
+    font-family:'Manrope',sans-serif;
   }
   .btn-main:hover{filter:brightness(1.08);}
   .btn-ghost{
@@ -142,10 +145,10 @@
   input, select{
     width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
     padding:11px 12px;border-radius:9px;font-size:14px;margin-bottom:10px;
-    font-family:'IBM Plex Sans',sans-serif;
+    font-family:'Manrope',sans-serif;
   }
   input::placeholder{color:var(--text-muted);}
-  label.field-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;font-family:'IBM Plex Mono',monospace;}
+  label.field-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;display:block;font-family:'JetBrains Mono',monospace;}
   .role-form-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
   .role-form-row input{margin-bottom:0;}
   .remove-role{background:none;border:none;color:var(--rose);cursor:pointer;font-size:18px;padding:0 4px;}
@@ -164,11 +167,11 @@
     background:var(--surface);border:1px solid var(--line);border-radius:16px;
     padding:26px;max-width:380px;width:100%;
   }
-  .modal h2{font-family:'Fraunces',serif;font-size:22px;margin:0 0 6px;}
+  .modal h2{font-family:'Epilogue',sans-serif;font-size:22px;margin:0 0 6px;}
   .modal p{color:var(--text-muted);font-size:13.5px;margin:0 0 18px;}
 
   .section-title{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;
     letter-spacing:0.1em;color:var(--text-muted);margin:26px 0 12px;
   }
   .card-header-row{display:flex;justify-content:space-between;align-items:center;}
@@ -176,25 +179,25 @@
   .icon-btn:hover{color:var(--rose);}
 
   .song-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;}
-  .song-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);width:16px;flex-shrink:0;}
+  .song-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);width:16px;flex-shrink:0;}
   .song-title{flex:1;font-weight:500;}
-  .song-key{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-muted);background:var(--surface-2);padding:3px 9px;border-radius:6px;}
+  .song-key{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-muted);background:var(--surface-2);padding:3px 9px;border-radius:6px;}
   .remove-song{background:none;border:none;color:var(--rose);cursor:pointer;font-size:15px;padding:0 2px;flex-shrink:0;}
   .add-song-row{display:flex;gap:8px;align-items:center;margin-top:8px;}
   .add-song-row input{margin-bottom:0;}
   .add-song-row .song-key-input{max-width:90px;}
   .link-btn{
     background:none;border:none;color:var(--accent);font-size:13px;cursor:pointer;
-    font-family:'IBM Plex Sans',sans-serif;padding:6px 0;font-weight:500;
+    font-family:'Manrope',sans-serif;padding:6px 0;font-weight:500;
   }
   .mini-note{color:var(--text-muted);font-size:12.5px;margin-top:6px;}
   .song-artist{color:var(--text-muted);font-weight:400;font-size:12.5px;}
   .song-link{
-    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--accent);
-    background:rgba(152,247,85,0.14);padding:3px 9px;border-radius:6px;
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--accent);
+    background:rgba(153,251,86,0.14);padding:3px 9px;border-radius:6px;
     text-decoration:none;flex-shrink:0;
   }
-  .song-link:hover{background:rgba(152,247,85,0.25);}
+  .song-link:hover{background:rgba(153,251,86,0.25);}
 
   .song-search-wrap{position:relative;flex:1;}
   .song-dropdown{
@@ -204,12 +207,31 @@
     box-shadow:0 8px 20px rgba(0,0,0,0.35);
   }
   .song-suggestion{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;}
-  .song-suggestion:hover{background:rgba(152,247,85,0.14);}
+  .song-suggestion:hover{background:rgba(153,251,86,0.14);}
   .song-suggestion img{width:32px;height:32px;border-radius:4px;flex-shrink:0;object-fit:cover;}
   .song-suggestion .sinfo{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
   .song-suggestion .stitle{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .song-suggestion .sartist{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .song-loading{padding:8px 10px;font-size:12.5px;color:var(--text-muted);}
+
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .cal-grid{
+    display:grid;grid-template-columns:repeat(7,1fr);gap:4px;
+  }
+  .cal-weekday{text-align:center;font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;padding-bottom:6px;}
+  .cal-cell{
+    position:relative;height:40px;display:flex;align-items:center;justify-content:center;
+    border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);
+  }
+  .cal-cell.empty{cursor:default;}
+  .cal-cell:hover:not(.empty){background:var(--surface-2);}
+  .cal-cell.today{box-shadow:inset 0 0 0 1px var(--accent-soft);}
+  .cal-cell.selected{background:var(--accent);color:var(--bg);font-weight:600;}
+  .cal-dot{
+    position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+  }
+  .cal-cell.selected .cal-dot{background:var(--bg);}
 
   @media (max-width: 560px){
     .wrap{ padding:20px 14px 70px; }
@@ -284,7 +306,84 @@
       flex-wrap:wrap;
     }
   }
+
+  .presenter{
+    position:fixed;inset:0;background:#000;color:#fff;z-index:200;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:60px 40px;text-align:center;
+  }
+  .presenter .slide-label{
+    font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:24px;
+  }
+  .presenter .slide-text{
+    font-family:'Epilogue',sans-serif;font-weight:600;
+    font-size:clamp(26px,4.5vw,52px);line-height:1.45;white-space:pre-wrap;
+    max-width:900px;
+  }
+  .presenter .slide-counter{
+    position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,0.5);
+  }
+  .presenter .presenter-close{
+    position:absolute;top:20px;right:24px;background:none;border:none;
+    color:rgba(255,255,255,0.7);font-size:24px;cursor:pointer;
+  }
+  .presenter .presenter-nav{
+    position:absolute;top:50%;transform:translateY(-50%);
+    background:none;border:none;color:rgba(255,255,255,0.4);
+    font-size:40px;cursor:pointer;padding:10px 16px;
+  }
+  .presenter .presenter-nav:hover{color:#fff;}
+  .presenter .presenter-nav.prev{left:10px;}
+  .presenter .presenter-nav.next{right:10px;}
+
+  .lyrics-box{margin:10px 0 14px;}
+  .lyrics-box textarea{
+    width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);
+    border-radius:9px;padding:10px 12px;font-family:'Manrope',sans-serif;font-size:13px;
+    resize:vertical;min-height:120px;
+  }
+
+  .material-symbols-outlined{
+    font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;
+    font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;
+    display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;
+    vertical-align:middle;
+    font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  }
+
+  .team-status-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .team-status-row input:not([type=checkbox]){flex:1;margin-bottom:0;}
+  .ts-check{width:20px;height:20px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;}
+
+  .ts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:10px 0;}
+  .ts-pill{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:14px 8px;border-radius:10px;font-size:12.5px;font-weight:600;text-align:center;
+    background:var(--surface-2);border:1px solid var(--line);cursor:pointer;
+    transition:all .15s;
+  }
+  .ts-pill.ready{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);}
+  .ts-pill.not-ready{color:var(--text-muted);}
+  .ts-pill .ts-badge{
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;
+    letter-spacing:0.06em;padding:2px 8px;border-radius:20px;
+  }
+  .ts-pill.ready .ts-badge{background:rgba(153,251,86,0.22);}
+  .ts-pill.not-ready .ts-badge{background:rgba(224,194,75,0.18);color:var(--amber);}
+
+  .hero-card{
+    background:linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;margin-bottom:16px;
+  }
+  .hero-eyebrow{
+    display:flex;align-items:center;gap:6px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;
+    letter-spacing:0.12em;color:var(--accent);margin-bottom:10px;
+  }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
 <div class="wrap" id="app"></div>
@@ -305,7 +404,9 @@ const NAME_STORAGE_KEY = 'coordinacion-alabanza-my-name';
 const STORAGE_SERVICES_KEY = 'services';
 let myName = null;
 let services = [];
-let activeTab = 'mias';
+let activeTab = 'inicio';
+let calendarViewDate = new Date();
+let selectedCalendarDay = null;
 let showAddForm = false;
 let draftDate = '';
 let draftLabel = '';
@@ -315,6 +416,8 @@ let editDraftDate = '';
 let editDraftLabel = '';
 let editDraftTime = '';
 let editDraftRoles = [];
+let draftTeamStatus = [];
+let editDraftTeamStatus = [];
 let draftRoles = [];
 let draftSongs = [];
 let songFormOpenFor = null;
@@ -324,6 +427,13 @@ let youtubeApiKey = null;
 let showApiKeyModal = false;
 let rolesMap = {};
 let songLibrary = [];
+let songSuggestions = [];
+let showPastMine = false;
+let showPastAll = false;
+let presentingServiceId = null;
+let presentSlides = [];
+let presentIndex = 0;
+let lyricsEditingSongId = null;
 
 function loadAll(){
   try{
@@ -355,6 +465,138 @@ function loadAll(){
     render();
   }, e=>console.error('Error sincronizando el repertorio guardado:', e));
 
+  db.collection('shared').doc('song-suggestions').onSnapshot(doc=>{
+    songSuggestions = doc.exists ? (doc.data().value || []) : [];
+    render();
+  }, e=>console.error('Error sincronizando las sugerencias:', e));
+
+  render();
+}
+
+function safeSpotifyUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  if(!trimmed) return '';
+  try{
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.replace(/^www\./,'');
+    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    const okHost = host === 'open.spotify.com';
+    if(okProtocol && okHost) return trimmed;
+  }catch(e){ /* URL inválida */ }
+  return '';
+}
+
+function spotifySearchUrl(title, artist){
+  const q = artist ? `${title} ${artist}` : title;
+  return 'https://open.spotify.com/search/' + encodeURIComponent(q);
+}
+
+function safeAppleMusicUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  if(!trimmed) return '';
+  try{
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.replace(/^www\./,'');
+    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    const okHost = host === 'music.apple.com';
+    if(okProtocol && okHost) return trimmed;
+  }catch(e){ /* URL inválida */ }
+  return '';
+}
+
+function appleMusicSearchUrl(title, artist){
+  const q = artist ? `${title} ${artist}` : title;
+  return 'https://music.apple.com/us/search?term=' + encodeURIComponent(q);
+}
+
+function renderSongLinks(sg){
+  const yt = sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener noreferrer">▶ YouTube</a>` : '';
+  let sp = '';
+  if(sg.spotifyLink){
+    sp = `<a class="song-link" href="${escapeHtml(sg.spotifyLink)}" target="_blank" rel="noopener noreferrer">🎵 Spotify</a>`;
+  }else if(sg.title){
+    sp = `<a class="song-link" href="${escapeHtml(spotifySearchUrl(sg.title, sg.artist))}" target="_blank" rel="noopener noreferrer">🎵 Buscar en Spotify</a>`;
+  }
+  let am = '';
+  if(sg.appleMusicLink){
+    am = `<a class="song-link" href="${escapeHtml(sg.appleMusicLink)}" target="_blank" rel="noopener noreferrer">🍎 Apple Music</a>`;
+  }else if(sg.title){
+    am = `<a class="song-link" href="${escapeHtml(appleMusicSearchUrl(sg.title, sg.artist))}" target="_blank" rel="noopener noreferrer">🍎 Buscar en Apple Music</a>`;
+  }
+  return yt + sp + am;
+}
+
+function safeYouTubeUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  if(!trimmed) return '';
+  try{
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.replace(/^www\./,'').replace(/^m\./,'');
+    const okProtocol = parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    const okHost = host === 'youtube.com' || host === 'youtu.be';
+    if(okProtocol && okHost) return trimmed;
+  }catch(e){ /* URL inválida */ }
+  return '';
+}
+
+function localTodayISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function saveSongSuggestions(){
+  try{
+    await db.collection('shared').doc('song-suggestions').set({ value: songSuggestions });
+  }catch(e){
+    console.error('No se pudo guardar las sugerencias:', e);
+  }
+}
+
+async function submitSuggestion(){
+  const rowId = 'suggestnew';
+  const titleEl = document.getElementById('song-title-'+rowId);
+  const artistEl = document.getElementById('song-artist-'+rowId);
+  const keyEl = document.getElementById('song-key-'+rowId);
+  const linkEl = document.getElementById('song-link-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
+  const appleEl = document.getElementById('song-apple-'+rowId);
+  const title = titleEl.value.trim();
+  if(!title){ titleEl.focus(); return; }
+  songSuggestions.push({
+    id: uid(),
+    title,
+    artist: (artistEl?.value || '').trim(),
+    key: (keyEl?.value || '').trim(),
+    link: safeYouTubeUrl(linkEl?.value),
+    spotifyLink: safeSpotifyUrl(spotifyEl?.value),
+    appleMusicLink: safeAppleMusicUrl(appleEl?.value),
+    suggestedBy: myName
+  });
+  await saveSongSuggestions();
+  titleEl.value = '';
+  if(artistEl) artistEl.value = '';
+  if(keyEl) keyEl.value = '';
+  if(linkEl) linkEl.value = '';
+  if(spotifyEl) spotifyEl.value = '';
+  if(appleEl) appleEl.value = '';
+  render();
+}
+
+async function approveSuggestion(id){
+  const sug = songSuggestions.find(s=>s.id===id);
+  if(!sug) return;
+  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link, spotifyLink: sug.spotifyLink, appleMusicLink: sug.appleMusicLink });
+  songSuggestions = songSuggestions.filter(s=>s.id!==id);
+  await saveSongSuggestions();
+  render();
+}
+
+async function rejectSuggestion(id){
+  songSuggestions = songSuggestions.filter(s=>s.id!==id);
+  await saveSongSuggestions();
   render();
 }
 
@@ -380,7 +622,9 @@ async function addToLibraryIfNew(song){
     title: song.title,
     artist: song.artist || '',
     key: song.key || '',
-    link: song.link || ''
+    link: safeYouTubeUrl(song.link || ''),
+    spotifyLink: safeSpotifyUrl(song.spotifyLink || ''),
+    appleMusicLink: safeAppleMusicUrl(song.appleMusicLink || '')
   });
   await saveSongLibrary();
 }
@@ -391,13 +635,17 @@ async function addToLibrary(){
   const artistEl = document.getElementById('song-artist-'+rowId);
   const keyEl = document.getElementById('song-key-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
+  const appleEl = document.getElementById('song-apple-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
   const newSong = {
     title,
     artist: (artistEl?.value || '').trim(),
     key: (keyEl?.value || '').trim(),
-    link: (linkEl?.value || '').trim()
+    link: safeYouTubeUrl(linkEl?.value),
+    spotifyLink: safeSpotifyUrl(spotifyEl?.value),
+    appleMusicLink: safeAppleMusicUrl(appleEl?.value)
   };
   const alreadyExists = songLibrary.some(sg=>songsMatch(sg, newSong));
   if(alreadyExists){
@@ -409,6 +657,8 @@ async function addToLibrary(){
   if(artistEl) artistEl.value = '';
   if(keyEl) keyEl.value = '';
   if(linkEl) linkEl.value = '';
+  if(spotifyEl) spotifyEl.value = '';
+  if(appleEl) appleEl.value = '';
   render();
 }
 
@@ -425,19 +675,33 @@ function pickFromLibrary(rowId, index){
   const artistEl = document.getElementById('song-artist-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
   const keyEl = document.getElementById('song-key-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
+  const appleEl = document.getElementById('song-apple-'+rowId);
   if(titleEl) titleEl.value = song.title || '';
   if(artistEl) artistEl.value = song.artist || '';
   if(linkEl) linkEl.value = song.link || '';
   if(keyEl) keyEl.value = song.key || '';
+  if(spotifyEl) spotifyEl.value = song.spotifyLink || '';
+  if(appleEl) appleEl.value = song.appleMusicLink || '';
   if(!rowId.startsWith('inline-')){
     const s = draftSongs.find(x=>x.id===rowId);
-    if(s){ s.title = song.title || ''; s.artist = song.artist || ''; s.link = song.link || ''; s.key = song.key || ''; }
+    if(s){ s.title = song.title || ''; s.artist = song.artist || ''; s.link = song.link || ''; s.key = song.key || ''; s.spotifyLink = song.spotifyLink || ''; s.appleMusicLink = song.appleMusicLink || ''; }
   }
+}
+
+function getAccessRole(entry){
+  if(!entry) return 'member';
+  return typeof entry === 'string' ? entry : (entry.access || 'member');
+}
+
+function getMinistryRole(entry){
+  if(!entry) return '';
+  return typeof entry === 'string' ? '' : (entry.role || '');
 }
 
 function getMyRole(name){
   if(!name) return 'member';
-  return rolesMap[name.trim().toLowerCase()] || 'member';
+  return getAccessRole(rolesMap[name.trim().toLowerCase()]);
 }
 
 function roleLabel(r){
@@ -459,11 +723,13 @@ async function saveRoles(){
 async function submitAccess(){
   const nameEl = document.getElementById('access-name-input');
   const roleEl = document.getElementById('access-role-select');
+  const ministryEl = document.getElementById('access-ministry-input');
   const name = nameEl.value.trim();
   if(!name){ nameEl.focus(); return; }
-  rolesMap[name.toLowerCase()] = roleEl.value;
+  rolesMap[name.toLowerCase()] = { access: roleEl.value, role: (ministryEl?.value || '').trim() };
   await saveRoles();
   nameEl.value = '';
+  if(ministryEl) ministryEl.value = '';
   render();
 }
 
@@ -563,6 +829,12 @@ function startAddForm(){
   draftTime = '';
   draftRoles = [{id:uid(), role:'', person:''}];
   draftSongs = [];
+  draftTeamStatus = [
+    {id:uid(), label:'Sonido', ready:false},
+    {id:uid(), label:'Banda', ready:false},
+    {id:uid(), label:'Voces', ready:false},
+    {id:uid(), label:'Proyección', ready:false}
+  ];
   render();
 }
 function cancelAddForm(){
@@ -579,10 +851,60 @@ function removeDraftRole(id){
 }
 function updateDraftRole(id, field, value){
   const r = draftRoles.find(x=>x.id===id);
+  if(!r) return;
   r[field] = value;
+  if(field==='person' && value && !r.role){
+    const ministryRole = getMinistryRole(rolesMap[value.trim().toLowerCase()]);
+    if(ministryRole){
+      r.role = ministryRole;
+      const roleInput = document.getElementById('role-role-'+id);
+      if(roleInput) roleInput.value = ministryRole;
+    }
+  }
 }
 function addDraftSong(){
   draftSongs.push({id:uid(), title:'', key:''});
+  render();
+}
+function addDraftTeamStatus(){
+  draftTeamStatus.push({id:uid(), label:'', ready:false});
+  render();
+}
+function removeDraftTeamStatus(id){
+  draftTeamStatus = draftTeamStatus.filter(t=>t.id!==id);
+  render();
+}
+function updateDraftTeamStatusLabel(id, value){
+  const t = draftTeamStatus.find(x=>x.id===id);
+  if(t) t.label = value;
+}
+function toggleDraftTeamStatusReady(id){
+  const t = draftTeamStatus.find(x=>x.id===id);
+  if(t){ t.ready = !t.ready; render(); }
+}
+function addEditTeamStatus(){
+  editDraftTeamStatus.push({id:uid(), label:'', ready:false});
+  render();
+}
+function removeEditTeamStatus(id){
+  editDraftTeamStatus = editDraftTeamStatus.filter(t=>t.id!==id);
+  render();
+}
+function updateEditTeamStatusLabel(id, value){
+  const t = editDraftTeamStatus.find(x=>x.id===id);
+  if(t) t.label = value;
+}
+function toggleEditTeamStatusReady(id){
+  const t = editDraftTeamStatus.find(x=>x.id===id);
+  if(t){ t.ready = !t.ready; render(); }
+}
+async function toggleTeamStatus(serviceId, itemId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc || !svc.teamStatus) return;
+  const item = svc.teamStatus.find(t=>t.id===itemId);
+  if(!item) return;
+  item.ready = !item.ready;
+  await saveServices();
   render();
 }
 function removeDraftSong(id){
@@ -711,11 +1033,20 @@ async function submitNewService(){
       id:s.id,
       title:(document.getElementById('song-title-'+s.id)?.value || '').trim(),
       artist:(document.getElementById('song-artist-'+s.id)?.value || '').trim(),
-      link:(document.getElementById('song-link-'+s.id)?.value || '').trim(),
+      link:safeYouTubeUrl(document.getElementById('song-link-'+s.id)?.value),
+      spotifyLink:safeSpotifyUrl(document.getElementById('song-spotify-'+s.id)?.value),
+      appleMusicLink:safeAppleMusicUrl(document.getElementById('song-apple-'+s.id)?.value),
       key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
     }))
     .filter(s=>s.title);
-  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs });
+  const teamStatus = draftTeamStatus
+    .map(t=>({
+      id:t.id,
+      label:(document.getElementById('team-status-'+t.id)?.value || '').trim(),
+      ready: !!t.ready
+    }))
+    .filter(t=>t.label);
+  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs, teamStatus });
   for(const sg of songs){
     await addToLibraryIfNew(sg);
   }
@@ -736,15 +1067,19 @@ async function addSongToService(serviceId){
   const keyEl = document.getElementById('song-key-'+rowId);
   const artistEl = document.getElementById('song-artist-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
+  const spotifyEl = document.getElementById('song-spotify-'+rowId);
+  const appleEl = document.getElementById('song-apple-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
   const key = keyEl.value.trim();
   const artist = (artistEl?.value || '').trim();
-  const link = (linkEl?.value || '').trim();
+  const link = safeYouTubeUrl(linkEl?.value);
+  const spotifyLink = safeSpotifyUrl(spotifyEl?.value);
+  const appleMusicLink = safeAppleMusicUrl(appleEl?.value);
   const svc = services.find(s=>s.id===serviceId);
   if(!svc.songs) svc.songs = [];
-  svc.songs.push({ id:uid(), title, key, artist, link });
-  await addToLibraryIfNew({ title, key, artist, link });
+  svc.songs.push({ id:uid(), title, key, artist, link, spotifyLink, appleMusicLink });
+  await addToLibraryIfNew({ title, key, artist, link, spotifyLink, appleMusicLink });
   await saveServices();
   songFormOpenFor = null;
   render();
@@ -757,23 +1092,157 @@ async function removeSongFromService(serviceId, songId){
   render();
 }
 
+function startEditLyrics(songId){
+  lyricsEditingSongId = songId;
+  render();
+}
+
+function cancelEditLyrics(){
+  lyricsEditingSongId = null;
+  render();
+}
+
+async function saveLyrics(serviceId, songId){
+  const ta = document.getElementById('lyrics-textarea-'+songId);
+  if(!ta) return;
+  const text = ta.value;
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  const sg = svc.songs.find(x=>x.id===songId);
+  if(!sg) return;
+  sg.lyrics = text;
+  await saveServices();
+  const libEntry = songLibrary.find(l=>songsMatch(l, sg));
+  if(libEntry){
+    libEntry.lyrics = text;
+    await saveSongLibrary();
+  }
+  lyricsEditingSongId = null;
+  render();
+}
+
+function splitLyrics(text){
+  return (text||'').split(/\n\s*-{3,}\s*\n/).map(t=>t.trim()).filter(Boolean);
+}
+
+function buildSlidesForService(svc){
+  const slides = [];
+  (svc.songs||[]).forEach(sg=>{
+    slides.push({ type:'title', text: sg.title || 'Canción' });
+    splitLyrics(sg.lyrics).forEach(chunk=>{
+      slides.push({ type:'lyric', text: chunk });
+    });
+  });
+  return slides;
+}
+
+function startPresent(serviceId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  presentSlides = buildSlidesForService(svc);
+  if(presentSlides.length===0){
+    alert('Este servicio todavía no tiene canciones en el repertorio.');
+    return;
+  }
+  presentIndex = 0;
+  presentingServiceId = serviceId;
+  render();
+}
+
+function stopPresent(){
+  presentingServiceId = null;
+  render();
+}
+
+function nextSlide(){
+  if(presentIndex < presentSlides.length-1){
+    presentIndex++;
+    render();
+  }
+}
+
+function prevSlide(){
+  if(presentIndex > 0){
+    presentIndex--;
+    render();
+  }
+}
+
+window.addEventListener('keydown', (e)=>{
+  if(!presentingServiceId) return;
+  if(e.key==='ArrowRight' || e.key===' '){ e.preventDefault(); nextSlide(); }
+  else if(e.key==='ArrowLeft'){ prevSlide(); }
+  else if(e.key==='Escape'){ stopPresent(); }
+});
+
+function downloadPptxForService(serviceId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  if(typeof PptxGenJS === 'undefined'){
+    alert('No se pudo cargar el generador de PowerPoint. Revisa tu conexión e intenta de nuevo.');
+    return;
+  }
+  const pptx = new PptxGenJS();
+  pptx.defineLayout({ name:'WIDE', width:13.33, height:7.5 });
+  pptx.layout = 'WIDE';
+  let hasContent = false;
+  (svc.songs||[]).forEach(sg=>{
+    hasContent = true;
+    const titleSlide = pptx.addSlide();
+    titleSlide.background = { color:'042224' };
+    titleSlide.addText(sg.title || 'Canción', {
+      x:0.5, y:3, w:12.33, h:1.5, align:'center', fontSize:44, bold:true, color:'98F755', fontFace:'Georgia'
+    });
+    splitLyrics(sg.lyrics).forEach(chunk=>{
+      const slide = pptx.addSlide();
+      slide.background = { color:'042224' };
+      slide.addText(chunk, {
+        x:0.5, y:0.5, w:12.33, h:6.5, align:'center', valign:'middle',
+        fontSize:32, color:'FFFFFF', fontFace:'Georgia', wrap:true
+      });
+    });
+  });
+  if(!hasContent){
+    alert('Este servicio todavía no tiene canciones en el repertorio.');
+    return;
+  }
+  pptx.writeFile({ fileName: `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-diapositivas.pptx` });
+}
+
 function render(){
   const app = document.getElementById('app');
 
+  if(presentingServiceId){
+    const slide = presentSlides[presentIndex];
+    app.innerHTML = `
+      <div class="presenter">
+        <button class="presenter-close" onclick="stopPresent()" title="Cerrar (Esc)">✕</button>
+        ${presentIndex>0 ? `<button class="presenter-nav prev" onclick="prevSlide()">‹</button>` : ''}
+        ${presentIndex < presentSlides.length-1 ? `<button class="presenter-nav next" onclick="nextSlide()">›</button>` : ''}
+        ${slide.type==='title' ? `<div class="slide-label">Siguiente canción</div>` : ''}
+        <div class="slide-text">${escapeHtml(slide.text)}</div>
+        <div class="slide-counter">${presentIndex+1} / ${presentSlides.length}</div>
+      </div>`;
+    return;
+  }
+
   if(!myName){
+    const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
     app.innerHTML = `
       <div class="overlay">
         <div class="modal">
           <h2>¿Quién eres?</h2>
-          <p>Escribe tu nombre para poder confirmar tu participación en los servicios. Solo lo pediremos una vez en este dispositivo.</p>
-          <input id="name-input" placeholder="Tu nombre completo" />
+          <p>Elige tu nombre de la lista para poder confirmar tu participación en los servicios. Solo lo pediremos una vez en este dispositivo.</p>
+          ${memberOptions.length ? `
+            <select id="name-input">
+              <option value="">Selecciona tu nombre</option>
+              ${memberOptions.map(name=>`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('')}
+            </select>
+            <p class="mini-note" style="margin-top:-4px;">¿No apareces en la lista? Pídele al Desarrollador o Coordinador que te agregue primero en Accesos.</p>
+          ` : `<p class="mini-note">Cargando la lista de miembros…</p>`}
           <button class="btn-main" onclick="handleNameSubmit()">Continuar</button>
         </div>
       </div>`;
-    setTimeout(()=>{
-      const inp = document.getElementById('name-input');
-      if(inp){ inp.focus(); inp.addEventListener('keydown', e=>{ if(e.key==='Enter') handleNameSubmit(); }); }
-    },0);
     return;
   }
 
@@ -784,16 +1253,20 @@ function render(){
   const mineSorted = upcomingSorted(mine);
   const allSorted = upcomingSorted(services);
 
-  const tabsAvailable = [{ id:'mias', label:'Bandeja de convocatorias' }];
+  const tabsAvailable = [{ id:'inicio', label:'Inicio' }];
+  tabsAvailable.push({ id:'mias', label:'Bandeja de convocatorias' });
+  tabsAvailable.push({ id:'sugerencias', label:'Sugerencias' });
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'todas', label:'Todos los servicios' });
   if(myRole==='coordinator' || myRole==='developer') tabsAvailable.push({ id:'repertorio', label:'Repertorio' });
   tabsAvailable.push({ id:'calendario', label:'Calendario' });
   if(myRole==='developer') tabsAvailable.push({ id:'accesos', label:'Accesos' });
-  if(!tabsAvailable.find(t=>t.id===activeTab)) activeTab = 'mias';
+  if(!tabsAvailable.find(t=>t.id===activeTab)) activeTab = 'inicio';
 
   let content;
-  if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
+  if(activeTab==='inicio') content = renderDashboard(myRole, mineSorted, allSorted);
+  else if(activeTab==='todas' && (myRole==='coordinator' || myRole==='developer')) content = renderAll(allSorted);
   else if(activeTab==='repertorio' && (myRole==='coordinator' || myRole==='developer')) content = renderLibrary();
+  else if(activeTab==='sugerencias') content = renderSuggestions(myRole);
   else if(activeTab==='calendario') content = renderCalendar(allSorted);
   else if(activeTab==='accesos' && myRole==='developer') content = renderAccess();
   else content = renderMine(mineSorted);
@@ -837,41 +1310,138 @@ function renderApiKeyModal(){
     </div>`;
 }
 
+function prevMonth(){
+  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth()-1, 1);
+  render();
+}
+function nextMonth(){
+  calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth()+1, 1);
+  render();
+}
+function selectCalendarDay(dateStr){
+  selectedCalendarDay = selectedCalendarDay === dateStr ? null : dateStr;
+  render();
+}
+
 function renderCalendar(list){
-  if(list.length===0){
-    return `<div class="empty"><div class="big">Sin fechas todavía</div>Cuando se agreguen servicios, aparecerán aquí.</div>`;
+  const year = calendarViewDate.getFullYear();
+  const month = calendarViewDate.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const startWeekday = firstOfMonth.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  let monthLabel = firstOfMonth.toLocaleDateString('es-ES', { month:'long', year:'numeric' });
+  monthLabel = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+  const servicesByDate = {};
+  list.forEach(s=>{
+    if(!servicesByDate[s.date]) servicesByDate[s.date] = [];
+    servicesByDate[s.date].push(s);
+  });
+
+  const todayStr = localTodayISO();
+
+  let cells = '';
+  for(let i=0;i<startWeekday;i++){
+    cells += `<div class="cal-cell empty"></div>`;
   }
-  const rows = list.map(s=>`
+  for(let d=1; d<=daysInMonth; d++){
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasService = !!servicesByDate[dateStr];
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === selectedCalendarDay;
+    cells += `
+      <div class="cal-cell ${hasService?'has-service':''} ${isToday?'today':''} ${isSelected?'selected':''}" onclick="selectCalendarDay('${dateStr}')">
+        <span class="cal-daynum">${d}</span>
+        ${hasService ? '<span class="cal-dot"></span>' : ''}
+      </div>`;
+  }
+
+  const weekdayHeaders = ['D','L','M','M','J','V','S'].map(w=>`<div class="cal-weekday">${w}</div>`).join('');
+
+  const calendarCard = `
+    <div class="card">
+      <div class="cal-header">
+        <button class="icon-btn" onclick="prevMonth()" title="Mes anterior">‹</button>
+        <span class="section-title" style="margin:0;">${escapeHtml(monthLabel)}</span>
+        <button class="icon-btn" onclick="nextMonth()" title="Mes siguiente">›</button>
+      </div>
+      <div class="cal-grid">${weekdayHeaders}${cells}</div>
+    </div>`;
+
+  if(list.length===0){
+    return calendarCard + `<div class="empty"><div class="big">Sin fechas todavía</div>Cuando se agreguen servicios, aparecerán aquí.</div>`;
+  }
+
+  const relevant = selectedCalendarDay ? (servicesByDate[selectedCalendarDay] || []) : list;
+  const detailRows = relevant.map(s=>`
     <div class="role-row">
       <div class="role-info">
         <span class="role-name">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
         <span class="role-person">${escapeHtml(s.label)}</span>
       </div>
-    </div>`).join('<div class="divider"></div>');
-  return `<div class="card">${rows}</div>`;
+    </div>`).join('<div class="divider"></div>') || `<div class="mini-note">Nada para este día.</div>`;
+
+  const detailTitle = selectedCalendarDay
+    ? `${escapeHtml(fmtDate(selectedCalendarDay))} <button class="link-btn" style="padding:0;margin-left:8px;" onclick="selectCalendarDay('${selectedCalendarDay}')">Ver todos</button>`
+    : 'Todos los próximos servicios';
+
+  return `
+    ${calendarCard}
+    <div class="section-title">${detailTitle}</div>
+    <div class="card">${detailRows}</div>`;
+}
+
+function downloadBackup(){
+  const backup = {
+    exportedAt: new Date().toISOString(),
+    services,
+    rolesMap,
+    songLibrary,
+    songSuggestions
+  };
+  const json = JSON.stringify(backup, null, 2);
+  const blob = new Blob([json], { type:'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `respaldo-alabanza-${localTodayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
 }
 
 function renderAccess(){
   const entries = Object.entries(rolesMap);
-  const rowsHtml = entries.map(([lname, role], i)=>`
+  const rowsHtml = entries.map(([lname, entry], i)=>{
+    const ministryRole = getMinistryRole(entry);
+    return `
     <div class="role-chip">
-      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(role)}</span>
+      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(getAccessRole(entry))}${ministryRole ? ` · ${escapeHtml(ministryRole)}` : ''}</span>
       <button class="icon-btn" onclick="removeRoleEntry(${i})">✕</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   return `
     <div class="card">
       <label class="field-label">Asignar acceso</label>
       <input id="access-name-input" placeholder="Nombre completo (igual al que usan para entrar)" />
-      <label class="field-label">Rol</label>
+      <label class="field-label">Rol de acceso</label>
       <select id="access-role-select">
         <option value="member">Miembro</option>
         <option value="coordinator">Coordinador</option>
         <option value="developer">Desarrollador</option>
       </select>
+      <label class="field-label">Rol / instrumento por defecto (opcional)</label>
+      <input id="access-ministry-input" placeholder="Ej. Guitarrista, Coro, Pianista..." />
       <button class="btn-main" onclick="submitAccess()">Guardar acceso</button>
     </div>
     <div class="section-title">Accesos actuales</div>
     ${entries.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Nadie más configurado todavía.</div>'}
+    <div class="section-title">Respaldo de datos</div>
+    <div class="card">
+      <div class="mini-note" style="margin-top:0;">Descarga una copia de todo (servicios, accesos, repertorio y sugerencias) en un archivo. Guárdala en un lugar seguro por si algo se pierde.</div>
+      <button class="btn-main" style="margin-top:12px;" onclick="downloadBackup()">Descargar respaldo completo</button>
+    </div>
   `;
 }
 
@@ -881,7 +1451,7 @@ function renderLibrary(){
     <div class="song-row">
       <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
       ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-      ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
+      ${renderSongLinks(sg)}
       <button class="remove-song" onclick="removeFromLibrary('${sg.id}')">✕</button>
     </div>`).join('<div class="divider"></div>');
 
@@ -897,6 +1467,8 @@ function renderLibrary(){
         </div>
         <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
       </div>
+      <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
+      <input id="song-apple-${rowId}" placeholder="Link de Apple Music (opcional)" />
       <button class="btn-main" onclick="addToLibrary()">Guardar en repertorio</button>
     </div>
     <div class="section-title">Canciones guardadas</div>
@@ -904,46 +1476,276 @@ function renderLibrary(){
   `;
 }
 
-function renderMine(list){
-  if(list.length===0){
-    return `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
-  }
-  return list.map(s=>{
-    const r = s.myRole;
-    const songs = s.songs || [];
-    const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
-      : r.status==='declined' ? '<span class="badge declined">No podré ir</span>'
-      : '<span class="badge pending">Por confirmar</span>';
-    const songsHtml = songs.length ? `
-        <div class="divider"></div>
-        <div class="mini-note" style="margin-bottom:6px;">Repertorio</div>
-        ${songs.map((sg,i)=>`
-          <div class="song-row" style="padding:4px 0;">
-            <span class="song-num">${i+1}.</span>
-            <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-            ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-            ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
-          </div>`).join('')}` : '';
+function renderSuggestions(myRole){
+  const rowId = 'suggestnew';
+  const isManager = (myRole==='coordinator' || myRole==='developer');
+
+  const rowsHtml = songSuggestions.map(sg=>{
+    const canRemove = isManager || (sg.suggestedBy && myName && sg.suggestedBy.toLowerCase()===myName.toLowerCase());
+    const actions = isManager
+      ? `<button class="remove-song" style="color:var(--sage);" onclick="approveSuggestion('${sg.id}')" title="Aprobar y guardar en repertorio">✓</button>
+         <button class="remove-song" onclick="rejectSuggestion('${sg.id}')" title="Descartar">✕</button>`
+      : (canRemove ? `<button class="remove-song" onclick="rejectSuggestion('${sg.id}')" title="Quitar mi sugerencia">✕</button>` : '');
     return `
-      <div class="card">
-        <div class="date-row">
-          <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-          ${badge}
+      <div class="song-row">
+        <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
+        ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
+        ${renderSongLinks(sg)}
+        ${actions}
+      </div>
+      <div class="mini-note" style="margin:-4px 0 2px;">Sugerida por ${escapeHtml(sg.suggestedBy || 'alguien')}</div>`;
+  }).join('<div class="divider"></div>');
+
+  return `
+    <div class="card">
+      <label class="field-label">Sugerir una canción para un próximo servicio</label>
+      <div class="role-form-row" style="align-items:flex-start;">
+        <div class="song-search-wrap">
+          <input id="song-title-${rowId}" placeholder="Buscar canción..." oninput="handleSongInput('${rowId}', this.value)" onblur="setTimeout(()=>hideDropdown('${rowId}'),150)" />
+          <input type="hidden" id="song-artist-${rowId}" />
+          <input type="hidden" id="song-link-${rowId}" />
+          <div class="song-dropdown" id="song-dropdown-${rowId}" style="display:none;"></div>
         </div>
-        <div class="label">${escapeHtml(s.label)}</div>
-        <div class="role-row" style="padding-top:0;">
-          <div class="role-info">
-            <span class="role-name">Tu rol: ${escapeHtml(r.role)}</span>
-          </div>
-        </div>
-        <div class="confirm-actions" style="margin-top:10px;">
-          <button class="btn-small yes" onclick="respond('${s.id}','${r.id}','confirmed')">Confirmar</button>
-          <button class="btn-small no" onclick="respond('${s.id}','${r.id}','declined')">No podré ir</button>
-        </div>
-        ${songsHtml}
+        <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
+      </div>
+      <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
+      <input id="song-apple-${rowId}" placeholder="Link de Apple Music (opcional)" />
+      <button class="btn-main" onclick="submitSuggestion()">Enviar sugerencia</button>
+    </div>
+    <div class="section-title">Sugerencias del equipo</div>
+    ${songSuggestions.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no hay sugerencias.</div>'}
+  `;
+}
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+function escapeICS(str){
+  return String(str).replace(/([,;])/g, '\\$1').replace(/\r?\n/g, '\\n');
+}
+
+function buildICS(svc){
+  const uid = svc.id + '@coordinacion-alabanza';
+  const now = new Date();
+  const dtstamp = `${now.getUTCFullYear()}${pad2(now.getUTCMonth()+1)}${pad2(now.getUTCDate())}T${pad2(now.getUTCHours())}${pad2(now.getUTCMinutes())}${pad2(now.getUTCSeconds())}Z`;
+  const [y, m, d] = svc.date.split('-').map(Number);
+  let dtStartLine, dtEndLine;
+
+  if(svc.time){
+    const [hh, mm] = svc.time.split(':').map(Number);
+    const startStr = `${y}${pad2(m)}${pad2(d)}T${pad2(hh)}${pad2(mm)}00`;
+    const endDate = new Date(y, m-1, d, hh, mm);
+    endDate.setHours(endDate.getHours()+2);
+    const endStr = `${endDate.getFullYear()}${pad2(endDate.getMonth()+1)}${pad2(endDate.getDate())}T${pad2(endDate.getHours())}${pad2(endDate.getMinutes())}00`;
+    dtStartLine = `DTSTART:${startStr}`;
+    dtEndLine = `DTEND:${endStr}`;
+  }else{
+    const nextDay = new Date(y, m-1, d+1);
+    const nextStr = `${nextDay.getFullYear()}${pad2(nextDay.getMonth()+1)}${pad2(nextDay.getDate())}`;
+    dtStartLine = `DTSTART;VALUE=DATE:${y}${pad2(m)}${pad2(d)}`;
+    dtEndLine = `DTEND;VALUE=DATE:${nextStr}`;
+  }
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Coordinacion Alabanza//ES',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${dtstamp}`,
+    dtStartLine,
+    dtEndLine,
+    `SUMMARY:${escapeICS(svc.label || 'Servicio')}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ];
+  return lines.join('\r\n');
+}
+
+function downloadICS(serviceId){
+  const svc = services.find(s=>s.id===serviceId);
+  if(!svc) return;
+  const ics = buildICS(svc);
+  const blob = new Blob([ics], { type:'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+
+function renderTeamStatusGrid(svc, interactive){
+  const items = svc.teamStatus || [];
+  if(items.length===0) return '';
+  const pills = items.map(t=>{
+    const icon = teamStatusIcon(t.label);
+    const cls = t.ready ? 'ready' : 'not-ready';
+    const onclick = interactive ? ` onclick="toggleTeamStatus('${svc.id}','${t.id}')"` : '';
+    return `
+      <div class="ts-pill ${cls}"${onclick}>
+        <span class="material-symbols-outlined">${icon}</span>
+        <span>${escapeHtml(t.label)}</span>
+        <span class="ts-badge">${t.ready ? 'Listo' : 'Pendiente'}</span>
       </div>`;
   }).join('');
+  return `<div class="ts-grid">${pills}</div>`;
 }
+
+function renderMineCard(s){
+  const r = s.myRole;
+  const songs = s.songs || [];
+  const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
+    : r.status==='declined' ? '<span class="badge declined">No podré ir</span>'
+    : '<span class="badge pending">Por confirmar</span>';
+  const songsHtml = songs.length ? `
+      <div class="divider"></div>
+      <div class="mini-note" style="margin-bottom:6px;">Repertorio</div>
+      ${songs.map((sg,i)=>`
+        <div class="song-row" style="padding:4px 0;">
+          <span class="song-num">${i+1}.</span>
+          <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
+          ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
+          ${renderSongLinks(sg)}
+        </div>`).join('')}` : '';
+  return `
+    <div class="card">
+      <div class="date-row">
+        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
+        ${badge}
+      </div>
+      <div class="label">${escapeHtml(s.label)}</div>
+      <div class="role-row" style="padding-top:0;">
+        <div class="role-info">
+          <span class="role-name">Tu rol: ${escapeHtml(r.role)}</span>
+        </div>
+      </div>
+      <div class="confirm-actions" style="margin-top:10px;">
+        <button class="btn-small yes" onclick="respond('${s.id}','${r.id}','confirmed')">Confirmar</button>
+        <button class="btn-small no" onclick="respond('${s.id}','${r.id}','declined')">No podré ir</button>
+      </div>
+      <button class="link-btn" style="margin-top:2px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
+      ${songs.length ? `<button class="link-btn" style="padding:0;margin-top:4px;" onclick="startPresent('${s.id}')">🎤 Ver diapositivas</button>` : ''}
+      ${renderTeamStatusGrid(s, false)}
+      ${songsHtml}
+    </div>`;
+}
+
+function togglePastMine(){ showPastMine = !showPastMine; render(); }
+
+function renderMine(list){
+  const todayStr = localTodayISO();
+  const upcoming = list.filter(s=>s.date >= todayStr);
+  const past = list.filter(s=>s.date < todayStr);
+
+  let html = '';
+  if(upcoming.length===0){
+    html += `<div class="empty"><div class="big">Bandeja vacía</div>No apareces asignado a ningún servicio próximo todavía.</div>`;
+  }else{
+    html += upcoming.map(renderMineCard).join('');
+  }
+
+  if(past.length>0){
+    html += `<button class="link-btn" onclick="togglePastMine()">${showPastMine ? 'Ocultar' : 'Ver'} historial (${past.length})</button>`;
+    if(showPastMine) html += past.map(renderMineCard).join('');
+  }
+
+  return html;
+}
+
+function renderAllCard(s){
+  if(editingServiceId === s.id) return renderEditForm(s);
+
+  const rolesHtml = s.roles.map(r=>{
+    const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
+      : r.status==='declined' ? '<span class="badge declined">No podrá ir</span>'
+      : '<span class="badge pending">Por confirmar</span>';
+    return `
+      <div class="role-row">
+        <div class="role-info">
+          <span class="role-name">${escapeHtml(r.role)}</span>
+          <span class="role-person">${escapeHtml(r.person)}</span>
+        </div>
+        ${badge}
+      </div>`;
+  }).join('<div class="divider"></div>');
+
+  const songs = s.songs || [];
+  const songsListHtml = songs.map((sg,i)=>`
+    <div class="song-row">
+      <span class="song-num">${i+1}.</span>
+      <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
+      ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
+      ${renderSongLinks(sg)}
+      <button class="remove-song" style="color:var(--accent);" onclick="startEditLyrics('${sg.id}')" title="Editar letra para diapositivas">📝</button>
+      <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
+    </div>
+    ${lyricsEditingSongId === sg.id ? `
+      <div class="lyrics-box">
+        <label class="field-label">Letra de "${escapeHtml(sg.title)}" (separa cada diapositiva con una línea que diga ---)</label>
+        <textarea id="lyrics-textarea-${sg.id}" placeholder="Primera estrofa aquí...
+
+---
+
+Coro aquí...">${escapeHtml(sg.lyrics||'')}</textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-small yes" onclick="saveLyrics('${s.id}','${sg.id}')">Guardar letra</button>
+          <button class="btn-small" onclick="cancelEditLyrics()">Cancelar</button>
+        </div>
+      </div>` : (sg.lyrics ? `<div class="mini-note" style="margin:-6px 0 8px;">✓ Letra guardada (${splitLyrics(sg.lyrics).length} diapositivas)</div>` : '')}
+  `).join('');
+
+  const songFormHtml = songFormOpenFor === s.id ? `
+    ${songLibrary.length ? `<select onchange="pickFromLibrary('inline-${s.id}', this.value)" style="margin-bottom:8px;">
+      <option value="">O elige del repertorio guardado...</option>
+      ${songLibrary.map((sg,i)=>`<option value="${i}">${escapeHtml(sg.title)}${sg.artist ? ' — '+escapeHtml(sg.artist) : ''}</option>`).join('')}
+    </select>` : ''}
+    <div class="add-song-row" style="align-items:flex-start;">
+      <div class="song-search-wrap">
+        <input id="song-title-inline-${s.id}" placeholder="Buscar canción..." oninput="handleSongInput('inline-${s.id}', this.value)" onblur="setTimeout(()=>hideDropdown('inline-${s.id}'),150)" />
+        <input type="hidden" id="song-artist-inline-${s.id}" />
+        <input type="hidden" id="song-link-inline-${s.id}" />
+        <div class="song-dropdown" id="song-dropdown-inline-${s.id}" style="display:none;"></div>
+      </div>
+      <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
+    </div>
+    <input id="song-spotify-inline-${s.id}" placeholder="Link de Spotify (opcional)" />
+    <input id="song-apple-inline-${s.id}" placeholder="Link de Apple Music (opcional)" />
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
+      <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
+    </div>` : `<button class="link-btn" onclick="toggleSongForm('${s.id}')">+ Agregar canción</button>`;
+
+  return `
+    <div class="card">
+      <div class="card-header-row">
+        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
+        <span style="display:flex;gap:10px;">
+          <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
+          <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
+        </span>
+      </div>
+      <div class="label">${escapeHtml(s.label)}</div>
+      <button class="link-btn" style="margin-bottom:4px;" onclick="downloadICS('${s.id}')">📅 Agregar al calendario</button>
+      ${(s.teamStatus && s.teamStatus.length) ? `
+        <div class="mini-note" style="margin:8px 0 0;">Estado del equipo</div>
+        ${renderTeamStatusGrid(s, true)}` : ''}
+      ${rolesHtml}
+      <div class="divider"></div>
+      <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
+      ${songsListHtml}
+      ${songs.length ? `
+        <div style="display:flex;gap:16px;margin:6px 0 2px;">
+          <button class="link-btn" style="padding:0;" onclick="startPresent('${s.id}')">🎤 Ver diapositivas</button>
+          <button class="link-btn" style="padding:0;" onclick="downloadPptxForService('${s.id}')">⬇️ Descargar PowerPoint</button>
+        </div>` : ''}
+      ${songFormHtml}
+    </div>`;
+}
+
+function togglePastAll(){ showPastAll = !showPastAll; render(); }
 
 function renderAll(list){
   const summaryHtml = renderPendingSummary(list);
@@ -951,74 +1753,59 @@ function renderAll(list){
   if(list.length===0){
     return summaryHtml + formHtml + `<div class="empty"><div class="big">Aún no hay servicios</div>Agrega el primero para empezar a coordinar.</div>`;
   }
-  const cards = list.map(s=>{
-    if(editingServiceId === s.id) return renderEditForm(s);
 
-    const rolesHtml = s.roles.map(r=>{
-      const badge = r.status==='confirmed' ? '<span class="badge confirmed">Confirmado</span>'
-        : r.status==='declined' ? '<span class="badge declined">No podrá ir</span>'
-        : '<span class="badge pending">Por confirmar</span>';
-      return `
-        <div class="role-row">
-          <div class="role-info">
-            <span class="role-name">${escapeHtml(r.role)}</span>
-            <span class="role-person">${escapeHtml(r.person)}</span>
-          </div>
-          ${badge}
-        </div>`;
-    }).join('<div class="divider"></div>');
+  const todayStr = localTodayISO();
+  const upcoming = list.filter(s=>s.date >= todayStr || s.id===editingServiceId);
+  const past = list.filter(s=>s.date < todayStr && s.id!==editingServiceId);
 
-    const songs = s.songs || [];
-    const songsListHtml = songs.map((sg,i)=>`
-      <div class="song-row">
-        <span class="song-num">${i+1}.</span>
-        <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-        ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
-        ${sg.link ? `<a class="song-link" href="${escapeHtml(sg.link)}" target="_blank" rel="noopener">▶ Video</a>` : ''}
-        <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
-      </div>`).join('');
+  let cardsHtml = upcoming.length ? upcoming.map(renderAllCard).join('') : `<div class="mini-note">No hay servicios próximos.</div>`;
 
-    const songFormHtml = songFormOpenFor === s.id ? `
-      ${songLibrary.length ? `<select onchange="pickFromLibrary('inline-${s.id}', this.value)" style="margin-bottom:8px;">
-        <option value="">O elige del repertorio guardado...</option>
-        ${songLibrary.map((sg,i)=>`<option value="${i}">${escapeHtml(sg.title)}${sg.artist ? ' — '+escapeHtml(sg.artist) : ''}</option>`).join('')}
-      </select>` : ''}
-      <div class="add-song-row" style="align-items:flex-start;">
-        <div class="song-search-wrap">
-          <input id="song-title-inline-${s.id}" placeholder="Buscar canción..." oninput="handleSongInput('inline-${s.id}', this.value)" onblur="setTimeout(()=>hideDropdown('inline-${s.id}'),150)" />
-          <input type="hidden" id="song-artist-inline-${s.id}" />
-          <input type="hidden" id="song-link-inline-${s.id}" />
-          <div class="song-dropdown" id="song-dropdown-inline-${s.id}" style="display:none;"></div>
-        </div>
-        <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
+  let pastHtml = '';
+  if(past.length>0){
+    pastHtml = `<button class="link-btn" onclick="togglePastAll()">${showPastAll ? 'Ocultar' : 'Ver'} historial (${past.length})</button>`;
+    if(showPastAll) pastHtml += past.map(renderAllCard).join('');
+  }
+
+  return summaryHtml + formHtml + cardsHtml + pastHtml;
+}
+
+function renderDashboard(myRole, mineSorted, allSorted){
+  const todayStr = localTodayISO();
+  const isManager = myRole==='coordinator' || myRole==='developer';
+  const sourceList = isManager ? allSorted : mineSorted;
+  const upcoming = sourceList.filter(s=>s.date >= todayStr);
+  const next = upcoming[0];
+
+  if(!next){
+    return `<div class="empty"><div class="big">Sin servicios próximos</div>${isManager ? 'Agrega uno en "Todos los servicios" para empezar.' : 'Cuando te convoquen a uno, aparecerá aquí.'}</div>`;
+  }
+
+  const heroLabel = isManager ? 'Próximo servicio' : 'Tu próximo servicio';
+  const roleInfo = !isManager ? next.myRole : null;
+
+  const hero = `
+    <div class="hero-card">
+      <div class="hero-eyebrow">
+        <span class="material-symbols-outlined" style="font-size:16px;">event</span>
+        ${heroLabel}
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px;">
-        <button class="btn-small yes" onclick="addSongToService('${s.id}')">Agregar</button>
-        <button class="btn-small" onclick="toggleSongForm('${s.id}')">Cancelar</button>
-      </div>` : `<button class="link-btn" onclick="toggleSongForm('${s.id}')">+ Agregar canción</button>`;
+      <div class="label" style="font-size:24px;margin-bottom:6px;">${escapeHtml(next.label)}</div>
+      <div class="date" style="font-size:14px;">${escapeHtml(fmtDateTime(next.date, next.time))}</div>
+      ${roleInfo ? `<div class="mini-note" style="margin-top:10px;">Tu rol: ${escapeHtml(roleInfo.role)}</div>` : ''}
+      <button class="btn-main" style="margin-top:16px;" onclick="setTab('${isManager ? 'todas' : 'mias'}')">Ver detalles</button>
+    </div>`;
 
-    return `
-      <div class="card">
-        <div class="card-header-row">
-          <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
-          <span style="display:flex;gap:10px;">
-            <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
-            <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
-          </span>
-        </div>
-        <div class="label">${escapeHtml(s.label)}</div>
-        ${rolesHtml}
-        <div class="divider"></div>
-        <div class="mini-note" style="margin-bottom:2px;">Repertorio</div>
-        ${songsListHtml}
-        ${songFormHtml}
-      </div>`;
-  }).join('');
-  return summaryHtml + formHtml + cards;
+  const teamStatusSection = (next.teamStatus && next.teamStatus.length) ? `
+    <div class="section-title" style="margin-top:0;">Estado del equipo</div>
+    ${renderTeamStatusGrid(next, isManager)}` : '';
+
+  const pendingSection = isManager ? renderPendingSummary(allSorted) : '';
+
+  return hero + teamStatusSection + pendingSection;
 }
 
 function renderPendingSummary(list){
-  const todayStr = new Date().toISOString().slice(0,10);
+  const todayStr = localTodayISO();
   const upcoming = list.filter(s=>s.date >= todayStr);
   const withPending = upcoming
     .map(s=>({ ...s, pendingRoles: s.roles.filter(r=>r.status==='pending') }))
@@ -1052,6 +1839,7 @@ function startEditService(serviceId){
   editDraftTime = svc.time || '';
   editDraftLabel = svc.label;
   editDraftRoles = svc.roles.map(r=>({ id:r.id, role:r.role, person:r.person }));
+  editDraftTeamStatus = (svc.teamStatus||[]).map(t=>({ id:t.id, label:t.label, ready:t.ready }));
   render();
 }
 
@@ -1072,7 +1860,27 @@ function removeEditRole(id){
 
 function updateEditRoleField(id, field, value){
   const r = editDraftRoles.find(x=>x.id===id);
-  if(r) r[field] = value;
+  if(!r) return;
+  r[field] = value;
+  if(field==='person' && value && !r.role){
+    const ministryRole = getMinistryRole(rolesMap[value.trim().toLowerCase()]);
+    if(ministryRole){
+      r.role = ministryRole;
+      const roleInput = document.getElementById('edit-role-role-'+id);
+      if(roleInput) roleInput.value = ministryRole;
+    }
+  }
+}
+
+function teamStatusIcon(label){
+  const l = (label||'').toLowerCase();
+  if(l.includes('son')) return 'mic';
+  if(l.includes('band') || l.includes('instrument') || l.includes('musi')) return 'piano';
+  if(l.includes('voz') || l.includes('voc') || l.includes('coro')) return 'record_voice_over';
+  if(l.includes('proyec') || l.includes('pantalla') || l.includes('video')) return 'cast';
+  if(l.includes('luc') || l.includes('light')) return 'lightbulb';
+  if(l.includes('cámar') || l.includes('camar') || l.includes('camera')) return 'videocam';
+  return 'check_circle';
 }
 
 function renderEditForm(svc){
@@ -1086,6 +1894,12 @@ function renderEditForm(svc){
       </select>
       <button class="remove-role" onclick="removeEditRole('${r.id}')">✕</button>
     </div>`).join('');
+  const teamStatusHtml = editDraftTeamStatus.map(t=>`
+    <div class="team-status-row">
+      <input type="checkbox" class="ts-check" ${t.ready?'checked':''} onchange="toggleEditTeamStatusReady('${t.id}')" title="Listo" />
+      <input id="edit-team-status-${t.id}" placeholder="Ej. Sonido, Banda, Proyección..." value="${escapeHtml(t.label)}" onchange="updateEditTeamStatusLabel('${t.id}', this.value)" />
+      <button class="remove-role" onclick="removeEditTeamStatus('${t.id}')">✕</button>
+    </div>`).join('');
   return `
     <div class="card">
       <label class="field-label">Fecha del servicio</label>
@@ -1097,6 +1911,11 @@ function renderEditForm(svc){
       <label class="field-label">Roles y responsables</label>
       <div>${rolesHtml}</div>
       <button class="btn-ghost" onclick="addEditRole()">+ Agregar rol</button>
+
+      <label class="field-label" style="margin-top:18px;">Estado del equipo (opcional)</label>
+      <div>${teamStatusHtml}</div>
+      <button class="btn-ghost" onclick="addEditTeamStatus()">+ Agregar ítem</button>
+
       <div style="display:flex;gap:8px;margin-top:16px;">
         <button class="btn-main" onclick="submitEditService('${svc.id}')">Guardar cambios</button>
         <button class="btn-small" onclick="cancelEditService()" style="flex:0 0 auto;">Cancelar</button>
@@ -1118,10 +1937,18 @@ async function submitEditService(serviceId){
     })
     .filter(r=>r.role && r.person);
   if(newRoles.length===0){ alert('Agrega al menos un rol con su responsable.'); return; }
+  const newTeamStatus = editDraftTeamStatus
+    .map(t=>({
+      id:t.id,
+      label:(document.getElementById('edit-team-status-'+t.id)?.value || t.label || '').trim(),
+      ready: !!t.ready
+    }))
+    .filter(t=>t.label);
   svc.date = editDraftDate;
   svc.time = editDraftTime;
   svc.label = editDraftLabel.trim();
   svc.roles = newRoles;
+  svc.teamStatus = newTeamStatus;
   await saveServices();
   editingServiceId = null;
   render();
@@ -1152,6 +1979,14 @@ function renderAddForm(){
       </div>
       <input id="song-key-${s.id}" placeholder="Tono" value="${escapeHtml(s.key)}" style="max-width:90px;" />
       <button class="remove-role" onclick="removeDraftSong('${s.id}')">✕</button>
+    </div>
+    <input id="song-spotify-${s.id}" placeholder="Link de Spotify (opcional)" value="${escapeHtml(s.spotifyLink||'')}" />
+    <input id="song-apple-${s.id}" placeholder="Link de Apple Music (opcional)" value="${escapeHtml(s.appleMusicLink||'')}" />`).join('');
+  const teamStatusHtml = draftTeamStatus.map(t=>`
+    <div class="team-status-row">
+      <input type="checkbox" class="ts-check" ${t.ready?'checked':''} onchange="toggleDraftTeamStatusReady('${t.id}')" title="Listo" />
+      <input id="team-status-${t.id}" placeholder="Ej. Sonido, Banda, Proyección..." value="${escapeHtml(t.label)}" onchange="updateDraftTeamStatusLabel('${t.id}', this.value)" />
+      <button class="remove-role" onclick="removeDraftTeamStatus('${t.id}')">✕</button>
     </div>`).join('');
   return `
     <div class="card">
@@ -1164,6 +1999,10 @@ function renderAddForm(){
       <label class="field-label">Roles y responsables</label>
       <div id="roles-container">${rolesHtml}</div>
       <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
+
+      <label class="field-label" style="margin-top:18px;">Estado del equipo (opcional)</label>
+      <div id="team-status-container">${teamStatusHtml}</div>
+      <button class="btn-ghost" onclick="addDraftTeamStatus()">+ Agregar ítem</button>
 
       <label class="field-label" style="margin-top:18px;">Repertorio (opcional)</label>
       <div id="songs-container">${songsHtml}</div>
