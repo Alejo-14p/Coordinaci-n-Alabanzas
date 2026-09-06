@@ -410,6 +410,7 @@ let selectedCalendarDay = null;
 let showAddForm = false;
 let draftDate = '';
 let draftLabel = '';
+let draftStructure = 'SPOT';
 let draftTime = '';
 let editingServiceId = null;
 let editDraftDate = '';
@@ -559,8 +560,7 @@ async function submitSuggestion(){
   const rowId = 'suggestnew';
   const titleEl = document.getElementById('song-title-'+rowId);
   const artistEl = document.getElementById('song-artist-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
+    const linkEl = document.getElementById('song-link-'+rowId);
   const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const appleEl = document.getElementById('song-apple-'+rowId);
   const title = titleEl.value.trim();
@@ -569,17 +569,17 @@ async function submitSuggestion(){
     id: uid(),
     title,
     artist: (artistEl?.value || '').trim(),
-    key: (keyEl?.value || '').trim(),
+    key: '',
     link: safeYouTubeUrl(linkEl?.value),
     spotifyLink: safeSpotifyUrl(spotifyEl?.value),
     appleMusicLink: safeAppleMusicUrl(appleEl?.value),
-    suggestedBy: myName
+    suggestedBy: myName,
+    structure: getMyStructure(myName)
   });
   await saveSongSuggestions();
   titleEl.value = '';
   if(artistEl) artistEl.value = '';
-  if(keyEl) keyEl.value = '';
-  if(linkEl) linkEl.value = '';
+    if(linkEl) linkEl.value = '';
   if(spotifyEl) spotifyEl.value = '';
   if(appleEl) appleEl.value = '';
   render();
@@ -588,7 +588,7 @@ async function submitSuggestion(){
 async function approveSuggestion(id){
   const sug = songSuggestions.find(s=>s.id===id);
   if(!sug) return;
-  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link, spotifyLink: sug.spotifyLink, appleMusicLink: sug.appleMusicLink });
+  await addToLibraryIfNew({ title: sug.title, artist: sug.artist, key: sug.key, link: sug.link, spotifyLink: sug.spotifyLink, appleMusicLink: sug.appleMusicLink, structure: sug.structure });
   songSuggestions = songSuggestions.filter(s=>s.id!==id);
   await saveSongSuggestions();
   render();
@@ -615,7 +615,8 @@ function songsMatch(a, b){
 
 async function addToLibraryIfNew(song){
   if(!song.title) return;
-  const exists = songLibrary.some(sg=>songsMatch(sg, song));
+  const structure = song.structure || getMyStructure(myName);
+  const exists = songLibrary.some(sg=>(sg.structure||'SPOT')===structure && songsMatch(sg, song));
   if(exists) return;
   songLibrary.push({
     id: uid(),
@@ -624,7 +625,8 @@ async function addToLibraryIfNew(song){
     key: song.key || '',
     link: safeYouTubeUrl(song.link || ''),
     spotifyLink: safeSpotifyUrl(song.spotifyLink || ''),
-    appleMusicLink: safeAppleMusicUrl(song.appleMusicLink || '')
+    appleMusicLink: safeAppleMusicUrl(song.appleMusicLink || ''),
+    structure
   });
   await saveSongLibrary();
 }
@@ -633,21 +635,22 @@ async function addToLibrary(){
   const rowId = 'libnew';
   const titleEl = document.getElementById('song-title-'+rowId);
   const artistEl = document.getElementById('song-artist-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const linkEl = document.getElementById('song-link-'+rowId);
+    const linkEl = document.getElementById('song-link-'+rowId);
   const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const appleEl = document.getElementById('song-apple-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
+  const myStructure = getMyStructure(myName);
   const newSong = {
     title,
     artist: (artistEl?.value || '').trim(),
-    key: (keyEl?.value || '').trim(),
+    key: '',
     link: safeYouTubeUrl(linkEl?.value),
     spotifyLink: safeSpotifyUrl(spotifyEl?.value),
-    appleMusicLink: safeAppleMusicUrl(appleEl?.value)
+    appleMusicLink: safeAppleMusicUrl(appleEl?.value),
+    structure: myStructure
   };
-  const alreadyExists = songLibrary.some(sg=>songsMatch(sg, newSong));
+  const alreadyExists = songLibrary.some(sg=>(sg.structure||'SPOT')===myStructure && songsMatch(sg, newSong));
   if(alreadyExists){
     alert('Esa canción ya está guardada en el repertorio.');
     return;
@@ -655,8 +658,7 @@ async function addToLibrary(){
   await addToLibraryIfNew(newSong);
   titleEl.value = '';
   if(artistEl) artistEl.value = '';
-  if(keyEl) keyEl.value = '';
-  if(linkEl) linkEl.value = '';
+    if(linkEl) linkEl.value = '';
   if(spotifyEl) spotifyEl.value = '';
   if(appleEl) appleEl.value = '';
   render();
@@ -674,14 +676,12 @@ function pickFromLibrary(rowId, index){
   const titleEl = document.getElementById('song-title-'+rowId);
   const artistEl = document.getElementById('song-artist-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const spotifyEl = document.getElementById('song-spotify-'+rowId);
+    const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const appleEl = document.getElementById('song-apple-'+rowId);
   if(titleEl) titleEl.value = song.title || '';
   if(artistEl) artistEl.value = song.artist || '';
   if(linkEl) linkEl.value = song.link || '';
-  if(keyEl) keyEl.value = song.key || '';
-  if(spotifyEl) spotifyEl.value = song.spotifyLink || '';
+    if(spotifyEl) spotifyEl.value = song.spotifyLink || '';
   if(appleEl) appleEl.value = song.appleMusicLink || '';
   if(!rowId.startsWith('inline-')){
     const s = draftSongs.find(x=>x.id===rowId);
@@ -699,9 +699,30 @@ function getMinistryRole(entry){
   return typeof entry === 'string' ? '' : (entry.role || '');
 }
 
+function getStructure(entry){
+  if(entry && typeof entry === 'object' && entry.structure) return entry.structure;
+  return 'SPOT';
+}
+
+function getSuperAdmin(entry, lname){
+  if(entry && typeof entry === 'object' && typeof entry.superAdmin === 'boolean') return entry.superAdmin;
+  return lname === 'alejandro pérez';
+}
+
 function getMyRole(name){
   if(!name) return 'member';
   return getAccessRole(rolesMap[name.trim().toLowerCase()]);
+}
+
+function getMyStructure(name){
+  if(!name) return 'SPOT';
+  return getStructure(rolesMap[name.trim().toLowerCase()]);
+}
+
+function amISuperAdmin(name){
+  if(!name) return false;
+  const lname = name.trim().toLowerCase();
+  return getSuperAdmin(rolesMap[lname], lname);
 }
 
 function roleLabel(r){
@@ -724,20 +745,27 @@ async function submitAccess(){
   const nameEl = document.getElementById('access-name-input');
   const roleEl = document.getElementById('access-role-select');
   const ministryEl = document.getElementById('access-ministry-input');
+  const structureEl = document.getElementById('access-structure-input');
+  const superAdminEl = document.getElementById('access-superadmin-check');
   const name = nameEl.value.trim();
   if(!name){ nameEl.focus(); return; }
-  rolesMap[name.toLowerCase()] = { access: roleEl.value, role: (ministryEl?.value || '').trim() };
+  const iAmSuper = amISuperAdmin(myName);
+  const structure = iAmSuper ? (structureEl?.value || 'SPOT').trim() || 'SPOT' : getMyStructure(myName);
+  const entry = { access: roleEl.value, role: (ministryEl?.value || '').trim(), structure };
+  if(iAmSuper && superAdminEl){
+    entry.superAdmin = !!superAdminEl.checked;
+  }
+  rolesMap[name.toLowerCase()] = entry;
   await saveRoles();
   nameEl.value = '';
   if(ministryEl) ministryEl.value = '';
+  if(structureEl) structureEl.value = iAmSuper ? '' : structure;
+  if(superAdminEl) superAdminEl.checked = false;
   render();
 }
 
-async function removeRoleEntry(index){
-  const entries = Object.entries(rolesMap);
-  const entry = entries[index];
-  if(!entry) return;
-  delete rolesMap[entry[0]];
+async function removeRoleEntry(lname){
+  delete rolesMap[lname];
   await saveRoles();
   render();
 }
@@ -827,6 +855,7 @@ function startAddForm(){
   draftDate = '';
   draftLabel = '';
   draftTime = '';
+  draftStructure = getMyStructure(myName);
   draftRoles = [{id:uid(), role:'', person:''}];
   draftSongs = [];
   draftTeamStatus = [
@@ -1036,7 +1065,7 @@ async function submitNewService(){
       link:safeYouTubeUrl(document.getElementById('song-link-'+s.id)?.value),
       spotifyLink:safeSpotifyUrl(document.getElementById('song-spotify-'+s.id)?.value),
       appleMusicLink:safeAppleMusicUrl(document.getElementById('song-apple-'+s.id)?.value),
-      key:(document.getElementById('song-key-'+s.id)?.value || '').trim()
+      key:'',
     }))
     .filter(s=>s.title);
   const teamStatus = draftTeamStatus
@@ -1046,7 +1075,8 @@ async function submitNewService(){
       ready: !!t.ready
     }))
     .filter(t=>t.label);
-  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs, teamStatus });
+  const structure = draftStructure || getMyStructure(myName);
+  services.push({ id:uid(), date:dateVal, time:draftTime, label:labelVal, roles, songs, teamStatus, structure });
   for(const sg of songs){
     await addToLibraryIfNew(sg);
   }
@@ -1064,14 +1094,13 @@ async function toggleSongForm(serviceId){
 async function addSongToService(serviceId){
   const rowId = 'inline-'+serviceId;
   const titleEl = document.getElementById('song-title-'+rowId);
-  const keyEl = document.getElementById('song-key-'+rowId);
-  const artistEl = document.getElementById('song-artist-'+rowId);
+    const artistEl = document.getElementById('song-artist-'+rowId);
   const linkEl = document.getElementById('song-link-'+rowId);
   const spotifyEl = document.getElementById('song-spotify-'+rowId);
   const appleEl = document.getElementById('song-apple-'+rowId);
   const title = titleEl.value.trim();
   if(!title){ titleEl.focus(); return; }
-  const key = keyEl.value.trim();
+  const key = '';
   const artist = (artistEl?.value || '').trim();
   const link = safeYouTubeUrl(linkEl?.value);
   const spotifyLink = safeSpotifyUrl(spotifyEl?.value);
@@ -1247,11 +1276,14 @@ function render(){
   }
 
   const myRole = getMyRole(myName);
-  const mine = services
+  const myStructure = getMyStructure(myName);
+  const iAmSuper = amISuperAdmin(myName);
+  const visibleServices = iAmSuper ? services : services.filter(s=>(s.structure||'SPOT')===myStructure);
+  const mine = visibleServices
     .map(s=>({...s, myRole: s.roles.find(r=> r.person.toLowerCase() === myName.toLowerCase())}))
     .filter(s=>s.myRole);
   const mineSorted = upcomingSorted(mine);
-  const allSorted = upcomingSorted(services);
+  const allSorted = upcomingSorted(visibleServices);
 
   const tabsAvailable = [{ id:'inicio', label:'Inicio' }];
   tabsAvailable.push({ id:'mias', label:'Bandeja de convocatorias' });
@@ -1281,7 +1313,7 @@ function render(){
     <div class="who">
       <span>Conectado como <strong style="color:var(--text)">${escapeHtml(myName)}</strong> <span class="song-key" style="margin-left:4px;">${roleLabel(myRole)}</span></span>
       <span style="display:flex;gap:14px;">
-        ${(myRole==='coordinator' || myRole==='developer') ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
+        ${myRole==='developer' ? `<button onclick="openApiKeyModal()">Clave de YouTube</button>` : ''}
         <button onclick="changeName()">Cambiar nombre</button>
       </span>
     </div>
@@ -1412,15 +1444,31 @@ function downloadBackup(){
 }
 
 function renderAccess(){
-  const entries = Object.entries(rolesMap);
-  const rowsHtml = entries.map(([lname, entry], i)=>{
+  const iAmSuper = amISuperAdmin(myName);
+  const myStructure = getMyStructure(myName);
+  const allEntries = Object.entries(rolesMap);
+  const entries = iAmSuper ? allEntries : allEntries.filter(([,entry])=>getStructure(entry)===myStructure);
+
+  const rowsHtml = entries.map(([lname, entry])=>{
     const ministryRole = getMinistryRole(entry);
+    const structure = getStructure(entry);
+    const isSuper = getSuperAdmin(entry, lname);
+    const safeLname = lname.replace(/'/g,"\\'");
     return `
     <div class="role-chip">
-      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(getAccessRole(entry))}${ministryRole ? ` · ${escapeHtml(ministryRole)}` : ''}</span>
-      <button class="icon-btn" onclick="removeRoleEntry(${i})">✕</button>
+      <span>${escapeHtml(titleCase(lname))} — ${roleLabel(getAccessRole(entry))}${ministryRole ? ` · ${escapeHtml(ministryRole)}` : ''}${iAmSuper ? ` · <span class="mini-note" style="display:inline;">${escapeHtml(structure)}</span>` : ''}${isSuper ? ' · ⭐ Super' : ''}</span>
+      <button class="icon-btn" onclick="removeRoleEntry('${safeLname}')">✕</button>
     </div>`;
   }).join('');
+
+  const structureFieldHtml = iAmSuper ? `
+      <label class="field-label">Estructura</label>
+      <input id="access-structure-input" placeholder="Ej. SPOT, ID/In-Out..." />
+      <label class="field-label" style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="access-superadmin-check" class="ts-check" style="margin:0;" />
+        Super administrador (ve todas las estructuras)
+      </label>` : '';
+
   return `
     <div class="card">
       <label class="field-label">Asignar acceso</label>
@@ -1433,9 +1481,10 @@ function renderAccess(){
       </select>
       <label class="field-label">Rol / instrumento por defecto (opcional)</label>
       <input id="access-ministry-input" placeholder="Ej. Guitarrista, Coro, Pianista..." />
+      ${structureFieldHtml}
       <button class="btn-main" onclick="submitAccess()">Guardar acceso</button>
     </div>
-    <div class="section-title">Accesos actuales</div>
+    <div class="section-title">Accesos ${iAmSuper ? 'de todas las estructuras' : `de ${escapeHtml(myStructure)}`}</div>
     ${entries.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Nadie más configurado todavía.</div>'}
     <div class="section-title">Respaldo de datos</div>
     <div class="card">
@@ -1447,10 +1496,12 @@ function renderAccess(){
 
 function renderLibrary(){
   const rowId = 'libnew';
-  const rowsHtml = songLibrary.map(sg=>`
+  const iAmSuper = amISuperAdmin(myName);
+  const myStructure = getMyStructure(myName);
+  const visibleLibrary = iAmSuper ? songLibrary : songLibrary.filter(sg=>(sg.structure||'SPOT')===myStructure);
+  const rowsHtml = visibleLibrary.map(sg=>`
     <div class="song-row">
       <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-      ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
       ${renderSongLinks(sg)}
       <button class="remove-song" onclick="removeFromLibrary('${sg.id}')">✕</button>
     </div>`).join('<div class="divider"></div>');
@@ -1465,22 +1516,24 @@ function renderLibrary(){
           <input type="hidden" id="song-link-${rowId}" />
           <div class="song-dropdown" id="song-dropdown-${rowId}" style="display:none;"></div>
         </div>
-        <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
       </div>
       <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
       <input id="song-apple-${rowId}" placeholder="Link de Apple Music (opcional)" />
       <button class="btn-main" onclick="addToLibrary()">Guardar en repertorio</button>
     </div>
     <div class="section-title">Canciones guardadas</div>
-    ${songLibrary.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no has guardado ninguna canción.</div>'}
+    ${visibleLibrary.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no has guardado ninguna canción.</div>'}
   `;
 }
 
 function renderSuggestions(myRole){
   const rowId = 'suggestnew';
   const isManager = (myRole==='coordinator' || myRole==='developer');
+  const iAmSuper = amISuperAdmin(myName);
+  const myStructure = getMyStructure(myName);
+  const visibleSuggestions = iAmSuper ? songSuggestions : songSuggestions.filter(sg=>(sg.structure||'SPOT')===myStructure);
 
-  const rowsHtml = songSuggestions.map(sg=>{
+  const rowsHtml = visibleSuggestions.map(sg=>{
     const canRemove = isManager || (sg.suggestedBy && myName && sg.suggestedBy.toLowerCase()===myName.toLowerCase());
     const actions = isManager
       ? `<button class="remove-song" style="color:var(--sage);" onclick="approveSuggestion('${sg.id}')" title="Aprobar y guardar en repertorio">✓</button>
@@ -1489,7 +1542,6 @@ function renderSuggestions(myRole){
     return `
       <div class="song-row">
         <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-        ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
         ${renderSongLinks(sg)}
         ${actions}
       </div>
@@ -1506,14 +1558,13 @@ function renderSuggestions(myRole){
           <input type="hidden" id="song-link-${rowId}" />
           <div class="song-dropdown" id="song-dropdown-${rowId}" style="display:none;"></div>
         </div>
-        <input id="song-key-${rowId}" placeholder="Tono" style="max-width:90px;" />
       </div>
       <input id="song-spotify-${rowId}" placeholder="Link de Spotify (opcional)" />
       <input id="song-apple-${rowId}" placeholder="Link de Apple Music (opcional)" />
       <button class="btn-main" onclick="submitSuggestion()">Enviar sugerencia</button>
     </div>
     <div class="section-title">Sugerencias del equipo</div>
-    ${songSuggestions.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no hay sugerencias.</div>'}
+    ${visibleSuggestions.length ? `<div class="card">${rowsHtml}</div>` : '<div class="mini-note">Todavía no hay sugerencias.</div>'}
   `;
 }
 
@@ -1607,7 +1658,6 @@ function renderMineCard(s){
         <div class="song-row" style="padding:4px 0;">
           <span class="song-num">${i+1}.</span>
           <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-          ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
           ${renderSongLinks(sg)}
         </div>`).join('')}` : '';
   return `
@@ -1677,7 +1727,6 @@ function renderAllCard(s){
     <div class="song-row">
       <span class="song-num">${i+1}.</span>
       <span class="song-title">${escapeHtml(sg.title)}${sg.artist ? ` <span class="song-artist">— ${escapeHtml(sg.artist)}</span>` : ''}</span>
-      ${sg.key ? `<span class="song-key">${escapeHtml(sg.key)}</span>` : ''}
       ${renderSongLinks(sg)}
       <button class="remove-song" style="color:var(--accent);" onclick="startEditLyrics('${sg.id}')" title="Editar letra para diapositivas">📝</button>
       <button class="remove-song" onclick="removeSongFromService('${s.id}','${sg.id}')">✕</button>
@@ -1709,7 +1758,6 @@ Coro aquí...">${escapeHtml(sg.lyrics||'')}</textarea>
         <input type="hidden" id="song-link-inline-${s.id}" />
         <div class="song-dropdown" id="song-dropdown-inline-${s.id}" style="display:none;"></div>
       </div>
-      <input id="song-key-inline-${s.id}" class="song-key-input" placeholder="Tono" />
     </div>
     <input id="song-spotify-inline-${s.id}" placeholder="Link de Spotify (opcional)" />
     <input id="song-apple-inline-${s.id}" placeholder="Link de Apple Music (opcional)" />
@@ -1721,7 +1769,7 @@ Coro aquí...">${escapeHtml(sg.lyrics||'')}</textarea>
   return `
     <div class="card">
       <div class="card-header-row">
-        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}</span>
+        <span class="date">${escapeHtml(fmtDateTime(s.date, s.time))}${amISuperAdmin(myName) ? ` <span class="song-key" style="margin-left:6px;">${escapeHtml(s.structure||'SPOT')}</span>` : ''}</span>
         <span style="display:flex;gap:10px;">
           <button class="icon-btn" onclick="startEditService('${s.id}')" title="Editar servicio" style="color:var(--accent);">✎</button>
           <button class="icon-btn" onclick="deleteService('${s.id}')" title="Eliminar servicio">✕</button>
@@ -1884,7 +1932,10 @@ function teamStatusIcon(label){
 }
 
 function renderEditForm(svc){
-  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
+  const svcStructure = svc.structure || 'SPOT';
+  const memberOptions = Object.keys(rolesMap)
+    .filter(lname=>getStructure(rolesMap[lname])===svcStructure)
+    .map(lname=>titleCase(lname)).sort();
   const rolesHtml = editDraftRoles.map(r=>`
     <div class="role-form-row">
       <input id="edit-role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateEditRoleField('${r.id}','role',this.value)" />
@@ -1955,7 +2006,16 @@ async function submitEditService(serviceId){
 }
 
 function renderAddForm(){
-  const memberOptions = Object.keys(rolesMap).map(lname=>titleCase(lname)).sort();
+  const iAmSuper = amISuperAdmin(myName);
+  const allStructures = [...new Set(Object.values(rolesMap).map(e=>getStructure(e)))].sort();
+  const memberOptions = Object.keys(rolesMap)
+    .filter(lname=>getStructure(rolesMap[lname])===draftStructure)
+    .map(lname=>titleCase(lname)).sort();
+  const structureSelectorHtml = iAmSuper ? `
+      <label class="field-label">Estructura</label>
+      <select id="new-structure" onchange="draftStructure=this.value; render();">
+        ${allStructures.map(st=>`<option value="${escapeHtml(st)}" ${draftStructure===st?'selected':''}>${escapeHtml(st)}</option>`).join('')}
+      </select>` : '';
   const rolesHtml = draftRoles.map(r=>`
     <div class="role-form-row">
       <input id="role-role-${r.id}" placeholder="Rol (ej. Guitarrista)" value="${escapeHtml(r.role)}" onchange="updateDraftRole('${r.id}','role',this.value)" />
@@ -1977,7 +2037,6 @@ function renderAddForm(){
         <input type="hidden" id="song-link-${s.id}" value="${escapeHtml(s.link||'')}" />
         <div class="song-dropdown" id="song-dropdown-${s.id}" style="display:none;"></div>
       </div>
-      <input id="song-key-${s.id}" placeholder="Tono" value="${escapeHtml(s.key)}" style="max-width:90px;" />
       <button class="remove-role" onclick="removeDraftSong('${s.id}')">✕</button>
     </div>
     <input id="song-spotify-${s.id}" placeholder="Link de Spotify (opcional)" value="${escapeHtml(s.spotifyLink||'')}" />
@@ -1996,6 +2055,7 @@ function renderAddForm(){
       <input type="time" id="new-time" value="${escapeHtml(draftTime)}" onchange="draftTime=this.value" />
       <label class="field-label">Nombre del servicio</label>
       <input id="new-label" placeholder="Ej. Culto general, Servicio de jóvenes..." value="${escapeHtml(draftLabel)}" onchange="draftLabel=this.value" />
+      ${structureSelectorHtml}
       <label class="field-label">Roles y responsables</label>
       <div id="roles-container">${rolesHtml}</div>
       <button class="btn-ghost" onclick="addDraftRole()">+ Agregar rol</button>
