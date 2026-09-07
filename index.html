@@ -1140,19 +1140,34 @@ function cancelEditLyrics(){
   render();
 }
 
+function safeImageUrl(url){
+  if(!url) return '';
+  const trimmed = String(url).trim();
+  if(!trimmed) return '';
+  try{
+    const parsed = new URL(trimmed);
+    if(parsed.protocol==='https:' || parsed.protocol==='http:') return trimmed;
+  }catch(e){ /* URL inválida */ }
+  return '';
+}
+
 async function saveLyrics(serviceId, songId){
   const ta = document.getElementById('lyrics-textarea-'+songId);
+  const bgEl = document.getElementById('lyrics-bg-'+songId);
   if(!ta) return;
   const text = ta.value;
+  const bgImage = safeImageUrl(bgEl?.value);
   const svc = services.find(s=>s.id===serviceId);
   if(!svc) return;
   const sg = svc.songs.find(x=>x.id===songId);
   if(!sg) return;
   sg.lyrics = text;
+  sg.backgroundImage = bgImage;
   await saveServices();
   const libEntry = songLibrary.find(l=>songsMatch(l, sg));
   if(libEntry){
     libEntry.lyrics = text;
+    libEntry.backgroundImage = bgImage;
     await saveSongLibrary();
   }
   lyricsEditingSongId = null;
@@ -1160,15 +1175,20 @@ async function saveLyrics(serviceId, songId){
 }
 
 function splitLyrics(text){
-  return (text||'').split(/\n\s*-{3,}\s*\n/).map(t=>t.trim()).filter(Boolean);
+  const normalized = (text||'').replace(/\r\n/g, '\n');
+  return normalized
+    .split(/\n[ \t]*[-–—_=]{2,}[ \t]*\n/)
+    .map(t=>t.trim())
+    .filter(Boolean);
 }
 
 function buildSlidesForService(svc){
   const slides = [];
   (svc.songs||[]).forEach(sg=>{
-    slides.push({ type:'title', text: sg.title || 'Canción' });
+    const bg = sg.backgroundImage || '';
+    slides.push({ type:'title', text: sg.title || 'Canción', bg });
     splitLyrics(sg.lyrics).forEach(chunk=>{
-      slides.push({ type:'lyric', text: chunk });
+      slides.push({ type:'lyric', text: chunk, bg });
     });
   });
   return slides;
@@ -1224,16 +1244,27 @@ function downloadPptxForService(serviceId){
   pptx.defineLayout({ name:'WIDE', width:13.33, height:7.5 });
   pptx.layout = 'WIDE';
   let hasContent = false;
+
+  function applyBackground(slide, bg){
+    if(bg){
+      slide.background = { path: bg };
+      slide.addShape('rect', { x:0, y:0, w:13.33, h:7.5, fill:{ color:'000000', transparency:45 } });
+    }else{
+      slide.background = { color:'001717' };
+    }
+  }
+
   (svc.songs||[]).forEach(sg=>{
     hasContent = true;
+    const bg = sg.backgroundImage || '';
     const titleSlide = pptx.addSlide();
-    titleSlide.background = { color:'042224' };
+    applyBackground(titleSlide, bg);
     titleSlide.addText(sg.title || 'Canción', {
-      x:0.5, y:3, w:12.33, h:1.5, align:'center', fontSize:44, bold:true, color:'98F755', fontFace:'Georgia'
+      x:0.5, y:3, w:12.33, h:1.5, align:'center', fontSize:44, bold:true, color:'99FB56', fontFace:'Georgia'
     });
     splitLyrics(sg.lyrics).forEach(chunk=>{
       const slide = pptx.addSlide();
-      slide.background = { color:'042224' };
+      applyBackground(slide, bg);
       slide.addText(chunk, {
         x:0.5, y:0.5, w:12.33, h:6.5, align:'center', valign:'middle',
         fontSize:32, color:'FFFFFF', fontFace:'Georgia', wrap:true
@@ -1244,7 +1275,10 @@ function downloadPptxForService(serviceId){
     alert('Este servicio todavía no tiene canciones en el repertorio.');
     return;
   }
-  pptx.writeFile({ fileName: `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-diapositivas.pptx` });
+  pptx.writeFile({ fileName: `${(svc.label||'servicio').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-diapositivas.pptx` })
+    .catch(()=>{
+      alert('No se pudo generar el PowerPoint con alguna de las imágenes de fondo (puede que ese sitio bloquee su uso). Intenta con otra imagen o sin fondo.');
+    });
 }
 
 function render(){
@@ -1252,8 +1286,11 @@ function render(){
 
   if(presentingServiceId){
     const slide = presentSlides[presentIndex];
+    const bgStyle = slide.bg
+      ? `background-image:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('${slide.bg.replace(/'/g,"%27")}');background-size:cover;background-position:center;`
+      : '';
     app.innerHTML = `
-      <div class="presenter">
+      <div class="presenter" style="${bgStyle}">
         <button class="presenter-close" onclick="stopPresent()" title="Cerrar (Esc)">✕</button>
         ${presentIndex>0 ? `<button class="presenter-nav prev" onclick="prevSlide()">‹</button>` : ''}
         ${presentIndex < presentSlides.length-1 ? `<button class="presenter-nav next" onclick="nextSlide()">›</button>` : ''}
@@ -1753,6 +1790,8 @@ function renderAllCard(s){
 ---
 
 Coro aquí...">${escapeHtml(sg.lyrics||'')}</textarea>
+        <label class="field-label" style="margin-top:8px;">Imagen de fondo (opcional)</label>
+        <input id="lyrics-bg-${sg.id}" placeholder="Link a una imagen (https://...)" value="${escapeHtml(sg.backgroundImage||'')}" />
         <div style="display:flex;gap:8px;margin-top:8px;">
           <button class="btn-small yes" onclick="saveLyrics('${s.id}','${sg.id}')">Guardar letra</button>
           <button class="btn-small" onclick="cancelEditLyrics()">Cancelar</button>
