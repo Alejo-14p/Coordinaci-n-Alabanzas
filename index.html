@@ -1346,6 +1346,7 @@ function render(){
   else if(activeTab==='repertorio' && (myRole==='coordinator' || myRole==='developer')) content = renderLibrary();
   else if(activeTab==='sugerencias') content = renderSuggestions(myRole);
   else if(activeTab==='calendario') content = renderCalendar(allSorted);
+  else if(activeTeb==='diapositiva') content = renderdiapos(allSorted);
   else if(activeTab==='accesos' && myRole==='developer') content = renderAccess();
   else content = renderMine(mineSorted);
 
